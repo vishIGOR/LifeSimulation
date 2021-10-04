@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using LifeSimulation.AdditionalClasses;
 using LifeSimulation.MapClasses;
 using LifeSimulation.TileClasses;
@@ -6,15 +7,19 @@ namespace LifeSimulation.EntityClasses
 {
     public abstract class Entity
     {
-        public Tile CurrentTile { get; protected set; }
+        public Tile Tile { get; protected set; }
         protected int HitPoints;
         protected int MaxHitPoints;
-        protected Randomizer EntityRandomizer;
-        protected Map EntityMap;
+        protected Randomizer Randomizer;
+        protected Map Map;
         
-        public Brush EntityColor { get; protected set; }
+        public Brush Color { get; protected set; }
         public virtual void ChooseAction(){}
+        protected virtual void Die(){}
 
-        
+        public void DamageIt(int damage)
+        {
+            HitPoints -= damage;
+        }
     }
 }

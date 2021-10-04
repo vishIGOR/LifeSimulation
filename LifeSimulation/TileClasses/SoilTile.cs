@@ -7,7 +7,6 @@ namespace LifeSimulation.TileClasses
         public SoilTail(int x, int y)
         {
             LandPossibility = true;
-            WaterPossibility = false;
             PlantPossibility = true;
             X = x;
             Y = y;

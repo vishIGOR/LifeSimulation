@@ -11,7 +11,7 @@ namespace LifeSimulation.AdditionalClasses
             RandomVar = new Random();
         }
 
-        public int RandomInt(int min,int max)
+        public int GetRandomInt(int min,int max)
         {
             int temporaryInt = RandomVar.Next(min, max + 1);
             return temporaryInt;

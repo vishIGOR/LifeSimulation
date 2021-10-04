@@ -6,72 +6,121 @@ using LifeSimulation.TileClasses;
 
 namespace LifeSimulation.EntityClasses
 {
-    public class Sheep : Animal,  IFeedable
+    public class Sheep : Animal, IFeedable
     {
-        
         private int HungerPoints;
+        private int MaxHungerPoints;
+
         public Sheep(Tile tile, Map map)
         {
-            HungerPoints = 10;
+            Tile = tile;
+            Map = map;
+            Randomizer = Map.Randomizer;
+
+            HungerPoints = 15;
+            MaxHungerPoints = 15;
+
             MaxHitPoints = 10;
-            CurrentTile = tile;
             HitPoints = 10;
+
             Age = 0;
             MaxAge = 50;
-            EntityColor = Brushes.White;
-            EntityRandomizer = new Randomizer();
-            EntityMap = map;
+
+            Color = Brushes.White;
+        }
+
+        protected override void Die()
+        {
+            Map.Animals.Remove(this);
+            Map.DeadEntities.Add(this);
         }
 
         public override void ChooseAction()
         {
-            // ++Age;
-            // if (HungerPoints == 0)
-            // {
-            //     --HitPoints;
-            // }
-            // else
-            // {
-            //     --HungerPoints;
-            // }
-            //
-            // if (HitPoints <= 0)
-            // {
-            //     Die();
-            //     return;
-            // }
-            //
-            // if (Age > MaxAge)
-            // {
-            //     
-            //     if (EntityRandomizer.RandomInt(1,10) > 4)
-            //     {
-            //         Die();
-            //         return;
-            //     }
-            // }
-            //
-            // if (HungerPoints < 3)
-            // {
-            //     LookForFood();
-            //     return;
-            // }
-            //
-            // if (EntityRandomizer.RandomInt(1,10) > 3)
-            // {
-            //     Walk();
-            //     return;
-            // }
+            ++Age;
+            if (HungerPoints == 0)
+            {
+                --HitPoints;
+            }
+            else
+            {
+                --HungerPoints;
+            }
+
+            if (HitPoints <= 0)
+            {
+                Die();
+                return;
+            }
+
+            if (Age > MaxAge)
+            {
+                if (Randomizer.GetRandomInt(1, 10) > 4)
+                {
+                    Die();
+                    return;
+                }
+            }
+
+            if (HungerPoints < 3)
+            {
+                LookForFood();
+                return;
+            }
+
+            Walk();
         }
 
         public void LookForFood()
         {
-            
+            double minDistance = 10000000000;
+            double currentDistance;
+            double maxDistance = 10;
+            Entity nearestFood = null;
+
+            foreach (var animal in Map.Plants)
+            {
+                if (animal is Grass)
+                {
+                    currentDistance = CalculateDistance(animal);
+                    if (minDistance < currentDistance && currentDistance < maxDistance)
+                    {
+                        minDistance = currentDistance;
+                        nearestFood = animal;
+                    }
+                }
+            }
+
+            if (nearestFood == null)
+            {
+                Walk();
+            }
+            else
+            {
+                if (nearestFood.Tile == Tile)
+                {
+                    StartEat(nearestFood);
+                }
+                else
+                {
+                    MoveTo(nearestFood);
+                }
+            }
         }
 
-        public void StartEat()
+        public void StartEat(Entity target)
         {
-            
+            target.DamageIt(30);
+            if (HitPoints < MaxHitPoints - 5)
+            {
+                HitPoints += 5;
+            }
+            else
+            {
+                HitPoints = MaxHitPoints;
+            }
+
+            HungerPoints = MaxHungerPoints;
         }
     }
 }

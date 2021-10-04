@@ -10,30 +10,43 @@ namespace LifeSimulation.MapClasses
 {
     public class Map
     {
-        public int Height{get; private set;}
-        public int Width{get; private set;}
-        public Tile[,] Tiles{get; private set;}
-        public List<Entity> Entities{get; private set;}
-        private Randomizer MapRandomizer;
+        public int Height { get; private set; }
+        public int Width { get; private set; }
+        public Tile[,] Tiles { get; private set; }
+        public List<Entity> Entities { get; private set; }
+        public List<Entity> NewEntities { get; private set; }
+        public List<Entity> DeadEntities { get; private set; }
+        public List<Animal> Animals { get; private set; }
+        public List<Plant> Plants { get; private set; }
+        public Randomizer Randomizer{ get; private set; }
+        public Brush[,] ColorsOfTiles { get; private set; }
         
+
         public Map(int height, int width, int numberOfAnimals, int percentOfPlants)
         {
-            MapRandomizer = new Randomizer();
+            Randomizer = new Randomizer();
+            
             Entities = new List<Entity>();
+            NewEntities = new List<Entity>();
+            DeadEntities = new List<Entity>();
+
+            Animals = new List<Animal>();
+            Plants = new List<Plant>();
             
             Height = height;
             Width = width;
-            
+
             Tiles = new Tile[Width, Height];
+
+            ColorsOfTiles = new Brush[Width, Height];
             
             CreateRandomTiles(percentOfPlants);
             CreateRandomAnimals(numberOfAnimals);
-           
         }
 
         void CreateRandomTiles(int percentOfPlants)
         {
-            
+            Plant newPlant;
             for (int j = 0; j < Height; ++j)
             {
                 for (int i = 0; i < Width; ++i)
@@ -42,75 +55,69 @@ namespace LifeSimulation.MapClasses
 
                     if (Tiles[i, j].PlantPossibility == true)
                     {
-                        if (MapRandomizer.RandomInt(1, 100) <= percentOfPlants)
+                        if (Randomizer.GetRandomInt(1, 100) <= percentOfPlants)
                         {
-                            Entities.Add(CreateNewPlant(Tiles[i, j]));
+                            newPlant = CreateNewPlant(Tiles[i, j]);
+                            Plants.Add(newPlant);
+                            Entities.Add(newPlant);
                         }
                     }
-                    
                 }
             }
             
+            for (int j = 0; j < Height; ++j)
+            {
+                for (int i = 0; i < Width; ++i)
+                {
+                    ColorsOfTiles[i, j] = Tiles[i, j].TileColor;
+                }
+            }
         }
-        
-        // void CreateRandomPlants(int numberOfPlants)
-        // {
-        //     Random randomizer = new Random();
-        //     int currentX, currentY;
-        //     while (numberOfPlants > 0)
-        //     {
-        //         currentX = randomizer.Next(0, Width);
-        //         currentY = randomizer.Next(0, Height);
-        //         if (Tiles[currentX, currentY].PlantPossibility && Tiles[currentX, currentY].IsSeeded == false)
-        //         {
-        //             --numberOfPlants;
-        //             Entities.Add(CreateNewPlant(Tiles[currentX, currentY]));
-        //             Tiles[currentX, currentY].IsSeeded = true;
-        //         }
-        //     }
-        // }
 
         Tile CreateNewTile(int x, int y)
         {
             int maxNumber = 10;
-            int randomInt = MapRandomizer.RandomInt(1,maxNumber);
-            
-            if (randomInt < 1)
+            int GetRandomInt = Randomizer.GetRandomInt(1, maxNumber);
+
+            if (GetRandomInt < 1)
             {
-                return new MountainTail(x,y);
+                return new MountainTail(x, y);
             }
-                    
-            return new SoilTail(x,y);
+
+            return new SoilTail(x, y);
         }
-        
+
         Plant CreateNewPlant(Tile tile)
         {
             int maxNumber = 10;
-            int randomInt = MapRandomizer.RandomInt(1,maxNumber);
+            int GetRandomInt = Randomizer.GetRandomInt(1, maxNumber);
 
             return new Grass(tile, this);
         }
-        
+
         void CreateRandomAnimals(int numberOfAnimals)
         {
             int currentX, currentY;
+            Animal newAnimal;
             while (numberOfAnimals > 0)
             {
-                currentX = MapRandomizer.RandomInt(0, Width - 1);
-                currentY = MapRandomizer.RandomInt(0, Height - 1);
+                currentX = Randomizer.GetRandomInt(0, Width - 1);
+                currentY = Randomizer.GetRandomInt(0, Height - 1);
                 if (Tiles[currentX, currentY].LandPossibility)
                 {
                     --numberOfAnimals;
-                    Entities.Add(CreateNewAnimal(Tiles[currentX, currentY]));
+                    newAnimal = CreateNewAnimal(Tiles[currentX, currentY]);
+                    Animals.Add(newAnimal);
+                    Entities.Add(newAnimal);
                 }
             }
         }
-        
+
         Animal CreateNewAnimal(Tile tile)
         {
             int maxNumber = 10;
-            int randomInt = MapRandomizer.RandomInt(1,maxNumber);
-            if (randomInt < 5)
+            int GetRandomInt = Randomizer.GetRandomInt(1, maxNumber);
+            if (GetRandomInt < 5)
             {
                 return new Sheep(tile, this);
             }
@@ -118,48 +125,6 @@ namespace LifeSimulation.MapClasses
             return new Wolf(tile, this);
         }
 
-        public Brush[,] ReturnColorsOfTiles()
-        {
-            Brush[,] arrayOfColors = new Brush[Width,Height];
-            for (int j = 0; j < Height; ++j)
-            {
-                for (int i = 0; i < Width; ++i)
-                {
-                    arrayOfColors[i, j] = Tiles[i, j].TileColor;
-                }
-            }
-            return arrayOfColors;
-        }
-
-        public List<Entity> ReturnAllPlants()
-        {
-            List<Entity> listOfPlants = new List<Entity>();
-
-            foreach (var entity in Entities)
-            {
-                if (entity is Plant)
-                {
-                    listOfPlants.Add(entity);
-                }
-            }
-
-            return listOfPlants;
-        }
-
-        public List<Entity> ReturnAllAnimals()
-        {
-            List<Entity> listOfAnimals = new List<Entity>();
-            
-            foreach (var entity in Entities)
-            {
-                if (entity is Animal)
-                {
-                    listOfAnimals.Add(entity);
-                }
-            }
-
-            return listOfAnimals;
-        }
 
         public void UpdateMap()
         {
@@ -167,6 +132,18 @@ namespace LifeSimulation.MapClasses
             {
                 entity.ChooseAction();
             }
+
+            foreach (var entity in NewEntities)
+            {
+                Entities.Add(entity);
+            }
+            NewEntities.Clear();
+
+            foreach (var entity in DeadEntities)
+            {
+                Entities.Remove(entity);
+            }
+            DeadEntities.Clear();
         }
     }
 }

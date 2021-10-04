@@ -36,6 +36,8 @@ namespace LifeSimulation
             this.labelHeight = new System.Windows.Forms.Label();
             this.buttonStart = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.TickCounter = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.numericAnimalsNumber = new System.Windows.Forms.NumericUpDown();
             this.numericPlantsPercent = new System.Windows.Forms.NumericUpDown();
             this.labelPlants = new System.Windows.Forms.Label();
@@ -59,7 +61,7 @@ namespace LifeSimulation
             // buttonFinish
             // 
             this.buttonFinish.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonFinish.Location = new System.Drawing.Point(4, 957);
+            this.buttonFinish.Location = new System.Drawing.Point(4, 693);
             this.buttonFinish.Name = "buttonFinish";
             this.buttonFinish.Size = new System.Drawing.Size(169, 40);
             this.buttonFinish.TabIndex = 0;
@@ -86,7 +88,7 @@ namespace LifeSimulation
             // buttonStart
             // 
             this.buttonStart.Anchor = ((System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonStart.Location = new System.Drawing.Point(4, 911);
+            this.buttonStart.Location = new System.Drawing.Point(4, 647);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(169, 40);
             this.buttonStart.TabIndex = 5;
@@ -105,6 +107,8 @@ namespace LifeSimulation
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.TickCounter);
+            this.splitContainer1.Panel1.Controls.Add(this.label1);
             this.splitContainer1.Panel1.Controls.Add(this.numericAnimalsNumber);
             this.splitContainer1.Panel1.Controls.Add(this.numericPlantsPercent);
             this.splitContainer1.Panel1.Controls.Add(this.labelPlants);
@@ -119,14 +123,34 @@ namespace LifeSimulation
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.pictureMap);
-            this.splitContainer1.Size = new System.Drawing.Size(1190, 1004);
+            this.splitContainer1.Size = new System.Drawing.Size(1166, 743);
             this.splitContainer1.SplitterDistance = 180;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 6;
             // 
+            // TickCounter
+            // 
+            this.TickCounter.BackColor = System.Drawing.Color.White;
+            this.TickCounter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TickCounter.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (204)));
+            this.TickCounter.Location = new System.Drawing.Point(4, 251);
+            this.TickCounter.Name = "TickCounter";
+            this.TickCounter.Size = new System.Drawing.Size(169, 26);
+            this.TickCounter.TabIndex = 13;
+            this.TickCounter.Text = "0";
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(4, 231);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(169, 20);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Тик:";
+            // 
             // numericAnimalsNumber
             // 
             this.numericAnimalsNumber.Location = new System.Drawing.Point(4, 171);
+            this.numericAnimalsNumber.Maximum = new decimal(new int[] {200, 0, 0, 0});
             this.numericAnimalsNumber.Name = "numericAnimalsNumber";
             this.numericAnimalsNumber.Size = new System.Drawing.Size(169, 20);
             this.numericAnimalsNumber.TabIndex = 11;
@@ -144,7 +168,7 @@ namespace LifeSimulation
             this.labelPlants.Name = "labelPlants";
             this.labelPlants.Size = new System.Drawing.Size(169, 20);
             this.labelPlants.TabIndex = 8;
-            this.labelPlants.Text = "Процент к-ва растений:";
+            this.labelPlants.Text = "Процент засеянности:";
             // 
             // labelAnimals
             // 
@@ -152,7 +176,7 @@ namespace LifeSimulation
             this.labelAnimals.Name = "labelAnimals";
             this.labelAnimals.Size = new System.Drawing.Size(169, 20);
             this.labelAnimals.TabIndex = 9;
-            this.labelAnimals.Text = "Начальное к-во животных:";
+            this.labelAnimals.Text = "Количество животных:";
             // 
             // numericHeight
             // 
@@ -176,17 +200,16 @@ namespace LifeSimulation
             // 
             // pictureMap
             // 
-            this.pictureMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureMap.Location = new System.Drawing.Point(0, 0);
             this.pictureMap.Name = "pictureMap";
-            this.pictureMap.Size = new System.Drawing.Size(1000, 1000);
+            this.pictureMap.Size = new System.Drawing.Size(965, 734);
             this.pictureMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureMap.TabIndex = 0;
             this.pictureMap.TabStop = false;
             // 
             // timer1
             // 
-            this.timer1.Enabled = true;
+            this.timer1.Interval = 2400D;
             this.timer1.SynchronizingObject = this;
             this.timer1.Elapsed += new System.Timers.ElapsedEventHandler(this.timer1_Elapsed);
             // 
@@ -195,13 +218,11 @@ namespace LifeSimulation
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.OldLace;
-            this.ClientSize = new System.Drawing.Size(1203, 1025);
+            this.ClientSize = new System.Drawing.Size(1184, 761);
             this.Controls.Add(this.splitContainer1);
-            this.MaximumSize = new System.Drawing.Size(1219, 1064);
-            this.MinimumSize = new System.Drawing.Size(1219, 1038);
+            this.Location = new System.Drawing.Point(15, 15);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "SimulationOfLife";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
@@ -215,6 +236,11 @@ namespace LifeSimulation
             ((System.ComponentModel.ISupportInitialize) (this.timer1)).EndInit();
             this.ResumeLayout(false);
         }
+
+        private System.Windows.Forms.Label TickCounter;
+
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
 
         private System.Timers.Timer timer1;
 

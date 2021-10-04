@@ -7,7 +7,6 @@ namespace LifeSimulation.TileClasses
         public MountainTail(int x, int y)
         {
             LandPossibility = false;
-            WaterPossibility = false;
             PlantPossibility = false;
             X = x;
             Y = y;

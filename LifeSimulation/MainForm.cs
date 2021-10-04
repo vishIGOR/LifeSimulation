@@ -16,7 +16,7 @@ namespace LifeSimulation
         private int ViewNumberOfAnimals;
         private int ViewPercentOfPlants;
 
-        private Brush[,] ColorOfTiles;
+        private Brush[,] ColorsOfTiles;
         
         private Map CurrentMap;
         private int Resolution;
@@ -24,8 +24,16 @@ namespace LifeSimulation
         {
             InitializeComponent();
             timer1.Stop();
+            ScrollBarInit();
         }
 
+        private void ScrollBarInit()
+        {
+            // pictureMap.Controls.Add(vScrollBar1);
+            // pictureMap.Controls.Add(hScrollBar1);
+            splitContainer1.Panel2.AutoScroll = true;
+            pictureMap.SizeMode = PictureBoxSizeMode.AutoSize;
+        }
         private void timer1_Elapsed(object sender, ElapsedEventArgs e)
         {
             CurrentMap.UpdateMap();
@@ -54,18 +62,19 @@ namespace LifeSimulation
             numericPlantsPercent.Enabled = false;
             numericAnimalsNumber.Enabled = false;
             
-            Resolution = 20;
-            ViewHeight = 50;
-            ViewWidth = 50;
-            ViewPercentOfPlants = 70;
-            ViewNumberOfAnimals = 10;
+            Resolution = 6;
+            ViewHeight = (int)numericHeight.Value;
+            ViewWidth = (int)numericWidth.Value;
+            ViewPercentOfPlants = (int)numericPlantsPercent.Value;
+            ViewNumberOfAnimals = (int)numericAnimalsNumber.Value;
             CurrentMap = new Map(ViewHeight,ViewWidth,ViewNumberOfAnimals,ViewPercentOfPlants);
-            ColorOfTiles = CurrentMap.ReturnColorsOfTiles();
+            ColorsOfTiles = CurrentMap.ColorsOfTiles;
             
             pictureMap.Image = new Bitmap(ViewWidth*Resolution, ViewHeight*Resolution);
             MapView = Graphics.FromImage(pictureMap.Image);
             
             timer1.Start();
+            ScrollBarInit();
         }
 
         void StopSimulation()
@@ -75,8 +84,9 @@ namespace LifeSimulation
                 return;
             }
             
-            timer1.Stop();
             
+            timer1.Stop();
+            TickCounter.Text = "0";
             numericHeight.Enabled = true;
             numericWidth.Enabled = true;
             numericPlantsPercent.Enabled = true;
@@ -90,6 +100,7 @@ namespace LifeSimulation
             DrawAnimals();
 
             pictureMap.Refresh();
+            TickCounter.Text = Convert.ToString(Convert.ToInt32(TickCounter.Text)+1);
         }
 
         void DrawLandscape()
@@ -98,24 +109,24 @@ namespace LifeSimulation
             {
                 for (int j = 0; j < ViewHeight; ++j)
                 {
-                    MapView.FillRectangle(ColorOfTiles[i,j],i*Resolution,j*Resolution,Resolution,Resolution);
+                    MapView.FillRectangle(ColorsOfTiles[i,j],i*Resolution,j*Resolution,Resolution,Resolution);
                 }
             }
         }
 
         void DrawPlants()
         {
-            foreach (var plant in CurrentMap.ReturnAllPlants())
+            foreach (var plant in CurrentMap.Plants)
             {
-                MapView.FillRectangle(plant.EntityColor, plant.CurrentTile.X * Resolution, plant.CurrentTile.Y * Resolution, Resolution, Resolution);
+                MapView.FillRectangle(plant.Color, plant.Tile.X * Resolution, plant.Tile.Y * Resolution, Resolution, Resolution);
             }
         }
         
         void DrawAnimals()
         {
-            foreach (var animal in CurrentMap.ReturnAllAnimals())
+            foreach (var animal in CurrentMap.Animals)
             {
-                MapView.FillEllipse(animal.EntityColor,animal.CurrentTile.X*Resolution,animal.CurrentTile.Y*Resolution,Resolution,Resolution);
+                MapView.FillEllipse(animal.Color,animal.Tile.X*Resolution,animal.Tile.Y*Resolution,Resolution,Resolution);
             }
         }
     }

@@ -3,6 +3,6 @@
     public interface IFeedable
     {
         void LookForFood();
-        void StartEat();
+        void StartEat(Entity target);
     }
 }

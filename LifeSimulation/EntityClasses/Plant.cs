@@ -5,7 +5,6 @@
         protected int ReadyToCreep;
         protected int CreepCounter;
         
-        protected virtual void Die(){}
         protected virtual void Creep(){}
     }
 }
