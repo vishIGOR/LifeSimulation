@@ -11,11 +11,6 @@ namespace LifeSimulation.TileClasses
         public bool IsSeeded;
         public int X{ get; protected set; }
         public int Y{ get; protected set; }
-
-        public void SeedThisTile()
-        {
-            IsSeeded = true;
-        }
     }
 
 }

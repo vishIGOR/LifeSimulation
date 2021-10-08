@@ -18,6 +18,7 @@ namespace LifeSimulation.MapClasses
         public List<Entity> DeadEntities { get; private set; }
         public List<Animal> Animals { get; private set; }
         public List<Plant> Plants { get; private set; }
+        public List<Fetus> Fetuses{ get; private set; }
         public Randomizer Randomizer{ get; private set; }
         public Brush[,] ColorsOfTiles { get; private set; }
         
@@ -32,6 +33,7 @@ namespace LifeSimulation.MapClasses
 
             Animals = new List<Animal>();
             Plants = new List<Plant>();
+            Fetuses = new List<Fetus>();
             
             Height = height;
             Width = width;

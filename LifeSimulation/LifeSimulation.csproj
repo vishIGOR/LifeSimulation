@@ -47,15 +47,21 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="AdditionalClasses\Randomizer.cs" />
-        <Compile Include="ControllerClasses\Controller.cs" />
         <Compile Include="EntityClasses\Animal.cs" />
+        <Compile Include="EntityClasses\AppleTree.cs" />
+        <Compile Include="EntityClasses\AppleTreeFetus.cs" />
         <Compile Include="EntityClasses\Entity.cs" />
+        <Compile Include="EntityClasses\Enumerations\GrowthStage.cs" />
+        <Compile Include="EntityClasses\Fetus.cs" />
         <Compile Include="EntityClasses\Grass.cs" />
         <Compile Include="EntityClasses\IBreedable.cs" />
         <Compile Include="EntityClasses\IFeedable.cs" />
+        <Compile Include="EntityClasses\IProductingFetuses.cs" />
         <Compile Include="EntityClasses\Plant.cs" />
         <Compile Include="EntityClasses\Sheep.cs" />
         <Compile Include="EntityClasses\Wolf.cs" />
+        <Compile Include="EntityClasses\WolfBerry.cs" />
+        <Compile Include="EntityClasses\WolfBerryFetus.cs" />
         <Compile Include="MainForm.cs">
           <SubType>Form</SubType>
         </Compile>
@@ -63,8 +69,6 @@
           <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
         <Compile Include="MapClasses\Map.cs" />
-        <Compile Include="ObserverClasses\Observer.cs" />
-        <Compile Include="PresenterClasses\DesktopPresenter.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="TileClasses\MountainTile.cs" />

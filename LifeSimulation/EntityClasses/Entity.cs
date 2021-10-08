@@ -14,8 +14,8 @@ namespace LifeSimulation.EntityClasses
         protected Map Map;
         
         public Brush Color { get; protected set; }
-        public virtual void ChooseAction(){}
-        protected virtual void Die(){}
+        public abstract void ChooseAction();
+        protected abstract void Die();
 
         public void DamageIt(int damage)
         {

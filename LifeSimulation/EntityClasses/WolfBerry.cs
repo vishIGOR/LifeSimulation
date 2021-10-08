@@ -6,33 +6,46 @@ using LifeSimulation.TileClasses;
 
 namespace LifeSimulation.EntityClasses
 {
-    public class Grass:Plant
+    public class WolfBerry:Plant,IProductingFetuses
     {
-        public Grass(Tile tile, Map map)
+        private int ReadyToFetus;
+        private int FetusCounter;
+
+        public WolfBerry(Tile tile, Map map)
         {
             Tile = tile;
             Map = map;
             Randomizer = Map.Randomizer;
-            
+
             Tile.IsSeeded = true;
-            
+
             HitPoints = 10;
             MaxHitPoints = 10;
-            
-            ReadyToSeed = 15;
+
+            ReadyToSeed = 20;
             SeedCounter = 0;
-            
-            Color = Brushes.LightGreen;
-            
-            Toxicity = false;
-            ToxicityValue = 0;
+
+            Color = Brushes.Teal;
+
+            Toxicity = true;
+            ToxicityValue = 100;
 
             Eatable = false;
 
             GrowthStage = GrowthStage.Seed;
 
             Age = 0;
-            MaxAge = 60;
+            MaxAge = 100;
+
+            ReadyToFetus = 20;
+            FetusCounter = 0;
+        }
+
+        public void CreateFetuses()
+        {
+            Fetus newFetus = new AppleTreeFetus(Tile, Map);
+            Map.Fetuses.Add(newFetus);
+            Map.NewEntities.Add(newFetus);
         }
 
         protected override void ChangeGrowthStage(GrowthStage newStage)
@@ -40,13 +53,17 @@ namespace LifeSimulation.EntityClasses
             switch (newStage)
             {
                 case GrowthStage.Sprout:
+                    HitPoints = 20;
+                    MaxHitPoints = 20;
                     Eatable = true;
                     break;
                 case GrowthStage.Grown:
-                    
+                    HitPoints = 80;
+                    MaxHitPoints = 80;
                     break;
                 case GrowthStage.Elder:
-                    
+                    HitPoints = 20;
+                    MaxHitPoints = 20;
                     break;
             }
         }
@@ -60,7 +77,7 @@ namespace LifeSimulation.EntityClasses
         public override void ChooseAction()
         {
             ++Age;
-            if (HitPoints<= 0)
+            if (HitPoints <= 0)
             {
                 Die();
                 return;
@@ -69,36 +86,46 @@ namespace LifeSimulation.EntityClasses
             switch (GrowthStage)
             {
                 case GrowthStage.Seed:
-                    if (Age == 5)
+                    if (Age == 10)
                     {
                         ChangeGrowthStage(GrowthStage.Sprout);
                     }
+
                     break;
                 case GrowthStage.Sprout:
-                    if (Age == 15)
+                    if (Age == 25)
                     {
                         ChangeGrowthStage(GrowthStage.Grown);
                     }
+
                     break;
                 case GrowthStage.Grown:
-                    if (Age == 50)
+                    if (Age == 105)
                     {
                         ChangeGrowthStage(GrowthStage.Elder);
                     }
+
                     if (++SeedCounter == ReadyToSeed)
                     {
                         CreateSeeds();
                         SeedCounter = 0;
                     }
+
+                    if (++FetusCounter == ReadyToSeed)
+                    {
+                        CreateFetuses();
+                        FetusCounter = 0;
+                    }
+
                     break;
                 case GrowthStage.Elder:
-                    if (Age==MaxAge )
+                    if (Age == MaxAge)
                     {
                         Die();
                     }
+
                     break;
             }
-            
         }
 
         protected override void CreateSeeds()
@@ -129,7 +156,6 @@ namespace LifeSimulation.EntityClasses
                 Map.Plants.Add(newPlant);
                 Map.NewEntities.Add(newPlant);
             }
-            
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using LifeSimulation.MapClasses;
 
 namespace LifeSimulation.EntityClasses
 {
