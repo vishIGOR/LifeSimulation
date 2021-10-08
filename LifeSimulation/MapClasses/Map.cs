@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using LifeSimulation.AdditionalClasses;
 using LifeSimulation.EntityClasses;
+using LifeSimulation.Enumerations;
 using LifeSimulation.TileClasses;
 
 
@@ -79,9 +80,9 @@ namespace LifeSimulation.MapClasses
         Tile CreateNewTile(int x, int y)
         {
             int maxNumber = 10;
-            int GetRandomInt = Randomizer.GetRandomInt(1, maxNumber);
+            int randomInt = Randomizer.GetRandomInt(1, maxNumber);
 
-            if (GetRandomInt < 1)
+            if (randomInt < 1)
             {
                 return new MountainTail(x, y);
             }
@@ -91,10 +92,21 @@ namespace LifeSimulation.MapClasses
 
         Plant CreateNewPlant(Tile tile)
         {
-            int maxNumber = 10;
-            int GetRandomInt = Randomizer.GetRandomInt(1, maxNumber);
+            int maxNumber = 100;
+            int randomInt = Randomizer.GetRandomInt(1, maxNumber);
 
-            return new Grass(tile, this);
+            if (randomInt <= 40)
+            {
+                return new AppleTree(tile,this,GrowthStage.Grown);
+            }
+            
+            if (randomInt <= 55)
+            {
+                return new WolfBerry(tile,this,GrowthStage.Grown);
+            }
+            return new Grass(tile, this,GrowthStage.Grown);
+            
+            // return new WolfBerry(tile,this,GrowthStage.Grown);
         }
 
         void CreateRandomAnimals(int numberOfAnimals)
@@ -118,13 +130,15 @@ namespace LifeSimulation.MapClasses
         Animal CreateNewAnimal(Tile tile)
         {
             int maxNumber = 10;
-            int GetRandomInt = Randomizer.GetRandomInt(1, maxNumber);
-            if (GetRandomInt < 5)
+            int randomInt = Randomizer.GetRandomInt(1, maxNumber);
+            if (randomInt <= 6)
             {
                 return new Sheep(tile, this);
             }
-
+            
             return new Wolf(tile, this);
+            
+            // return new Sheep(tile, this);
         }
 
 

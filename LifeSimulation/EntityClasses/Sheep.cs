@@ -78,18 +78,35 @@ namespace LifeSimulation.EntityClasses
             double maxDistance = 10;
             Entity nearestFood = null;
 
-            foreach (var animal in Map.Plants)
+            foreach (var food in Map.Fetuses)
             {
-                if (animal is Grass)
+                if (food.Eatable)
                 {
-                    currentDistance = CalculateDistance(animal);
-                    if (minDistance < currentDistance && currentDistance < maxDistance)
+                    currentDistance = CalculateDistance(food);
+                    if (minDistance > currentDistance && currentDistance < maxDistance)
                     {
                         minDistance = currentDistance;
-                        nearestFood = animal;
+                        nearestFood = food;
                     }
                 }
             }
+            
+            if (nearestFood == null)
+            {
+                foreach (var food in Map.Plants)
+                {
+                    if (food.Eatable)
+                    {
+                        currentDistance = CalculateDistance(food);
+                        if (minDistance > currentDistance && currentDistance < maxDistance)
+                        {
+                            minDistance = currentDistance;
+                            nearestFood = food;
+                        }
+                    }
+                }
+            }
+            
 
             if (nearestFood == null)
             {
@@ -106,11 +123,23 @@ namespace LifeSimulation.EntityClasses
                     MoveTo(nearestFood);
                 }
             }
+            
+            
         }
 
         public void StartEat(Entity target)
         {
-            target.DamageIt(30);
+            target.DamageIt(40);
+            if (target is Fetus)
+            {
+                Fetus eatenFetus = target as Fetus;
+                if (eatenFetus.Toxicity)
+                {
+                    DamageIt(eatenFetus.ToxicityValue);
+                    return;
+                }
+            }
+            
             if (HitPoints < MaxHitPoints - 5)
             {
                 HitPoints += 5;

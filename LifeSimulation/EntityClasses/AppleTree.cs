@@ -41,6 +41,53 @@ namespace LifeSimulation.EntityClasses
             FetusCounter = 0;
         }
 
+        public AppleTree(Tile tile, Map map, GrowthStage growthStage)
+        {
+            Tile = tile;
+            Map = map;
+            Randomizer = Map.Randomizer;
+
+            Tile.IsSeeded = true;
+
+            HitPoints = 10;
+            MaxHitPoints = 10;
+
+            ReadyToSeed = 25;
+            SeedCounter = 0;
+
+            Color = Brushes.DarkGreen;
+
+            Toxicity = false;
+            ToxicityValue = 0;
+
+            Eatable = false;
+
+            GrowthStage = GrowthStage.Seed;
+
+            Age = 0;
+            MaxAge = 120;
+
+            ReadyToFetus = 35;
+            FetusCounter = 0;
+            
+            ChangeGrowthStage(growthStage);
+            
+            switch (growthStage)
+            {
+                case GrowthStage.Sprout:
+                    Age = 10;
+                    break;
+                case GrowthStage.Grown:
+                    Age = 25;
+                    break;
+                case GrowthStage.Elder:
+                    Age = 105;
+                    break;
+            }
+            
+            SeedCounter = Randomizer.GetRandomInt(0, ReadyToSeed-5);
+            FetusCounter = Randomizer.GetRandomInt(0, ReadyToFetus-5);
+        }
         public void CreateFetuses()
         {
             Fetus newFetus = new AppleTreeFetus(Tile, Map);
@@ -50,6 +97,7 @@ namespace LifeSimulation.EntityClasses
 
         protected override void ChangeGrowthStage(GrowthStage newStage)
         {
+            GrowthStage = newStage;
             switch (newStage)
             {
                 case GrowthStage.Sprout:
@@ -60,16 +108,19 @@ namespace LifeSimulation.EntityClasses
                 case GrowthStage.Grown:
                     HitPoints = 80;
                     MaxHitPoints = 80;
+                    Eatable = true;
                     break;
                 case GrowthStage.Elder:
                     HitPoints = 20;
                     MaxHitPoints = 20;
+                    Eatable = true;
                     break;
             }
         }
 
         protected override void Die()
         {
+            Tile.IsSeeded = false;
             Map.Plants.Remove(this);
             Map.DeadEntities.Add(this);
         }
@@ -100,18 +151,20 @@ namespace LifeSimulation.EntityClasses
 
                     break;
                 case GrowthStage.Grown:
+                    ++SeedCounter;
+                    ++FetusCounter;
                     if (Age == 105)
                     {
                         ChangeGrowthStage(GrowthStage.Elder);
                     }
 
-                    if (++SeedCounter == ReadyToSeed)
+                    if (SeedCounter == ReadyToSeed)
                     {
                         CreateSeeds();
                         SeedCounter = 0;
                     }
 
-                    if (++FetusCounter == ReadyToSeed)
+                    if (FetusCounter == ReadyToFetus)
                     {
                         CreateFetuses();
                         FetusCounter = 0;
@@ -158,7 +211,7 @@ namespace LifeSimulation.EntityClasses
                 for (int i = 0; i < 2; ++i)
                 {
                     randomInt = Randomizer.GetRandomInt(0, counter - 1);
-                    Plant newPlant = new Grass(possibleTiles[randomInt], Map);
+                    Plant newPlant = new AppleTree(possibleTiles[randomInt], Map);
                     Map.Plants.Add(newPlant);
                     Map.NewEntities.Add(newPlant);
 
@@ -171,7 +224,7 @@ namespace LifeSimulation.EntityClasses
                 if (counter == 1)
                 {
                     randomInt = Randomizer.GetRandomInt(0, counter - 1);
-                    Plant newPlant = new Grass(possibleTiles[randomInt], Map);
+                    Plant newPlant = new AppleTree(possibleTiles[randomInt], Map);
                     Map.Plants.Add(newPlant);
                     Map.NewEntities.Add(newPlant);
                 }

@@ -62,7 +62,7 @@ namespace LifeSimulation
             numericPlantsPercent.Enabled = false;
             numericAnimalsNumber.Enabled = false;
             
-            Resolution = 6;
+            Resolution = 8;
             ViewHeight = (int)numericHeight.Value;
             ViewWidth = (int)numericWidth.Value;
             ViewPercentOfPlants = (int)numericPlantsPercent.Value;
@@ -97,6 +97,7 @@ namespace LifeSimulation
         {
             DrawLandscape();
             DrawPlants();
+            DrawFetuses();
             DrawAnimals();
 
             pictureMap.Refresh();
@@ -114,6 +115,14 @@ namespace LifeSimulation
             }
         }
 
+        void DrawFetuses()
+        {
+            foreach (var fetus in CurrentMap.Fetuses)
+            {
+                MapView.FillEllipse(fetus.Color, fetus.Tile.X * Resolution+Resolution/4, fetus.Tile.Y * Resolution+Resolution/4, Resolution/2, Resolution/2);
+            }
+        }
+        
         void DrawPlants()
         {
             foreach (var plant in CurrentMap.Plants)

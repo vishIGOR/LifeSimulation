@@ -8,6 +8,8 @@
 
         protected int Age;
         protected int MaxAge;
+        protected int ReadyToFall;
+        protected int ReadyToSeed;
         
         public bool Eatable{ get; protected set; }
 

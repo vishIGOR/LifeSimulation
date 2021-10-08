@@ -83,7 +83,7 @@ namespace LifeSimulation.EntityClasses
                 if (animal is Sheep)
                 {
                     currentDistance = CalculateDistance(animal);
-                    if (minDistance < currentDistance && currentDistance<maxDistance)
+                    if (minDistance > currentDistance && currentDistance<maxDistance)
                     {
                         minDistance = currentDistance;
                         nearestFood = animal;

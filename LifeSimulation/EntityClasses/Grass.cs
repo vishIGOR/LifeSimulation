@@ -35,18 +35,62 @@ namespace LifeSimulation.EntityClasses
             MaxAge = 60;
         }
 
+        public Grass(Tile tile, Map map, GrowthStage growthStage)
+        {
+            Tile = tile;
+            Map = map;
+            Randomizer = Map.Randomizer;
+            
+            Tile.IsSeeded = true;
+            
+            HitPoints = 10;
+            MaxHitPoints = 10;
+            
+            ReadyToSeed = 18;
+            SeedCounter = 0;
+            
+            Color = Brushes.LightGreen;
+            
+            Toxicity = false;
+            ToxicityValue = 0;
+
+            Eatable = false;
+
+            GrowthStage = GrowthStage.Seed;
+
+            Age = 0;
+            MaxAge = 60;
+            
+            ChangeGrowthStage(growthStage);
+            
+            switch (growthStage)
+            {
+                case GrowthStage.Sprout:
+                    Age = 5;
+                    break;
+                case GrowthStage.Grown:
+                    Age = 15;
+                    break;
+                case GrowthStage.Elder:
+                    Age = 50;
+                    break;
+            }
+            
+            SeedCounter = Randomizer.GetRandomInt(0, ReadyToSeed-5);
+        }
         protected override void ChangeGrowthStage(GrowthStage newStage)
         {
+            GrowthStage = newStage;
             switch (newStage)
             {
                 case GrowthStage.Sprout:
                     Eatable = true;
                     break;
                 case GrowthStage.Grown:
-                    
+                    Eatable = true;
                     break;
                 case GrowthStage.Elder:
-                    
+                    Eatable = true;
                     break;
             }
         }
@@ -81,11 +125,12 @@ namespace LifeSimulation.EntityClasses
                     }
                     break;
                 case GrowthStage.Grown:
+                    ++SeedCounter;
                     if (Age == 50)
                     {
                         ChangeGrowthStage(GrowthStage.Elder);
                     }
-                    if (++SeedCounter == ReadyToSeed)
+                    if (SeedCounter == ReadyToSeed)
                     {
                         CreateSeeds();
                         SeedCounter = 0;
