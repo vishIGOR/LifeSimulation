@@ -209,7 +209,7 @@ namespace LifeSimulation
             // 
             // timer1
             // 
-            this.timer1.Interval = 2600D;
+            this.timer1.Interval = 3000D;
             this.timer1.SynchronizingObject = this;
             this.timer1.Elapsed += new System.Timers.ElapsedEventHandler(this.timer1_Elapsed);
             // 

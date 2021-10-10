@@ -100,7 +100,7 @@ namespace LifeSimulation.MapClasses
                 return new AppleTree(tile,this,GrowthStage.Grown);
             }
             
-            if (randomInt <= 55)
+            if (randomInt <= 50)
             {
                 return new WolfBerry(tile,this,GrowthStage.Grown);
             }
