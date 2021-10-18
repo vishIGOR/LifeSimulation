@@ -62,7 +62,7 @@ namespace LifeSimulation
             numericPlantsPercent.Enabled = false;
             numericAnimalsNumber.Enabled = false;
             
-            Resolution = 4;
+            Resolution = 8;
             ViewHeight = (int)numericHeight.Value;
             ViewWidth = (int)numericWidth.Value;
             ViewPercentOfPlants = (int)numericPlantsPercent.Value;

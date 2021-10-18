@@ -16,5 +16,16 @@ namespace LifeSimulation.AdditionalClasses
             int temporaryInt = RandomVar.Next(min, max + 1);
             return temporaryInt;
         }
+
+        public bool GetRandomBool()
+        {
+            int temporaryInt = RandomVar.Next(0, 2);
+            if (temporaryInt == 0)
+            {
+                return true;
+            }
+            return false;
+            
+        }
     }
 }

@@ -47,21 +47,24 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="AdditionalClasses\Randomizer.cs" />
-        <Compile Include="EntityClasses\Animal.cs" />
-        <Compile Include="EntityClasses\AppleTree.cs" />
-        <Compile Include="EntityClasses\AppleTreeFetus.cs" />
+        <Compile Include="EntityClasses\Animal\Animal.cs" />
+        <Compile Include="EntityClasses\Animal\Carnivore\Carnivore.cs" />
+        <Compile Include="EntityClasses\Animal\Carnivore\Scavenger\Scavenger.cs" />
+        <Compile Include="EntityClasses\Animal\Carnivore\Wolf.cs" />
+        <Compile Include="EntityClasses\Animal\Herbivore\Herbivore.cs" />
+        <Compile Include="EntityClasses\Animal\Herbivore\Sheep.cs" />
+        <Compile Include="EntityClasses\Animal\Omnivore\Omnivore.cs" />
+        <Compile Include="EntityClasses\Animal\SupportClasses\Mover.cs" />
         <Compile Include="EntityClasses\Entity.cs" />
-        <Compile Include="EntityClasses\Enumerations\GrowthStage.cs" />
-        <Compile Include="EntityClasses\Fetus.cs" />
-        <Compile Include="EntityClasses\Grass.cs" />
-        <Compile Include="EntityClasses\IBreedable.cs" />
-        <Compile Include="EntityClasses\IFeedable.cs" />
-        <Compile Include="EntityClasses\IProductingFetuses.cs" />
-        <Compile Include="EntityClasses\Plant.cs" />
-        <Compile Include="EntityClasses\Sheep.cs" />
-        <Compile Include="EntityClasses\Wolf.cs" />
-        <Compile Include="EntityClasses\WolfBerry.cs" />
-        <Compile Include="EntityClasses\WolfBerryFetus.cs" />
+        <Compile Include="EntityClasses\Fetus\AppleTreeFetus.cs" />
+        <Compile Include="EntityClasses\Fetus\Fetus.cs" />
+        <Compile Include="EntityClasses\Fetus\WolfBerryFetus.cs" />
+        <Compile Include="EntityClasses\Enumerators\GrowthStage.cs" />
+        <Compile Include="EntityClasses\Plant\AppleTree.cs" />
+        <Compile Include="EntityClasses\Plant\Grass.cs" />
+        <Compile Include="EntityClasses\Plant\IProductingFetuses.cs" />
+        <Compile Include="EntityClasses\Plant\Plant.cs" />
+        <Compile Include="EntityClasses\Plant\WolfBerry.cs" />
         <Compile Include="MainForm.cs">
           <SubType>Form</SubType>
         </Compile>
