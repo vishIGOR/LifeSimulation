@@ -22,8 +22,8 @@ namespace LifeSimulation.EntityClasses
             
             SetStandartValues(tile,map);
             Mover = new Mover(2, map);
-            Mover.CurrentMovingWay = 3;
-            Mover.CurrentWalkingWay = 3;
+            Mover.CurrentMovingWay = 1;
+            Mover.CurrentWalkingWay = 2;
         }
 
         protected override void CreateChild()

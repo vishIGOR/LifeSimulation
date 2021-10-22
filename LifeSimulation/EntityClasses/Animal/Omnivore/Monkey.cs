@@ -1,32 +1,31 @@
-﻿using System;
-using System.Drawing;
-using LifeSimulation.AdditionalClasses;
+﻿using System.Drawing;
 using LifeSimulation.EntityClasses.SupportClasses;
 using LifeSimulation.MapClasses;
 using LifeSimulation.TileClasses;
 
-namespace LifeSimulation.EntityClasses
+namespace LifeSimulation.EntityClasses.Omnivore
 {
-    public class Sheep : Herbivore
+    public class Monkey:Omnivore
     {
-        public Sheep(Tile tile, Map map)
+        public Monkey(Tile tile, Map map)
         {
-            MaxHitPoints = 10;
-            MaxHungerPoints = 15;
-            HungerBorder = 4;
-            MaxMatingCounter = 20;
-            MaxAge = 50;
-            Color = Brushes.White;
-            DamageForce = 40;
+            MaxHitPoints = 30;
+            MaxHungerPoints = 20;
+            HungerBorder = 6;
+            DamageForce = 30;
+            MaxMatingCounter = 15;
+            MaxAge = 45;
+            Color = Brushes.Chocolate;
             
-            SetStandartValues(tile, map);
-            Mover = new Mover(3, map);
-            Mover.CurrentMovingWay = 2;
+            SetStandartValues(tile,map);
+            Mover = new Mover(2, map);
+            Mover.CurrentMovingWay = 1;
             Mover.CurrentWalkingWay = 2;
         }
+
         protected override void CreateChild()
         {
-            Sheep child = new Sheep(Tile, Map);
+            Monkey child = new Monkey(Tile, Map);
             Map.NewEntities.Add(child);
             Map.Animals.Add(child);
         }
@@ -56,15 +55,12 @@ namespace LifeSimulation.EntityClasses
                 return;
             }
 
-            if (MatingCounter + 5 >= MaxMatingCounter)
+            if (Age % 5 == 0)
             {
-                Mover.CurrentWalkingWay = 3;
+                Mover.CurrentMovingWay = Randomizer.GetRandomInt(1, 3);
+                Mover.CurrentWalkingWay = Randomizer.GetRandomInt(1, 3);
             }
-            else
-            {
-                Mover.CurrentWalkingWay = 2;
-            }
-            
+
             --MatingCounter;
             if (MatingCounter <= 0 && ReadyToMate==false)
             {
@@ -89,5 +85,6 @@ namespace LifeSimulation.EntityClasses
             
             Tile = Mover.Walk(Tile);
         }
+
     }
 }

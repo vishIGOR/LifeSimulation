@@ -3,29 +3,29 @@ using LifeSimulation.EntityClasses.SupportClasses;
 using LifeSimulation.MapClasses;
 using LifeSimulation.TileClasses;
 
-namespace LifeSimulation.EntityClasses.Scavenger
+namespace LifeSimulation.EntityClasses
 {
-    public class Condor:Scavenger
+    public class Mouse:Herbivore
     {
-        public Condor(Tile tile, Map map)
+        public Mouse(Tile tile, Map map)
         {
-            MaxHitPoints = 20;
-            MaxHungerPoints = 25;
-            HungerBorder = 10;
-            DamageForce = 25;
-            MaxMatingCounter = 13;
-            MaxAge = 30;
-            Color = Brushes.Tan;
+            MaxHitPoints = 10;
+            MaxHungerPoints = 11;
+            HungerBorder = 3;
+            DamageForce = 15;
+            MaxMatingCounter = 7;
+            MaxAge = 20;
+            Color = Brushes.DarkGray;
             
             SetStandartValues(tile,map);
             Mover = new Mover(2, map);
             Mover.CurrentMovingWay = 2;
-            Mover.CurrentWalkingWay = 1;
+            Mover.CurrentWalkingWay = 2;
         }
 
         protected override void CreateChild()
         {
-            Condor child = new Condor(Tile, Map);
+            Mouse child = new Mouse(Tile, Map);
             Map.NewEntities.Add(child);
             Map.Animals.Add(child);
         }

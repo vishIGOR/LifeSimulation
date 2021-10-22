@@ -1,33 +1,31 @@
 ﻿using System.Drawing;
 using LifeSimulation.EntityClasses.SupportClasses;
-using LifeSimulation.Enumerations;
 using LifeSimulation.MapClasses;
 using LifeSimulation.TileClasses;
 
 namespace LifeSimulation.EntityClasses.Omnivore
 {
-    public class Bear:Omnivore
+    public class Pig:Omnivore
     {
-        public Bear(Tile tile, Map map)
+        public Pig(Tile tile, Map map)
         {
-            MaxHitPoints = 60;
-            MaxHungerPoints = 25;
-            HungerBorder = 30;
-            DamageForce = 60;
-            MaxMatingCounter = 20;
-            MaxAge = 60;
-            Color = Brushes.Brown;
+            MaxHitPoints = 32;
+            MaxHungerPoints = 16;
+            HungerBorder = 6;
+            DamageForce = 30;
+            MaxMatingCounter = 12;
+            MaxAge = 26;
+            Color = Brushes.Pink;
             
             SetStandartValues(tile,map);
-            Mover = new Mover(3, map);
+            Mover = new Mover(2, map);
             Mover.CurrentMovingWay = 3;
-            Mover.CurrentWalkingWay = 1;
-
+            Mover.CurrentWalkingWay = 3;
         }
-        
+
         protected override void CreateChild()
         {
-            Bear child = new Bear(Tile, Map);
+            Pig child = new Pig(Tile, Map);
             Map.NewEntities.Add(child);
             Map.Animals.Add(child);
         }

@@ -55,10 +55,14 @@
         <Compile Include="EntityClasses\Animal\Carnivore\Tiger.cs" />
         <Compile Include="EntityClasses\Animal\Carnivore\Wolf.cs" />
         <Compile Include="EntityClasses\Animal\DeadBodyClasses\DeadBody.cs" />
+        <Compile Include="EntityClasses\Animal\Herbivore\Frog.cs" />
         <Compile Include="EntityClasses\Animal\Herbivore\Herbivore.cs" />
+        <Compile Include="EntityClasses\Animal\Herbivore\Mouse.cs" />
         <Compile Include="EntityClasses\Animal\Herbivore\Sheep.cs" />
         <Compile Include="EntityClasses\Animal\Omnivore\Bear.cs" />
+        <Compile Include="EntityClasses\Animal\Omnivore\Monkey.cs" />
         <Compile Include="EntityClasses\Animal\Omnivore\Omnivore.cs" />
+        <Compile Include="EntityClasses\Animal\Omnivore\Pig.cs" />
         <Compile Include="EntityClasses\Animal\SupportClasses\Mover.cs" />
         <Compile Include="EntityClasses\Entity.cs" />
         <Compile Include="EntityClasses\Enumerators\AnimalStage.cs" />

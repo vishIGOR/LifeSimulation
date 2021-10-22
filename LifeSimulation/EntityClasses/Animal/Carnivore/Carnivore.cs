@@ -27,16 +27,6 @@ namespace LifeSimulation.EntityClasses
                 }
             }
 
-            foreach (var dead in Map.DeadBodies)
-            {
-                currentDistance = CalculateDistance(dead);
-                if (minDistance > currentDistance && currentDistance < maxDistance)
-                {
-                    minDistance = currentDistance;
-                    nearestFood = dead;
-                }
-            }
-
             if (nearestFood == null)
             {
                 Tile = Mover.Walk(Tile);

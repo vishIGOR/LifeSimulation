@@ -161,6 +161,27 @@ namespace LifeSimulation.MapClasses
             {
                 return new Condor(tile, this);
             }
+            
+            if (randomInt <= 60)
+            {
+                return new Pig(tile, this);
+            }
+            
+            if (randomInt <= 70)
+            {
+                return new Monkey(tile, this);
+            }
+            
+            if (randomInt <= 80)
+            {
+                return new Frog(tile, this);
+            }
+            
+            if (randomInt <= 90)
+            {
+                return new Mouse(tile, this);
+            }
+            
             return new Wolf(tile, this);
             
             // return new Sheep(tile, this);

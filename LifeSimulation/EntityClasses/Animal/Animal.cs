@@ -17,8 +17,8 @@ namespace LifeSimulation.EntityClasses
         public bool ReadyToMate{ get; protected set; }
         
         protected int MatingCounter;
-        protected int MaxMatingCounter; 
-        protected Animal MatingTarget;
+        protected int MaxMatingCounter;
+        public Animal MatingTarget;
         
         protected int DamageForce;
         

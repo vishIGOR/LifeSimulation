@@ -11,7 +11,7 @@ namespace LifeSimulation.TileClasses
             X = x;
             Y = y;
             IsSeeded = false;
-            TileColor = Brushes.Sienna;
+            TileColor = Brushes.Peru;
         }
        
     }
