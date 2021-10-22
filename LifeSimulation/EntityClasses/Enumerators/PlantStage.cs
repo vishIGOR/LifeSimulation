@@ -1,6 +1,6 @@
 ﻿namespace LifeSimulation.Enumerations
 {
-    public enum GrowthStage
+    public enum PlantStage
     {
         Seed = 1,
         Sprout = 2,

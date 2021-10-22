@@ -97,6 +97,7 @@ namespace LifeSimulation
         {
             DrawLandscape();
             DrawPlants();
+            DrawDeadBodies();
             DrawFetuses();
             DrawAnimals();
 
@@ -104,6 +105,14 @@ namespace LifeSimulation
             TickCounter.Text = Convert.ToString(Convert.ToInt32(TickCounter.Text)+1);
         }
 
+        void DrawDeadBodies()
+        {
+            foreach (var dead in CurrentMap.DeadBodies)
+            {
+                MapView.FillRectangle(dead.Color, dead.Tile.X * Resolution, dead.Tile.Y * Resolution, Resolution, Resolution);
+            }
+        }
+        
         void DrawLandscape()
         {
             for (int i = 0; i < ViewWidth; ++i)

@@ -2,7 +2,7 @@
 {
     public abstract class Herbivore:Animal
     {
-        public void LookForFood()
+        protected override void LookForFood()
         {
             double minDistance = 10000000000;
             double currentDistance;

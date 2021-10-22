@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using LifeSimulation.AdditionalClasses;
 using LifeSimulation.EntityClasses;
+using LifeSimulation.EntityClasses.DeadBodyClasses;
+using LifeSimulation.EntityClasses.Omnivore;
+using LifeSimulation.EntityClasses.Scavenger;
 using LifeSimulation.Enumerations;
 using LifeSimulation.TileClasses;
 
@@ -20,6 +23,7 @@ namespace LifeSimulation.MapClasses
         public List<Animal> Animals { get; private set; }
         public List<Plant> Plants { get; private set; }
         public List<Fetus> Fetuses{ get; private set; }
+        public List<DeadBody> DeadBodies{ get; private set; }
         public Randomizer Randomizer{ get; private set; }
         public Brush[,] ColorsOfTiles { get; private set; }
         
@@ -35,6 +39,7 @@ namespace LifeSimulation.MapClasses
             Animals = new List<Animal>();
             Plants = new List<Plant>();
             Fetuses = new List<Fetus>();
+            DeadBodies = new List<DeadBody>();
             
             Height = height;
             Width = width;
@@ -97,16 +102,17 @@ namespace LifeSimulation.MapClasses
 
             if (randomInt <= 40)
             {
-                return new AppleTree(tile,this,GrowthStage.Grown);
+                return new AppleTree(tile,this,PlantStage.Grown);
             }
             
             if (randomInt <= 50)
             {
-                return new WolfBerry(tile,this,GrowthStage.Grown);
+                return new WolfBerry(tile,this,PlantStage.Grown);
             }
-            return new Grass(tile, this,GrowthStage.Grown);
+            return new Grass(tile, this,PlantStage.Grown);
             
-            // return new WolfBerry(tile,this,GrowthStage.Grown);
+            // return new WolfBerry(tile,this,PlantStage.Grown);
+            // return new Grass(tile, this,PlantStage.Grown);
         }
 
         void CreateRandomAnimals(int numberOfAnimals)
@@ -129,13 +135,32 @@ namespace LifeSimulation.MapClasses
 
         Animal CreateNewAnimal(Tile tile)
         {
-            int maxNumber = 10;
+            int maxNumber = 100;
             int randomInt = Randomizer.GetRandomInt(1, maxNumber);
-            if (randomInt <= 6)
+            if (randomInt <= 10)
             {
                 return new Sheep(tile, this);
             }
             
+            if (randomInt <= 20)
+            {
+                return new Bear(tile, this);
+            }
+            
+            if (randomInt <= 30)
+            {
+                return new Tiger(tile, this);
+            }
+            
+            if (randomInt <= 40)
+            {
+                return new Panther(tile, this);
+            }
+            
+            if (randomInt <= 50)
+            {
+                return new Condor(tile, this);
+            }
             return new Wolf(tile, this);
             
             // return new Sheep(tile, this);

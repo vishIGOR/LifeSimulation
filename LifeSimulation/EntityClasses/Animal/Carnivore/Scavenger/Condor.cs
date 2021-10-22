@@ -1,24 +1,21 @@
-﻿using System;
-using System.Drawing;
-using LifeSimulation.AdditionalClasses;
+﻿using System.Drawing;
 using LifeSimulation.EntityClasses.SupportClasses;
 using LifeSimulation.MapClasses;
 using LifeSimulation.TileClasses;
 
-namespace LifeSimulation.EntityClasses
+namespace LifeSimulation.EntityClasses.Scavenger
 {
-    public class Wolf : Carnivore
+    public class Condor:Scavenger
     {
-
-        public Wolf(Tile tile, Map map)
+        public Condor(Tile tile, Map map)
         {
-            MaxHitPoints = 25;
-            MaxHungerPoints = 20;
-            HungerBorder = 6;
-            DamageForce = 30;
-            MaxMatingCounter = 15;
-            MaxAge = 40;
-            Color = Brushes.DimGray;
+            MaxHitPoints = 20;
+            MaxHungerPoints = 25;
+            HungerBorder = 10;
+            DamageForce = 25;
+            MaxMatingCounter = 13;
+            MaxAge = 30;
+            Color = Brushes.Tan;
             
             SetStandartValues(tile,map);
             Mover = new Mover(2, map);
@@ -28,7 +25,7 @@ namespace LifeSimulation.EntityClasses
 
         protected override void CreateChild()
         {
-            Wolf child = new Wolf(Tile, Map);
+            Condor child = new Condor(Tile, Map);
             Map.NewEntities.Add(child);
             Map.Animals.Add(child);
         }

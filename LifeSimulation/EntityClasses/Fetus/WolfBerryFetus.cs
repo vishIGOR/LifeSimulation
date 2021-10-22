@@ -50,7 +50,7 @@ namespace LifeSimulation.EntityClasses
         {
             if (!Tile.IsSeeded)
             {
-                Plant newPlant = new WolfBerry(Tile, Map,GrowthStage.Seed);
+                Plant newPlant = new WolfBerry(Tile, Map,PlantStage.Seed);
                 Map.Plants.Add(newPlant);
                 Map.NewEntities.Add(newPlant);
                 

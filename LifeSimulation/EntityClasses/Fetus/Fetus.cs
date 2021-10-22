@@ -12,10 +12,8 @@ namespace LifeSimulation.EntityClasses
         protected int ReadyToSeed;
 
         protected int FallingRadius;
-        
-        public bool Eatable{ get; protected set; }
-
         protected abstract void CreateSeed();
+        
         protected override void Die()
         {
             Map.Fetuses.Remove(this);
@@ -50,9 +48,7 @@ namespace LifeSimulation.EntityClasses
         
         protected override void SetStandartValues(Tile tile, Map map)
         {
-            Tile = tile;
-            Map = map;
-            Randomizer = Map.Randomizer;
+            base.SetStandartValues(tile, map);
 
             Age = 0;
             

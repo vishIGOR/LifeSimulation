@@ -13,48 +13,22 @@ namespace LifeSimulation.EntityClasses
         {
             MaxHitPoints = 10;
             MaxHungerPoints = 15;
+            HungerBorder = 4;
             MaxMatingCounter = 20;
             MaxAge = 50;
             Color = Brushes.White;
+            DamageForce = 40;
             
             SetStandartValues(tile, map);
             Mover = new Mover(3, map);
             Mover.CurrentMovingWay = 3;
             Mover.CurrentWalkingWay = 3;
         }
-
-        public override void ChooseAction()
+        protected override void CreateChild()
         {
-            ++Age;
-            if (HungerPoints == 0)
-            {
-                --HitPoints;
-            }
-            else
-            {
-                --HungerPoints;
-            }
-
-            if (HitPoints <= 0)
-            {
-                Die();
-                return;
-            }
-
-            if (Age > MaxAge)
-            {
-                Die();
-                return;
-            }
-
-            if (HungerPoints < 4)
-            {
-                LookForFood();
-                return;
-            }
-
-            Tile = Mover.Walk(Tile);
+            Sheep child = new Sheep(Tile, Map);
+            Map.NewEntities.Add(child);
+            Map.Animals.Add(child);
         }
-        
     }
 }

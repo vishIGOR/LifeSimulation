@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using LifeSimulation.AdditionalClasses;
 using LifeSimulation.MapClasses;
 using LifeSimulation.TileClasses;
@@ -331,7 +332,8 @@ namespace LifeSimulation.EntityClasses.SupportClasses
                     return CircleWalk(currentTile);
             }
 
-
+            // Debugger.Launch();
+            // Debugger.Log(1, "movingError", "ошибка выбора передвижения");
             return null;
         }
     }

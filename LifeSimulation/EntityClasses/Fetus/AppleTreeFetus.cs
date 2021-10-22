@@ -48,7 +48,7 @@ namespace LifeSimulation.EntityClasses
         {
             if (!Tile.IsSeeded)
             {
-                Plant newPlant = new AppleTree(Tile, Map,GrowthStage.Seed);
+                Plant newPlant = new AppleTree(Tile, Map,PlantStage.Seed);
                 Map.Plants.Add(newPlant);
                 Map.NewEntities.Add(newPlant);
                 

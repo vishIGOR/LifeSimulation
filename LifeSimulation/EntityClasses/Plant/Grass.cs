@@ -8,7 +8,7 @@ namespace LifeSimulation.EntityClasses
 {
     public class Grass:Plant
     {
-        public Grass(Tile tile, Map map, GrowthStage growthStage)
+        public Grass(Tile tile, Map map, PlantStage growthStage)
         {
             MaxHitPoints = 10;
             ReadyToSeed = 18;
@@ -19,35 +19,35 @@ namespace LifeSimulation.EntityClasses
             ToxicityValue = 0;
             
             SetStandartValues(tile,map);
-            ChangeGrowthStage(growthStage);
+            ChangePlantStage(growthStage);
             
             switch (growthStage)
             {
-                case GrowthStage.Sprout:
+                case PlantStage.Sprout:
                     Age = 5;
                     break;
-                case GrowthStage.Grown:
+                case PlantStage.Grown:
                     Age = 15;
                     break;
-                case GrowthStage.Elder:
+                case PlantStage.Elder:
                     Age = 50;
                     break;
             }
             
             SeedCounter = Randomizer.GetRandomInt(0, ReadyToSeed-5);
         }
-        protected override void ChangeGrowthStage(GrowthStage newStage)
+        protected override void ChangePlantStage(PlantStage newStage)
         {
-            GrowthStage = newStage;
+            PlantStage = newStage;
             switch (newStage)
             {
-                case GrowthStage.Sprout:
+                case PlantStage.Sprout:
                     Eatable = true;
                     break;
-                case GrowthStage.Grown:
+                case PlantStage.Grown:
                     Eatable = true;
                     break;
-                case GrowthStage.Elder:
+                case PlantStage.Elder:
                     Eatable = true;
                     break;
             }
@@ -62,25 +62,25 @@ namespace LifeSimulation.EntityClasses
                 return;
             }
 
-            switch (GrowthStage)
+            switch (PlantStage)
             {
-                case GrowthStage.Seed:
+                case PlantStage.Seed:
                     if (Age == 5)
                     {
-                        ChangeGrowthStage(GrowthStage.Sprout);
+                        ChangePlantStage(PlantStage.Sprout);
                     }
                     break;
-                case GrowthStage.Sprout:
+                case PlantStage.Sprout:
                     if (Age == 15)
                     {
-                        ChangeGrowthStage(GrowthStage.Grown);
+                        ChangePlantStage(PlantStage.Grown);
                     }
                     break;
-                case GrowthStage.Grown:
+                case PlantStage.Grown:
                     ++SeedCounter;
                     if (Age == 50)
                     {
-                        ChangeGrowthStage(GrowthStage.Elder);
+                        ChangePlantStage(PlantStage.Elder);
                     }
                     if (SeedCounter == ReadyToSeed)
                     {
@@ -88,7 +88,7 @@ namespace LifeSimulation.EntityClasses
                         SeedCounter = 0;
                     }
                     break;
-                case GrowthStage.Elder:
+                case PlantStage.Elder:
                     if (Age==MaxAge )
                     {
                         Die();
@@ -122,7 +122,7 @@ namespace LifeSimulation.EntityClasses
 
             if (counter >= 1)
             {
-                Plant newPlant = new Grass(possibleTiles[Randomizer.GetRandomInt(0, counter - 1)], Map,GrowthStage.Seed);
+                Plant newPlant = new Grass(possibleTiles[Randomizer.GetRandomInt(0, counter - 1)], Map,PlantStage.Seed);
                 Map.Plants.Add(newPlant);
                 Map.NewEntities.Add(newPlant);
             }

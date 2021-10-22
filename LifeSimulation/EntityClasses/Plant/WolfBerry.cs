@@ -11,7 +11,7 @@ namespace LifeSimulation.EntityClasses
         private int ReadyToFetus;
         private int FetusCounter;
 
-        public WolfBerry(Tile tile, Map map, GrowthStage growthStage)
+        public WolfBerry(Tile tile, Map map, PlantStage growthStage)
         {
             MaxHitPoints = 10;
             ReadyToSeed = 20;
@@ -23,17 +23,17 @@ namespace LifeSimulation.EntityClasses
             ToxicityCounter = 5;
 
             SetStandartValues(tile,map);
-            ChangeGrowthStage(growthStage);
+            ChangePlantStage(growthStage);
 
             switch (growthStage)
             {
-                case GrowthStage.Sprout:
+                case PlantStage.Sprout:
                     Age = 10;
                     break;
-                case GrowthStage.Grown:
+                case PlantStage.Grown:
                     Age = 25;
                     break;
-                case GrowthStage.Elder:
+                case PlantStage.Elder:
                     Age = 65;
                     break;
             }
@@ -49,22 +49,22 @@ namespace LifeSimulation.EntityClasses
             Map.NewEntities.Add(newFetus);
         }
 
-        protected override void ChangeGrowthStage(GrowthStage newStage)
+        protected override void ChangePlantStage(PlantStage newStage)
         {
-            GrowthStage = newStage;
+            PlantStage = newStage;
             switch (newStage)
             {
-                case GrowthStage.Sprout:
+                case PlantStage.Sprout:
                     HitPoints = 20;
                     MaxHitPoints = 20;
                     Eatable = true;
                     break;
-                case GrowthStage.Grown:
+                case PlantStage.Grown:
                     HitPoints = 80;
                     MaxHitPoints = 80;
                     Eatable = true;
                     break;
-                case GrowthStage.Elder:
+                case PlantStage.Elder:
                     HitPoints = 20;
                     MaxHitPoints = 20;
                     Eatable = true;
@@ -81,27 +81,27 @@ namespace LifeSimulation.EntityClasses
                 return;
             }
 
-            switch (GrowthStage)
+            switch (PlantStage)
             {
-                case GrowthStage.Seed:
+                case PlantStage.Seed:
                     if (Age == 10)
                     {
-                        ChangeGrowthStage(GrowthStage.Sprout);
+                        ChangePlantStage(PlantStage.Sprout);
                     }
                     break;
-                case GrowthStage.Sprout:
+                case PlantStage.Sprout:
                     if (Age == 25)
                     {
-                        ChangeGrowthStage(GrowthStage.Grown);
+                        ChangePlantStage(PlantStage.Grown);
                     }
 
                     break;
-                case GrowthStage.Grown:
+                case PlantStage.Grown:
                     ++SeedCounter;
                     ++FetusCounter;
                     if (Age == 65)
                     {
-                        ChangeGrowthStage(GrowthStage.Elder);
+                        ChangePlantStage(PlantStage.Elder);
                     }
 
                     if (SeedCounter == ReadyToSeed)
@@ -117,7 +117,7 @@ namespace LifeSimulation.EntityClasses
                     }
 
                     break;
-                case GrowthStage.Elder:
+                case PlantStage.Elder:
                     if (Age == MaxAge)
                     {
                         Die();
@@ -152,7 +152,7 @@ namespace LifeSimulation.EntityClasses
 
             if (counter >= 1)
             {
-                Plant newPlant = new WolfBerry(possibleTiles[Randomizer.GetRandomInt(0, counter - 1)], Map,GrowthStage.Seed);
+                Plant newPlant = new WolfBerry(possibleTiles[Randomizer.GetRandomInt(0, counter - 1)], Map,PlantStage.Seed);
                 Map.Plants.Add(newPlant);
                 Map.NewEntities.Add(newPlant);
             }

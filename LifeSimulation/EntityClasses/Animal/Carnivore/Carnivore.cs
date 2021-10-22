@@ -4,9 +4,9 @@ using System.Reflection;
 
 namespace LifeSimulation.EntityClasses
 {
-    public abstract class Carnivore:Animal
+    public abstract class Carnivore : Animal
     {
-        public void LookForFood()
+        protected override void LookForFood()
         {
             double minDistance = 10000000000;
             double currentDistance;
@@ -19,11 +19,21 @@ namespace LifeSimulation.EntityClasses
                 if (animal.GetType() != myType)
                 {
                     currentDistance = CalculateDistance(animal);
-                    if (minDistance > currentDistance && currentDistance<maxDistance)
+                    if (minDistance > currentDistance && currentDistance < maxDistance)
                     {
                         minDistance = currentDistance;
                         nearestFood = animal;
                     }
+                }
+            }
+
+            foreach (var dead in Map.DeadBodies)
+            {
+                currentDistance = CalculateDistance(dead);
+                if (minDistance > currentDistance && currentDistance < maxDistance)
+                {
+                    minDistance = currentDistance;
+                    nearestFood = dead;
                 }
             }
 
@@ -39,7 +49,7 @@ namespace LifeSimulation.EntityClasses
                 }
                 else
                 {
-                    Tile = Mover.MoveTo(Tile,nearestFood.Tile);
+                    Tile = Mover.MoveTo(Tile, nearestFood.Tile);
                 }
             }
         }

@@ -1,24 +1,21 @@
-﻿using System;
-using System.Drawing;
-using LifeSimulation.AdditionalClasses;
+﻿using System.Drawing;
 using LifeSimulation.EntityClasses.SupportClasses;
 using LifeSimulation.MapClasses;
 using LifeSimulation.TileClasses;
 
 namespace LifeSimulation.EntityClasses
 {
-    public class Wolf : Carnivore
+    public class Tiger:Carnivore
     {
-
-        public Wolf(Tile tile, Map map)
+        public Tiger(Tile tile, Map map)
         {
-            MaxHitPoints = 25;
-            MaxHungerPoints = 20;
+            MaxHitPoints = 60;
+            MaxHungerPoints = 22;
             HungerBorder = 6;
-            DamageForce = 30;
-            MaxMatingCounter = 15;
-            MaxAge = 40;
-            Color = Brushes.DimGray;
+            DamageForce = 80;
+            MaxMatingCounter = 17;
+            MaxAge = 45;
+            Color = Brushes.OrangeRed;
             
             SetStandartValues(tile,map);
             Mover = new Mover(2, map);
@@ -28,7 +25,7 @@ namespace LifeSimulation.EntityClasses
 
         protected override void CreateChild()
         {
-            Wolf child = new Wolf(Tile, Map);
+            Tiger child = new Tiger(Tile, Map);
             Map.NewEntities.Add(child);
             Map.Animals.Add(child);
         }

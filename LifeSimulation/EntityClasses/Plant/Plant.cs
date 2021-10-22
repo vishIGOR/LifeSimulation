@@ -11,10 +11,10 @@ namespace LifeSimulation.EntityClasses
 
         protected int Age;
         protected int MaxAge;
-        protected GrowthStage GrowthStage;
+        protected PlantStage PlantStage;
         
         protected abstract void CreateSeeds();
-        protected abstract void ChangeGrowthStage(GrowthStage newStage);
+        protected abstract void ChangePlantStage(PlantStage newStage);
         
         protected override void Die()
         {
@@ -24,13 +24,11 @@ namespace LifeSimulation.EntityClasses
 
         protected override void SetStandartValues(Tile tile, Map map)
         {
-            Tile = tile;
-            Map = map;
-            Randomizer = Map.Randomizer;
+            base.SetStandartValues(tile, map);
 
             Age = 0;
             Eatable = false;
-            GrowthStage = GrowthStage.Seed;
+            PlantStage = PlantStage.Seed;
             
             Tile.IsSeeded = true;
 
