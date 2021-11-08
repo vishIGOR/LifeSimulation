@@ -7,6 +7,7 @@ using LifeSimulation.EntityClasses.DeadBodyClasses;
 using LifeSimulation.EntityClasses.Omnivore;
 using LifeSimulation.EntityClasses.Scavenger;
 using LifeSimulation.Enumerations;
+using LifeSimulation.MapClasses.Enumerators;
 using LifeSimulation.TileClasses;
 
 
@@ -26,6 +27,8 @@ namespace LifeSimulation.MapClasses
         public List<DeadBody> DeadBodies{ get; private set; }
         public Randomizer Randomizer{ get; private set; }
         public Brush[,] ColorsOfTiles { get; private set; }
+        public SeasonType Season{ get; private set; }
+        private int SeasonCounter = 0;
         
 
         public Map(int height, int width, int numberOfAnimals, int percentOfPlants)
@@ -190,6 +193,12 @@ namespace LifeSimulation.MapClasses
 
         public void UpdateMap()
         {
+            ++SeasonCounter;
+            if (SeasonCounter == 20)
+            {
+                SeasonCounter = 0;
+                ChangeSeason();
+            }
             foreach (var entity in Entities)
             {
                 entity.ChooseAction();
@@ -206,6 +215,21 @@ namespace LifeSimulation.MapClasses
                 Entities.Remove(entity);
             }
             DeadEntities.Clear();
+        }
+
+        void ChangeSeason()
+        {
+            switch (Season)
+            {
+                case SeasonType.Summer:
+                    Season = SeasonType.Winter;
+                    break;
+                case SeasonType.Winter:
+                    Season = SeasonType.Summer;
+                    break;
+            }
+            //тут остановились
+
         }
     }
 }
