@@ -120,6 +120,10 @@ namespace LifeSimulation.EntityClasses.Omnivore
                 }
                 
                 HitPoints += 5;
+                if (MaxHitPoints < HitPoints)
+                {
+                    HitPoints = MaxHitPoints;
+                }
             }
             
             

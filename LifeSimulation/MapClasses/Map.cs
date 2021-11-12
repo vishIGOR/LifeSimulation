@@ -145,67 +145,67 @@ namespace LifeSimulation.MapClasses
             int maxNumber = 100;
             int randomInt = Randomizer.GetRandomInt(1, maxNumber);
             
-            // if (randomInt <= 30)
-            // {
-            //     return new Human(tile, this);
-            // }
-            //
-            // if (randomInt <= 37)
-            // {
-            //     return new Sheep(tile, this);
-            // }
-            //
-            // if (randomInt <= 44)
-            // {
-            //     return new Bear(tile, this);
-            // }
-            //
-            // if (randomInt <= 51)
-            // {
-            //     return new Tiger(tile, this);
-            // }
-            //
-            // if (randomInt <= 58)
-            // {
-            //     return new Panther(tile, this);
-            // }
-            //
-            // if (randomInt <= 65)
-            // {
-            //     return new Hyena(tile, this);
-            // }
-            //
-            // if (randomInt <= 72)
-            // {
-            //     return new Pig(tile, this);
-            // }
-            //
-            // if (randomInt <= 79)
-            // {
-            //     return new Monkey(tile, this);
-            // }
-            //
-            // if (randomInt <= 86)
-            // {
-            //     return new Frog(tile, this);
-            // }
-            //
-            // if (randomInt <= 93)
-            // {
-            //     return new Mouse(tile, this);
-            // }
-            if (randomInt <= 40)
+            if (randomInt <= 30)
             {
                 return new Human(tile, this);
             }
-            if (randomInt <= 60)
-            {
-                return new Bear(tile, this);
-            }
-            if (randomInt <= 80)
+            
+            if (randomInt <= 37)
             {
                 return new Sheep(tile, this);
             }
+            
+            if (randomInt <= 44)
+            {
+                return new Bear(tile, this);
+            }
+            
+            if (randomInt <= 51)
+            {
+                return new Tiger(tile, this);
+            }
+            
+            if (randomInt <= 58)
+            {
+                return new Panther(tile, this);
+            }
+            
+            if (randomInt <= 65)
+            {
+                return new Hyena(tile, this);
+            }
+            
+            if (randomInt <= 72)
+            {
+                return new Pig(tile, this);
+            }
+            
+            if (randomInt <= 79)
+            {
+                return new Monkey(tile, this);
+            }
+            
+            if (randomInt <= 86)
+            {
+                return new Frog(tile, this);
+            }
+            
+            if (randomInt <= 93)
+            {
+                return new Mouse(tile, this);
+            }
+            // if (randomInt <= 40)
+            // {
+            //     return new Human(tile, this);
+            // }
+            // if (randomInt <= 60)
+            // {
+            //     return new Bear(tile, this);
+            // }
+            // if (randomInt <= 80)
+            // {
+            //     return new Sheep(tile, this);
+            // }
             return new Wolf(tile, this);
 
             // return new Sheep(tile, this);

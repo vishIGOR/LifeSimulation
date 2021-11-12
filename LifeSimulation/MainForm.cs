@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 using LifeSimulation.EntityClasses;
+using LifeSimulation.EntityClasses.DeadBodyClasses;
+using LifeSimulation.EntityClasses.Omnivore;
+using LifeSimulation.EntityClasses.Scavenger;
+using LifeSimulation.Enumerations;
 using LifeSimulation.MapClasses;
 using LifeSimulation.TileClasses;
 using Nito.AsyncEx;
@@ -22,17 +24,17 @@ namespace LifeSimulation
 
         private Brush[,] ColorsOfTiles;
 
-        private Brush[,] MetaEntities = new Brush[108,84];
-        private Brush[,] MetaLandscape = new Brush[108,84];
-        
+        private Entity ShowingEntity;
+
         private int MetaStartY;
         private int MetaStartX;
         private int MetaWidth = 108;
         private int MetaHeight = 84;
         private AsyncLock Mutex;
-        
+
         private Map CurrentMap;
         private int Resolution = 10;
+
         public MainForm()
         {
             InitializeComponent();
@@ -40,18 +42,18 @@ namespace LifeSimulation
             resolutionSelector.SelectedIndexChanged += SelectedResolutionChanged;
             Mutex = new AsyncLock();
         }
-        
+
         private async void timer1_Elapsed(object sender, ElapsedEventArgs e)
         {
-            NextView();
-            TickCounter.Text = Convert.ToString(Convert.ToInt32(TickCounter.Text)+1);
-            
             // await Task.Run(()=>CurrentMap.UpdateMap());
             using (await Mutex.LockAsync())
             {
                 CurrentMap.UpdateMap();
                 CurrentMap.ReloadEntities();
             }
+            NextView();
+            ShowInfo();
+            TickCounter.Text = Convert.ToString(Convert.ToInt32(TickCounter.Text) + 1);
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -70,7 +72,7 @@ namespace LifeSimulation
             {
                 return;
             }
-            
+
             numericHeight.Enabled = false;
             numericWidth.Enabled = false;
             numericPlantsPercent.Enabled = false;
@@ -79,22 +81,21 @@ namespace LifeSimulation
 
             MetaStartX = 0;
             MetaStartY = 0;
-            ViewHeight = (int)numericHeight.Value;
-            ViewWidth = (int)numericWidth.Value;
-            ViewPercentOfPlants = (int)numericPlantsPercent.Value;
-            ViewNumberOfAnimals = (int)numericAnimalsNumber.Value;
-            CurrentMap = new Map(ViewHeight,ViewWidth,ViewNumberOfAnimals,ViewPercentOfPlants);
+            ViewHeight = (int) numericHeight.Value;
+            ViewWidth = (int) numericWidth.Value;
+            ViewPercentOfPlants = (int) numericPlantsPercent.Value;
+            ViewNumberOfAnimals = (int) numericAnimalsNumber.Value;
+            CurrentMap = new Map(ViewHeight, ViewWidth, ViewNumberOfAnimals, ViewPercentOfPlants);
             ColorsOfTiles = CurrentMap.ColorsOfTiles;
-            
+
             pictureMap.Image = new Bitmap(1080, 840);
             MapView = Graphics.FromImage(pictureMap.Image);
-            
+
             timer1.Start();
         }
 
         private async void SelectedResolutionChanged(object sender, EventArgs e)
         {
-            
             Resolution = int.Parse(resolutionSelector.SelectedItem.ToString());
             if (timer1.Enabled)
             {
@@ -118,18 +119,16 @@ namespace LifeSimulation
                         break;
                 }
 
-                MetaEntities = new Brush[MetaHeight, MetaHeight];
-                MetaLandscape = new Brush[MetaWidth, MetaHeight];
-
                 if (MetaStartY + MetaHeight > ViewHeight)
                 {
                     MetaStartY = ViewHeight - MetaHeight;
                 }
+
                 if (MetaStartX + MetaWidth > ViewWidth)
                 {
                     MetaStartX = ViewWidth - MetaWidth;
                 }
-                
+
                 // NextView();
                 using (await Mutex.LockAsync())
                 {
@@ -138,14 +137,15 @@ namespace LifeSimulation
                 // await Task.Run(()=>NextView());
             }
         }
+
         void StopSimulation()
         {
             if (!timer1.Enabled)
             {
                 return;
             }
-            
-            
+
+
             timer1.Stop();
             TickCounter.Text = "0";
             numericHeight.Enabled = true;
@@ -159,13 +159,13 @@ namespace LifeSimulation
         {
             DrawLandscape();
             DrawPlants();
-            
+
             // DrawDeadBodies();
             // DrawFetuses();
             // DrawAnimals();
 
             DrawEntities();
-            
+
             pictureMap.Refresh();
         }
 
@@ -183,12 +183,13 @@ namespace LifeSimulation
                     {
                         // временная мера
                         // MapView.FillRectangle(dead.Color, (deadX-MetaStartX) * Resolution, (deadY-MetaStartY) * Resolution, Resolution, Resolution);
-                        MapView.DrawImage(dead.Image, (deadX-MetaStartX) * Resolution, (deadY-MetaStartY) * Resolution, Resolution, Resolution);
+                        MapView.DrawImage(dead.Image, (deadX - MetaStartX) * Resolution,
+                            (deadY - MetaStartY) * Resolution, Resolution, Resolution);
                     }
                 }
             }
         }
-        
+
         void DrawLandscape()
         {
             // for (int i = 0; i < ViewWidth; ++i)
@@ -198,7 +199,7 @@ namespace LifeSimulation
             //          MapView.FillRectangle(ColorsOfTiles[i,j],i*Resolution,j*Resolution,Resolution,Resolution);
             //     }
             // }
-            
+
             for (int i = 0; i < MetaWidth; ++i)
             {
                 for (int j = 0; j < MetaHeight; ++j)
@@ -206,10 +207,10 @@ namespace LifeSimulation
                     // Debugger.Launch();
                     // Debugger.Log(1,"1","landscape test");
                     //MetaLandscape[i, j] = ColorsOfTiles[i + MetaStartX, j + MetaStartY];
-                    MapView.FillRectangle(ColorsOfTiles[i + MetaStartX, j + MetaStartY],i*Resolution,j*Resolution,Resolution,Resolution);
+                    MapView.FillRectangle(ColorsOfTiles[i + MetaStartX, j + MetaStartY], i * Resolution, j * Resolution,
+                        Resolution, Resolution);
                 }
             }
-            
         }
 
         void DrawFetuses()
@@ -226,12 +227,13 @@ namespace LifeSimulation
                     {
                         // временная мера
                         // MapView.FillRectangle(fetus.Color, (fetusX-MetaStartX) * Resolution, (fetusY-MetaStartY) * Resolution, Resolution, Resolution);
-                        MapView.DrawImage(fetus.Image, (fetusX-MetaStartX) * Resolution, (fetusY-MetaStartY) * Resolution, Resolution, Resolution);
+                        MapView.DrawImage(fetus.Image, (fetusX - MetaStartX) * Resolution,
+                            (fetusY - MetaStartY) * Resolution, Resolution, Resolution);
                     }
                 }
             }
         }
-        
+
         void DrawPlants()
         {
             // int plantX, plantY;
@@ -249,14 +251,15 @@ namespace LifeSimulation
             // }
 
             Tile currentTile;
-            for(int i = MetaStartX;i<MetaStartX+MetaWidth;++i)
+            for (int i = MetaStartX; i < MetaStartX + MetaWidth; ++i)
             {
-                for(int j = MetaStartY;j<MetaStartY+MetaHeight;++j)
+                for (int j = MetaStartY; j < MetaStartY + MetaHeight; ++j)
                 {
                     currentTile = CurrentMap.Tiles[i, j];
                     if (currentTile.Plant != null)
                     {
-                        MapView.DrawImage(currentTile.Plant.Image, (i-MetaStartX) * Resolution, (j-MetaStartY) * Resolution, Resolution, Resolution);
+                        MapView.DrawImage(currentTile.Plant.Image, (i - MetaStartX) * Resolution,
+                            (j - MetaStartY) * Resolution, Resolution, Resolution);
                     }
                 }
             }
@@ -265,21 +268,23 @@ namespace LifeSimulation
         void DrawEntities()
         {
             Tile currentTile;
-            for(int i = MetaStartX;i<MetaStartX+MetaWidth;++i)
+            for (int i = MetaStartX; i < MetaStartX + MetaWidth; ++i)
             {
-                for(int j = MetaStartY;j<MetaStartY+MetaHeight;++j)
+                for (int j = MetaStartY; j < MetaStartY + MetaHeight; ++j)
                 {
                     currentTile = CurrentMap.Tiles[i, j];
                     if (currentTile.Entities.Count > 0)
                     {
                         foreach (var entity in currentTile.Entities)
                         {
-                            MapView.DrawImage(entity.Image, (i-MetaStartX) * Resolution, (j-MetaStartY) * Resolution, Resolution, Resolution);
+                            MapView.DrawImage(entity.Image, (i - MetaStartX) * Resolution,
+                                (j - MetaStartY) * Resolution, Resolution, Resolution);
                         }
                     }
                 }
             }
         }
+
         void DrawAnimals()
         {
             int animalX, animalY;
@@ -294,7 +299,8 @@ namespace LifeSimulation
                     {
                         // временная мера
                         // MapView.FillRectangle(animal.Color, (animalX-MetaStartX) * Resolution, (animalY-MetaStartY) * Resolution, Resolution, Resolution);
-                        MapView.DrawImage(animal.Image, (animalX-MetaStartX) * Resolution, (animalY-MetaStartY) * Resolution, Resolution, Resolution);
+                        MapView.DrawImage(animal.Image, (animalX - MetaStartX) * Resolution,
+                            (animalY - MetaStartY) * Resolution, Resolution, Resolution);
                     }
                 }
             }
@@ -310,7 +316,6 @@ namespace LifeSimulation
                     NextView();
                 }
             }
-            
         }
 
         private void buttonLeft_Click(object sender, EventArgs e)
@@ -323,33 +328,164 @@ namespace LifeSimulation
                     NextView();
                 }
             }
-            
         }
 
         private void buttonDown_Click(object sender, EventArgs e)
         {
             if (timer1.Enabled)
             {
-                if (MetaStartY < ViewHeight-MetaHeight)
+                if (MetaStartY < ViewHeight - MetaHeight)
                 {
                     ++MetaStartY;
                     NextView();
                 }
             }
-            
         }
 
         private void buttonRight_Click(object sender, EventArgs e)
         {
             if (timer1.Enabled)
             {
-                if (MetaStartX < ViewWidth-MetaWidth)
+                if (MetaStartX < ViewWidth - MetaWidth)
                 {
                     ++MetaStartX;
                     NextView();
                 }
             }
+        }
+
+        private void pictureMap_Click(object sender, EventArgs e)
+        {
+            var mouseEvent = e as MouseEventArgs;
+            if (mouseEvent == null || timer1.Enabled == false)
+            {
+                return;
+            }
+
+            int x = mouseEvent.X, y = mouseEvent.Y;
+
+
+            // Debug.WriteLine($"X={mouseEvent.X}, Y={mouseEvent.Y}");
+            // Debug.WriteLine($"{x / Resolution - MetaStartX},{y / Resolution - MetaStartY}");
+
+            Tile targetTile = CurrentMap.Tiles[x / Resolution + MetaStartX, y / Resolution + MetaStartY];
+
+            if (targetTile.Entities.Count > 0)
+            {
+                ShowingEntity =
+                    targetTile.Entities[CurrentMap.Randomizer.GetRandomInt(0, targetTile.Entities.Count - 1)];
+                ShowInfo();
+            }
+            else
+            {
+                if (targetTile.Plant != null)
+                {
+                    ShowingEntity = targetTile.Plant;
+                    ShowInfo();
+                }
+            }
+            if (ShowingEntity == null)
+            {
+                Debug.WriteLine($"nothing");
+            }
+            else
+            {
+                Debug.WriteLine(ShowingEntity.GetType().ToString());
+            }
+        }
+
+        private void ShowInfo()
+        {
+            labelType.Text = "";
+            labelCoordinates.Text = "";
+            labelHitPoints.Text = "";
+            labelType.Text = "";
+            labelCategory.Text = "";
+            labelHungerLevel.Text = "";
+            labelInventoryFullness.Text = "";
+            labelMateTargetCoordinates.Text = "";
+            pictureBoxShowingEntity.Image = null;
+            comboBoxDomestics.Items.Clear();
+            comboBoxInventory.Items.Clear();
             
+            if (!CurrentMap.Entities.Contains(ShowingEntity) || ShowingEntity== null)
+            {
+                return;
+            }
+
+            pictureBoxShowingEntity.Image = ShowingEntity.Image;
+            labelCoordinates.Text = $"({ShowingEntity.Tile.X}, {ShowingEntity.Tile.Y})";
+            labelHitPoints.Text = $"{ShowingEntity.HitPoints}/{ShowingEntity.MaxHitPoints}";
+
+            if (ShowingEntity is Animal)
+            {
+                Animal ShowingAnimal = (Animal) ShowingEntity;
+                labelType.Text = "Животное";
+                labelHungerLevel.Text = $"{ShowingAnimal.HungerPoints}/{ShowingAnimal.MaxHungerPoints}";
+                if (ShowingAnimal.MatingTarget != null)
+                {
+                    labelMateTargetCoordinates.Text = $"({ShowingAnimal.MatingTarget.Tile.X}, {ShowingAnimal.MatingTarget.Tile.Y})";
+                }
+                
+                if (ShowingEntity is Omnivore)
+                {
+                    labelCategory.Text = "Всеядное животное";
+                }
+                if (ShowingEntity is Human)
+                {
+                    Human ShowingHuman = (Human) ShowingEntity;
+                    labelCategory.Text = "Человек";
+                    foreach (var domestic in ShowingHuman.DomesticAnimals)
+                    {
+                        if (domestic is Sheep)
+                        {
+                            comboBoxDomestics.Items.Add($"Овца: ({domestic.Tile.X}, {domestic.Tile.Y})");
+                        }
+                        if (domestic is Bear)
+                        {
+                            comboBoxDomestics.Items.Add($"Мишка: ({domestic.Tile.X}, {domestic.Tile.Y})");
+                        }
+                        if (domestic is Wolf)
+                        {
+                            comboBoxDomestics.Items.Add($"волк: ({domestic.Tile.X}, {domestic.Tile.Y})");
+                        }
+                        
+                    }
+                    comboBoxInventory.Items.Add($"Мясо :{ShowingHuman.Inventory[(int) FoodType.Meat]}");
+                    comboBoxInventory.Items.Add($"Растения :{ShowingHuman.Inventory[(int) FoodType.Plant]}");
+                    comboBoxInventory.Items.Add($"Плоды :{ShowingHuman.Inventory[(int) FoodType.Fetus]}");
+                    comboBoxInventory.Items.Add($"Мёд :{ShowingHuman.Inventory[(int) FoodType.Honey]}");
+                    
+                    labelInventoryFullness.Text = $"{ShowingHuman.InventoryFullness}/{ShowingHuman.InventorySize}";
+                }
+                if (ShowingEntity is Herbivore)
+                {
+                    labelCategory.Text = "Травоядное животное";
+                }
+                if (ShowingEntity is Carnivore)
+                {
+                    labelCategory.Text = "Хищник";
+                }
+                if (ShowingEntity is Scavenger)
+                {
+                    labelCategory.Text = "Падальщик";
+                }
+            }
+
+            if (ShowingEntity is Plant)
+            {
+                labelType.Text = "Растение";
+            }
+
+            if (ShowingEntity is DeadBody)
+            {
+                labelType.Text = "Труп(мясо)";
+            }
+
+            if (ShowingEntity is Fetus)
+            {
+                labelType.Text = "Плод";
+            }
         }
     }
 }

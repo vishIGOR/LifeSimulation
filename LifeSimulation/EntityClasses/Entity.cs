@@ -12,8 +12,8 @@ namespace LifeSimulation.EntityClasses
         public Image Image { get; protected set; }
         public Tile Tile { get; protected set; }
         
-        protected int HitPoints;
-        protected int MaxHitPoints;
+        public int HitPoints{ get; protected set; }
+        public int MaxHitPoints{ get; protected set; }
         
         protected Randomizer Randomizer;
         protected Map Map;

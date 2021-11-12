@@ -25,8 +25,8 @@ namespace LifeSimulation.EntityClasses
         
         protected int DamageForce;
         
-        protected int HungerPoints;
-        protected int MaxHungerPoints;
+        public int HungerPoints{ get; protected set; }
+        public int MaxHungerPoints{ get; protected set; }
         protected int HungerBorder;
         protected abstract void LookForFood();
         protected double CalculateDistance(Entity target)
