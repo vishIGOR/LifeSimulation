@@ -23,18 +23,18 @@ namespace LifeSimulation.MapClasses
         public List<Entity> DeadEntities { get; private set; }
         public List<Animal> Animals { get; private set; }
         public List<Plant> Plants { get; private set; }
-        public List<Fetus> Fetuses{ get; private set; }
-        public List<DeadBody> DeadBodies{ get; private set; }
-        public Randomizer Randomizer{ get; private set; }
+        public List<Fetus> Fetuses { get; private set; }
+        public List<DeadBody> DeadBodies { get; private set; }
+        public Randomizer Randomizer { get; private set; }
         public Brush[,] ColorsOfTiles { get; private set; }
-        public SeasonType Season{ get; private set; }
-        private int SeasonCounter = 0;
-        
+        public SeasonType Season { get; private set; }
+        private int SeasonCounter;
+
 
         public Map(int height, int width, int numberOfAnimals, int percentOfPlants)
         {
             Randomizer = new Randomizer();
-            
+
             Entities = new List<Entity>();
             NewEntities = new List<Entity>();
             DeadEntities = new List<Entity>();
@@ -43,14 +43,17 @@ namespace LifeSimulation.MapClasses
             Plants = new List<Plant>();
             Fetuses = new List<Fetus>();
             DeadBodies = new List<DeadBody>();
-            
+
             Height = height;
             Width = width;
 
             Tiles = new Tile[Width, Height];
 
+            Season = SeasonType.Summer;
+            SeasonCounter = 0;
+
             ColorsOfTiles = new Brush[Width, Height];
-            
+
             CreateRandomTiles(percentOfPlants);
             CreateRandomAnimals(numberOfAnimals);
         }
@@ -66,7 +69,7 @@ namespace LifeSimulation.MapClasses
 
                     if (Tiles[i, j].PlantPossibility == true)
                     {
-                        if (Randomizer.GetRandomInt(1, 100) <= percentOfPlants)
+                        if (Randomizer.GetRandomInt(1, 1000) <= percentOfPlants)
                         {
                             newPlant = CreateNewPlant(Tiles[i, j]);
                             Plants.Add(newPlant);
@@ -75,7 +78,7 @@ namespace LifeSimulation.MapClasses
                     }
                 }
             }
-            
+
             for (int j = 0; j < Height; ++j)
             {
                 for (int i = 0; i < Width; ++i)
@@ -105,15 +108,16 @@ namespace LifeSimulation.MapClasses
 
             if (randomInt <= 40)
             {
-                return new AppleTree(tile,this,PlantStage.Grown);
+                return new AppleTree(tile, this, PlantStage.Grown);
             }
-            
+
             if (randomInt <= 50)
             {
-                return new WolfBerry(tile,this,PlantStage.Grown);
+                return new WolfBerry(tile, this, PlantStage.Grown);
             }
-            return new Grass(tile, this,PlantStage.Grown);
-            
+
+            return new Grass(tile, this, PlantStage.Grown);
+
             // return new WolfBerry(tile,this,PlantStage.Grown);
             // return new Grass(tile, this,PlantStage.Grown);
         }
@@ -140,53 +144,70 @@ namespace LifeSimulation.MapClasses
         {
             int maxNumber = 100;
             int randomInt = Randomizer.GetRandomInt(1, maxNumber);
-            if (randomInt <= 10)
-            {
-                return new Sheep(tile, this);
-            }
             
-            if (randomInt <= 20)
+            // if (randomInt <= 30)
+            // {
+            //     return new Human(tile, this);
+            // }
+            //
+            // if (randomInt <= 37)
+            // {
+            //     return new Sheep(tile, this);
+            // }
+            //
+            // if (randomInt <= 44)
+            // {
+            //     return new Bear(tile, this);
+            // }
+            //
+            // if (randomInt <= 51)
+            // {
+            //     return new Tiger(tile, this);
+            // }
+            //
+            // if (randomInt <= 58)
+            // {
+            //     return new Panther(tile, this);
+            // }
+            //
+            // if (randomInt <= 65)
+            // {
+            //     return new Hyena(tile, this);
+            // }
+            //
+            // if (randomInt <= 72)
+            // {
+            //     return new Pig(tile, this);
+            // }
+            //
+            // if (randomInt <= 79)
+            // {
+            //     return new Monkey(tile, this);
+            // }
+            //
+            // if (randomInt <= 86)
+            // {
+            //     return new Frog(tile, this);
+            // }
+            //
+            // if (randomInt <= 93)
+            // {
+            //     return new Mouse(tile, this);
+            // }
+            if (randomInt <= 40)
+            {
+                return new Human(tile, this);
+            }
+            if (randomInt <= 60)
             {
                 return new Bear(tile, this);
             }
-            
-            if (randomInt <= 30)
-            {
-                return new Tiger(tile, this);
-            }
-            
-            if (randomInt <= 40)
-            {
-                return new Panther(tile, this);
-            }
-            
-            if (randomInt <= 50)
-            {
-                return new Condor(tile, this);
-            }
-            
-            if (randomInt <= 60)
-            {
-                return new Pig(tile, this);
-            }
-            
-            if (randomInt <= 70)
-            {
-                return new Monkey(tile, this);
-            }
-            
             if (randomInt <= 80)
             {
-                return new Frog(tile, this);
+                return new Sheep(tile, this);
             }
-            
-            if (randomInt <= 90)
-            {
-                return new Mouse(tile, this);
-            }
-            
             return new Wolf(tile, this);
-            
+
             // return new Sheep(tile, this);
         }
 
@@ -194,26 +215,34 @@ namespace LifeSimulation.MapClasses
         public void UpdateMap()
         {
             ++SeasonCounter;
-            if (SeasonCounter == 20)
+            if (SeasonCounter == 15)
             {
                 SeasonCounter = 0;
                 ChangeSeason();
             }
+
             foreach (var entity in Entities)
             {
                 entity.ChooseAction();
             }
 
+        }
+
+        public void ReloadEntities()
+        {
             foreach (var entity in NewEntities)
             {
                 Entities.Add(entity);
             }
+
             NewEntities.Clear();
 
             foreach (var entity in DeadEntities)
             {
                 Entities.Remove(entity);
+                entity.Tile.Entities.Remove(entity);
             }
+
             DeadEntities.Clear();
         }
 
@@ -227,9 +256,26 @@ namespace LifeSimulation.MapClasses
                 case SeasonType.Winter:
                     Season = SeasonType.Summer;
                     break;
+             }
+
+            foreach (var tile in Tiles)
+            {
+                tile.ReactToChangeSeason(Season);
+            }
+
+            for (int j = 0; j < Height; ++j)
+            {
+                for (int i = 0; i < Width; ++i)
+                {
+                    ColorsOfTiles[i, j] = Tiles[i, j].TileColor;
+                }
+            }
+
+            foreach (var entity in Entities)
+            {
+                entity.ReactToChangeSeason(Season);
             }
             //тут остановились
-
         }
     }
 }

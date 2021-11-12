@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using LifeSimulation.MapClasses;
+using LifeSimulation.MapClasses.Enumerators;
 using LifeSimulation.TileClasses;
 
 namespace LifeSimulation.EntityClasses.DeadBodyClasses
@@ -18,6 +19,8 @@ namespace LifeSimulation.EntityClasses.DeadBodyClasses
             Color = Brushes.Red;
             
             SetStandartValues(tile,map);
+            
+            Tile.Entities.Add(this);
         }
 
 
@@ -42,6 +45,18 @@ namespace LifeSimulation.EntityClasses.DeadBodyClasses
         {
             Map.DeadBodies.Remove(this);
             Map.DeadEntities.Add(this);
+        }
+
+        public override void ReactToChangeSeason(SeasonType newSeason)
+        {
+            if (newSeason == SeasonType.Winter)
+            {
+                MaxAge += 42;
+            }
+            if (newSeason == SeasonType.Summer)
+            {
+                MaxAge -= 42;
+            }
         }
     }
 }

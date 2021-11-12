@@ -19,8 +19,8 @@ namespace LifeSimulation.EntityClasses
             Color = Brushes.Black;
             
             SetStandartValues(tile,map);
-            Mover = new Mover(2, map);
-            Mover.CurrentMovingWay = 3;
+            Mover = new Mover(this,2, map);
+            Mover.CurrentMovingWay = 1;
             Mover.CurrentWalkingWay = 1;
         }
 
@@ -31,46 +31,46 @@ namespace LifeSimulation.EntityClasses
             Map.Animals.Add(child);
         }
 
-        protected override void LookForFood()
-        {
-            double minDistance = 10000000000;
-            double currentDistance=0;
-            double maxDistance = 20;
-            Entity nearestFood = null;
-            Type myType = GetType();
-
-            foreach (var animal in Map.Animals)
-            {
-                if (animal.GetType() != myType)
-                {
-                    currentDistance = CalculateDistance(animal);
-                    if (minDistance > currentDistance && currentDistance < maxDistance)
-                    {
-                        minDistance = currentDistance;
-                        nearestFood = animal;
-                    }
-                }
-            }
-
-            if (currentDistance <= 5)
-                Mover.CurrentMovingWay = 1;
-            
-            if (nearestFood == null)
-            {
-                Tile = Mover.Walk(Tile);
-            }
-            else
-            {
-                if (nearestFood.Tile == Tile)
-                {
-                    StartEat(nearestFood);
-                    Mover.CurrentMovingWay = 3;
-                }
-                else
-                {
-                    Tile = Mover.MoveTo(Tile, nearestFood.Tile);
-                }
-            }
-        }
+        // protected override void LookForFood()
+        // {
+        //     double minDistance = 10000000000;
+        //     double currentDistance=0;
+        //     double maxDistance = 20;
+        //     Entity nearestFood = null;
+        //     Type myType = GetType();
+        //
+        //     foreach (var animal in Map.Animals)
+        //     {
+        //         if (animal.GetType() != myType)
+        //         {
+        //             currentDistance = CalculateDistance(animal);
+        //             if (minDistance > currentDistance && currentDistance < maxDistance)
+        //             {
+        //                 minDistance = currentDistance;
+        //                 nearestFood = animal;
+        //             }
+        //         }
+        //     }
+        //
+        //     if (currentDistance <= 5)
+        //         Mover.CurrentMovingWay = 1;
+        //     
+        //     if (nearestFood == null)
+        //     {
+        //         Tile = Mover.Walk(Tile);
+        //     }
+        //     else
+        //     {
+        //         if (nearestFood.Tile == Tile)
+        //         {
+        //             StartEat(nearestFood);
+        //             Mover.CurrentMovingWay = 3;
+        //         }
+        //         else
+        //         {
+        //             Tile = Mover.MoveTo(Tile, nearestFood.Tile);
+        //         }
+        //     }
+        // }
     }
 }

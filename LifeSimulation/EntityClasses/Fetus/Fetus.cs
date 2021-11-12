@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using LifeSimulation.MapClasses;
+using LifeSimulation.MapClasses.Enumerators;
 using LifeSimulation.TileClasses;
 
 namespace LifeSimulation.EntityClasses
@@ -55,6 +56,19 @@ namespace LifeSimulation.EntityClasses
             HitPoints = MaxHitPoints;
 
             Eatable = true;
+
+            Tile.Entities.Add(this);
+        }
+        public override void ReactToChangeSeason(SeasonType newSeason)
+        {
+            if (newSeason == SeasonType.Winter)
+            {
+                MaxAge += 42;
+            }
+            if (newSeason == SeasonType.Summer)
+            {
+                MaxAge -= 42;
+            }
         }
     }
 }

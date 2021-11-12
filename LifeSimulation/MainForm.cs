@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Printing;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
+using LifeSimulation.EntityClasses;
 using LifeSimulation.MapClasses;
 using LifeSimulation.TileClasses;
+using Nito.AsyncEx;
 
 namespace LifeSimulation
 {
@@ -17,27 +21,37 @@ namespace LifeSimulation
         private int ViewPercentOfPlants;
 
         private Brush[,] ColorsOfTiles;
+
+        private Brush[,] MetaEntities = new Brush[108,84];
+        private Brush[,] MetaLandscape = new Brush[108,84];
+        
+        private int MetaStartY;
+        private int MetaStartX;
+        private int MetaWidth = 108;
+        private int MetaHeight = 84;
+        private AsyncLock Mutex;
         
         private Map CurrentMap;
-        private int Resolution;
+        private int Resolution = 10;
         public MainForm()
         {
             InitializeComponent();
             timer1.Stop();
-            ScrollBarInit();
+            resolutionSelector.SelectedIndexChanged += SelectedResolutionChanged;
+            Mutex = new AsyncLock();
         }
-
-        private void ScrollBarInit()
+        
+        private async void timer1_Elapsed(object sender, ElapsedEventArgs e)
         {
-            // pictureMap.Controls.Add(vScrollBar1);
-            // pictureMap.Controls.Add(hScrollBar1);
-            splitContainer1.Panel2.AutoScroll = true;
-            pictureMap.SizeMode = PictureBoxSizeMode.AutoSize;
-        }
-        private void timer1_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            CurrentMap.UpdateMap();
             NextView();
+            TickCounter.Text = Convert.ToString(Convert.ToInt32(TickCounter.Text)+1);
+            
+            // await Task.Run(()=>CurrentMap.UpdateMap());
+            using (await Mutex.LockAsync())
+            {
+                CurrentMap.UpdateMap();
+                CurrentMap.ReloadEntities();
+            }
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -61,8 +75,10 @@ namespace LifeSimulation
             numericWidth.Enabled = false;
             numericPlantsPercent.Enabled = false;
             numericAnimalsNumber.Enabled = false;
-            
-            Resolution = 20;
+            // resolutionSelector.Enabled = false;
+
+            MetaStartX = 0;
+            MetaStartY = 0;
             ViewHeight = (int)numericHeight.Value;
             ViewWidth = (int)numericWidth.Value;
             ViewPercentOfPlants = (int)numericPlantsPercent.Value;
@@ -70,13 +86,58 @@ namespace LifeSimulation
             CurrentMap = new Map(ViewHeight,ViewWidth,ViewNumberOfAnimals,ViewPercentOfPlants);
             ColorsOfTiles = CurrentMap.ColorsOfTiles;
             
-            pictureMap.Image = new Bitmap(ViewWidth*Resolution, ViewHeight*Resolution);
+            pictureMap.Image = new Bitmap(1080, 840);
             MapView = Graphics.FromImage(pictureMap.Image);
             
             timer1.Start();
-            ScrollBarInit();
         }
 
+        private async void SelectedResolutionChanged(object sender, EventArgs e)
+        {
+            
+            Resolution = int.Parse(resolutionSelector.SelectedItem.ToString());
+            if (timer1.Enabled)
+            {
+                switch (Resolution)
+                {
+                    case 10:
+                        MetaWidth = 108;
+                        MetaHeight = 84;
+                        break;
+                    case 20:
+                        MetaWidth = 54;
+                        MetaHeight = 42;
+                        break;
+                    case 40:
+                        MetaWidth = 27;
+                        MetaHeight = 21;
+                        break;
+                    case 60:
+                        MetaWidth = 18;
+                        MetaHeight = 14;
+                        break;
+                }
+
+                MetaEntities = new Brush[MetaHeight, MetaHeight];
+                MetaLandscape = new Brush[MetaWidth, MetaHeight];
+
+                if (MetaStartY + MetaHeight > ViewHeight)
+                {
+                    MetaStartY = ViewHeight - MetaHeight;
+                }
+                if (MetaStartX + MetaWidth > ViewWidth)
+                {
+                    MetaStartX = ViewWidth - MetaWidth;
+                }
+                
+                // NextView();
+                using (await Mutex.LockAsync())
+                {
+                    NextView();
+                }
+                // await Task.Run(()=>NextView());
+            }
+        }
         void StopSimulation()
         {
             if (!timer1.Enabled)
@@ -91,61 +152,204 @@ namespace LifeSimulation
             numericWidth.Enabled = true;
             numericPlantsPercent.Enabled = true;
             numericAnimalsNumber.Enabled = true;
+            // resolutionSelector.Enabled = true;
         }
 
         void NextView()
         {
             DrawLandscape();
             DrawPlants();
-            DrawDeadBodies();
-            DrawFetuses();
-            DrawAnimals();
+            
+            // DrawDeadBodies();
+            // DrawFetuses();
+            // DrawAnimals();
 
+            DrawEntities();
+            
             pictureMap.Refresh();
-            TickCounter.Text = Convert.ToString(Convert.ToInt32(TickCounter.Text)+1);
         }
 
         void DrawDeadBodies()
         {
+            int deadX, deadY;
             foreach (var dead in CurrentMap.DeadBodies)
             {
-                MapView.FillRectangle(dead.Color, dead.Tile.X * Resolution, dead.Tile.Y * Resolution, Resolution, Resolution);
+                // MapView.FillRectangle(dead.Color, dead.Tile.X * Resolution, dead.Tile.Y * Resolution, Resolution, Resolution);
+                deadX = dead.Tile.X;
+                deadY = dead.Tile.Y;
+                if (deadX >= MetaStartX && deadX < MetaStartX + MetaWidth)
+                {
+                    if (deadY >= MetaStartY && deadY < MetaStartY + MetaHeight)
+                    {
+                        // временная мера
+                        // MapView.FillRectangle(dead.Color, (deadX-MetaStartX) * Resolution, (deadY-MetaStartY) * Resolution, Resolution, Resolution);
+                        MapView.DrawImage(dead.Image, (deadX-MetaStartX) * Resolution, (deadY-MetaStartY) * Resolution, Resolution, Resolution);
+                    }
+                }
             }
         }
         
         void DrawLandscape()
         {
-            for (int i = 0; i < ViewWidth; ++i)
+            // for (int i = 0; i < ViewWidth; ++i)
+            // {
+            //     for (int j = 0; j < ViewHeight; ++j)
+            //     {
+            //          MapView.FillRectangle(ColorsOfTiles[i,j],i*Resolution,j*Resolution,Resolution,Resolution);
+            //     }
+            // }
+            
+            for (int i = 0; i < MetaWidth; ++i)
             {
-                for (int j = 0; j < ViewHeight; ++j)
+                for (int j = 0; j < MetaHeight; ++j)
                 {
-                    MapView.FillRectangle(ColorsOfTiles[i,j],i*Resolution,j*Resolution,Resolution,Resolution);
+                    // Debugger.Launch();
+                    // Debugger.Log(1,"1","landscape test");
+                    //MetaLandscape[i, j] = ColorsOfTiles[i + MetaStartX, j + MetaStartY];
+                    MapView.FillRectangle(ColorsOfTiles[i + MetaStartX, j + MetaStartY],i*Resolution,j*Resolution,Resolution,Resolution);
                 }
             }
+            
         }
 
         void DrawFetuses()
         {
+            int fetusX, fetusY;
             foreach (var fetus in CurrentMap.Fetuses)
             {
-                MapView.FillEllipse(fetus.Color, fetus.Tile.X * Resolution+Resolution/4, fetus.Tile.Y * Resolution+Resolution/4, Resolution/2, Resolution/2);
+                // MapView.FillEllipse(fetus.Color, fetus.Tile.X * Resolution+Resolution/4, fetus.Tile.Y * Resolution+Resolution/4, Resolution/2, Resolution/2);
+                fetusX = fetus.Tile.X;
+                fetusY = fetus.Tile.Y;
+                if (fetusX >= MetaStartX && fetusX < MetaStartX + MetaWidth)
+                {
+                    if (fetusY >= MetaStartY && fetusY < MetaStartY + MetaHeight)
+                    {
+                        // временная мера
+                        // MapView.FillRectangle(fetus.Color, (fetusX-MetaStartX) * Resolution, (fetusY-MetaStartY) * Resolution, Resolution, Resolution);
+                        MapView.DrawImage(fetus.Image, (fetusX-MetaStartX) * Resolution, (fetusY-MetaStartY) * Resolution, Resolution, Resolution);
+                    }
+                }
             }
         }
         
         void DrawPlants()
         {
-            foreach (var plant in CurrentMap.Plants)
+            // int plantX, plantY;
+            // foreach (var plant in CurrentMap.Plants)
+            // {
+            //     plantX = plant.Tile.X;
+            //     plantY = plant.Tile.Y;
+            //     if (plantX >= MetaStartX && plantX < MetaStartX + MetaWidth)
+            //     {
+            //         if (plantY >= MetaStartY && plantY < MetaStartY + MetaHeight)
+            //         {
+            //             MapView.DrawImage(plant.Image, (plantX-MetaStartX) * Resolution, (plantY-MetaStartY) * Resolution, Resolution, Resolution);
+            //         }
+            //     }
+            // }
+
+            Tile currentTile;
+            for(int i = MetaStartX;i<MetaStartX+MetaWidth;++i)
             {
-                MapView.FillRectangle(plant.Color, plant.Tile.X * Resolution, plant.Tile.Y * Resolution, Resolution, Resolution);
+                for(int j = MetaStartY;j<MetaStartY+MetaHeight;++j)
+                {
+                    currentTile = CurrentMap.Tiles[i, j];
+                    if (currentTile.Plant != null)
+                    {
+                        MapView.DrawImage(currentTile.Plant.Image, (i-MetaStartX) * Resolution, (j-MetaStartY) * Resolution, Resolution, Resolution);
+                    }
+                }
             }
         }
-        
+
+        void DrawEntities()
+        {
+            Tile currentTile;
+            for(int i = MetaStartX;i<MetaStartX+MetaWidth;++i)
+            {
+                for(int j = MetaStartY;j<MetaStartY+MetaHeight;++j)
+                {
+                    currentTile = CurrentMap.Tiles[i, j];
+                    if (currentTile.Entities.Count > 0)
+                    {
+                        foreach (var entity in currentTile.Entities)
+                        {
+                            MapView.DrawImage(entity.Image, (i-MetaStartX) * Resolution, (j-MetaStartY) * Resolution, Resolution, Resolution);
+                        }
+                    }
+                }
+            }
+        }
         void DrawAnimals()
         {
+            int animalX, animalY;
             foreach (var animal in CurrentMap.Animals)
             {
-                MapView.FillEllipse(animal.Color,animal.Tile.X*Resolution,animal.Tile.Y*Resolution,Resolution,Resolution);
+                // MapView.FillEllipse(animal.Color,animal.Tile.X*Resolution,animal.Tile.Y*Resolution,Resolution,Resolution);
+                animalX = animal.Tile.X;
+                animalY = animal.Tile.Y;
+                if (animalX >= MetaStartX && animalX < MetaStartX + MetaWidth)
+                {
+                    if (animalY >= MetaStartY && animalY < MetaStartY + MetaHeight)
+                    {
+                        // временная мера
+                        // MapView.FillRectangle(animal.Color, (animalX-MetaStartX) * Resolution, (animalY-MetaStartY) * Resolution, Resolution, Resolution);
+                        MapView.DrawImage(animal.Image, (animalX-MetaStartX) * Resolution, (animalY-MetaStartY) * Resolution, Resolution, Resolution);
+                    }
+                }
             }
+        }
+
+        private void buttonUp_Click(object sender, EventArgs e)
+        {
+            if (timer1.Enabled)
+            {
+                if (MetaStartY > 0)
+                {
+                    --MetaStartY;
+                    NextView();
+                }
+            }
+            
+        }
+
+        private void buttonLeft_Click(object sender, EventArgs e)
+        {
+            if (timer1.Enabled)
+            {
+                if (MetaStartX > 0)
+                {
+                    --MetaStartX;
+                    NextView();
+                }
+            }
+            
+        }
+
+        private void buttonDown_Click(object sender, EventArgs e)
+        {
+            if (timer1.Enabled)
+            {
+                if (MetaStartY < ViewHeight-MetaHeight)
+                {
+                    ++MetaStartY;
+                    NextView();
+                }
+            }
+            
+        }
+
+        private void buttonRight_Click(object sender, EventArgs e)
+        {
+            if (timer1.Enabled)
+            {
+                if (MetaStartX < ViewWidth-MetaWidth)
+                {
+                    ++MetaStartX;
+                    NextView();
+                }
+            }
+            
         }
     }
 }

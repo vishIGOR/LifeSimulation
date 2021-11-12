@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using LifeSimulation.AdditionalClasses;
 using LifeSimulation.MapClasses;
+using LifeSimulation.MapClasses.Enumerators;
 using LifeSimulation.TileClasses;
 namespace LifeSimulation.EntityClasses
 {
     public abstract class Entity
     {
+        public Image Image { get; protected set; }
         public Tile Tile { get; protected set; }
         
         protected int HitPoints;
@@ -34,6 +37,17 @@ namespace LifeSimulation.EntityClasses
             Tile = tile;
             Map = map;
             Randomizer = Map.Randomizer;
+            
+            
+            Image = System.Drawing.Image.FromFile(Path.Combine(Environment.CurrentDirectory, @"../../Images/",GetType()+".png"));
+        }
+
+        public virtual void ReactToChangeSeason(SeasonType newSeason)
+        {
+            if (newSeason == SeasonType.Winter)
+            {
+                HitPoints -= 5;
+            }
         }
     }
 }

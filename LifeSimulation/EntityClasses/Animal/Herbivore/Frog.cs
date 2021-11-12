@@ -18,8 +18,8 @@ namespace LifeSimulation.EntityClasses
             Color = Brushes.Lime;
             
             SetStandartValues(tile,map);
-            Mover = new Mover(2, map);
-            Mover.CurrentMovingWay = 2;
+            Mover = new Mover(this,2, map);
+            Mover.CurrentMovingWay = 3;
             Mover.CurrentWalkingWay = 3;
         }
 

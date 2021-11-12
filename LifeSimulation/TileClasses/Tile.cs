@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using LifeSimulation.EntityClasses;
+using LifeSimulation.MapClasses.Enumerators;
 
 namespace LifeSimulation.TileClasses
 {
@@ -8,9 +10,14 @@ namespace LifeSimulation.TileClasses
         public bool LandPossibility { get; protected set; }
         public bool PlantPossibility{ get; protected set; }
         public Brush TileColor { get; protected set; }
+        public List<Entity> Entities = new List<Entity>();
+        public Plant Plant;
         public bool IsSeeded;
         public int X{ get; protected set; }
         public int Y{ get; protected set; }
+
+        public abstract void ReactToChangeSeason(SeasonType newSeason);
+        
     }
 
 }

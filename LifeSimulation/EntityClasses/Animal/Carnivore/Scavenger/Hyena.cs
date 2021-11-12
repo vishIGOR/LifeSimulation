@@ -5,9 +5,9 @@ using LifeSimulation.TileClasses;
 
 namespace LifeSimulation.EntityClasses.Scavenger
 {
-    public class Condor:Scavenger
+    public class Hyena:Scavenger
     {
-        public Condor(Tile tile, Map map)
+        public Hyena(Tile tile, Map map)
         {
             MaxHitPoints = 20;
             MaxHungerPoints = 25;
@@ -18,14 +18,14 @@ namespace LifeSimulation.EntityClasses.Scavenger
             Color = Brushes.Tan;
             
             SetStandartValues(tile,map);
-            Mover = new Mover(2, map);
+            Mover = new Mover(this,2, map);
             Mover.CurrentMovingWay = 2;
             Mover.CurrentWalkingWay = 1;
         }
 
         protected override void CreateChild()
         {
-            Condor child = new Condor(Tile, Map);
+            Hyena child = new Hyena(Tile, Map);
             Map.NewEntities.Add(child);
             Map.Animals.Add(child);
         }

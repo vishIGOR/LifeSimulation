@@ -18,9 +18,9 @@ namespace LifeSimulation.EntityClasses.Omnivore
             Color = Brushes.Pink;
             
             SetStandartValues(tile,map);
-            Mover = new Mover(2, map);
-            Mover.CurrentMovingWay = 3;
-            Mover.CurrentWalkingWay = 3;
+            Mover = new Mover(this,2, map);
+            Mover.CurrentMovingWay = 1;
+            Mover.CurrentWalkingWay = 1;
         }
 
         protected override void CreateChild()

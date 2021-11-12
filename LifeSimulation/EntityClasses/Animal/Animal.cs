@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using LifeSimulation.EntityClasses.DeadBodyClasses;
 using LifeSimulation.EntityClasses.SupportClasses;
 using LifeSimulation.Enumerations;
 using LifeSimulation.MapClasses;
+using LifeSimulation.MapClasses.Enumerators;
 using LifeSimulation.TileClasses;
 
 namespace LifeSimulation.EntityClasses
@@ -14,10 +17,10 @@ namespace LifeSimulation.EntityClasses
 
         public Mover Mover{ get; protected set; }
         public bool Sex{ get; protected set; }
-        public bool ReadyToMate{ get; protected set; }
-        
-        protected int MatingCounter;
-        protected int MaxMatingCounter;
+        public bool ReadyToMate{ get; set; }
+
+        public int MatingCounter;
+        public int MaxMatingCounter;
         public Animal MatingTarget;
         
         protected int DamageForce;
@@ -46,7 +49,7 @@ namespace LifeSimulation.EntityClasses
             Map.DeadEntities.Add(this);
         }
 
-        protected void StartEat(Entity target)
+        protected virtual void StartEat(Entity target)
         {
             target.DamageIt(DamageForce);
 
@@ -79,6 +82,17 @@ namespace LifeSimulation.EntityClasses
                 return;
             }
 
+            if (Map.Season == SeasonType.Winter)
+            {
+                if (HungerPoints == 0)
+                {
+                    --HitPoints;
+                }
+                else
+                {
+                    --HungerPoints;
+                }
+            }
             if (HungerPoints == 0)
             {
                 --HitPoints;
@@ -137,10 +151,12 @@ namespace LifeSimulation.EntityClasses
             Sex = Randomizer.GetRandomBool();
             
             Eatable = true;
+            
+            Tile.Entities.Add(this);
         }
 
         protected abstract void CreateChild();
-        protected void StartMate()
+        protected virtual void StartMate()
         {
             CreateChild();
             
@@ -206,5 +222,6 @@ namespace LifeSimulation.EntityClasses
                 }
             }
         }
+        
     }
 }

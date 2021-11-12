@@ -18,9 +18,9 @@ namespace LifeSimulation.EntityClasses.Omnivore
             Color = Brushes.Chocolate;
             
             SetStandartValues(tile,map);
-            Mover = new Mover(2, map);
-            Mover.CurrentMovingWay = 1;
-            Mover.CurrentWalkingWay = 2;
+            Mover = new Mover(this,2, map);
+            Mover.CurrentMovingWay = 3;
+            Mover.CurrentWalkingWay = 3;
         }
 
         protected override void CreateChild()
@@ -30,61 +30,61 @@ namespace LifeSimulation.EntityClasses.Omnivore
             Map.Animals.Add(child);
         }
         
-        public override void ChooseAction()
-        {
-            ++Age;
-            if (Age > MaxAge)
-            {
-                Die();
-                return;
-            }
-
-            if (HungerPoints == 0)
-            {
-                --HitPoints;
-            }
-            else
-            {
-                --HungerPoints;
-            }
-
-            
-            if (HitPoints <= 0)
-            {
-                Die();
-                return;
-            }
-
-            if (Age % 5 == 0)
-            {
-                Mover.CurrentMovingWay = Randomizer.GetRandomInt(1, 3);
-                Mover.CurrentWalkingWay = Randomizer.GetRandomInt(1, 3);
-            }
-
-            --MatingCounter;
-            if (MatingCounter <= 0 && ReadyToMate==false)
-            {
-                ReadyToMate = true;
-            }
-            
-            if (HungerPoints < HungerBorder)
-            {
-                if(MatingTarget!= null)
-                    MatingTarget.MatingTarget = null;
-                ReadyToMate = false;
-                MatingTarget = null;
-                
-                LookForFood();
-                return;
-            }
-
-            if (ReadyToMate)
-            {
-                LookForMating();
-            }
-            
-            Tile = Mover.Walk(Tile);
-        }
+        // public override void ChooseAction()
+        // {
+        //     ++Age;
+        //     if (Age > MaxAge)
+        //     {
+        //         Die();
+        //         return;
+        //     }
+        //
+        //     if (HungerPoints == 0)
+        //     {
+        //         --HitPoints;
+        //     }
+        //     else
+        //     {
+        //         --HungerPoints;
+        //     }
+        //
+        //     
+        //     if (HitPoints <= 0)
+        //     {
+        //         Die();
+        //         return;
+        //     }
+        //
+        //     if (Age % 5 == 0)
+        //     {
+        //         Mover.CurrentMovingWay = Randomizer.GetRandomInt(1, 3);
+        //         Mover.CurrentWalkingWay = Randomizer.GetRandomInt(1, 3);
+        //     }
+        //
+        //     --MatingCounter;
+        //     if (MatingCounter <= 0 && ReadyToMate==false)
+        //     {
+        //         ReadyToMate = true;
+        //     }
+        //     
+        //     if (HungerPoints < HungerBorder)
+        //     {
+        //         if(MatingTarget!= null)
+        //             MatingTarget.MatingTarget = null;
+        //         ReadyToMate = false;
+        //         MatingTarget = null;
+        //         
+        //         LookForFood();
+        //         return;
+        //     }
+        //
+        //     if (ReadyToMate)
+        //     {
+        //         LookForMating();
+        //     }
+        //     
+        //     Tile = Mover.Walk(Tile);
+        // }
 
     }
 }

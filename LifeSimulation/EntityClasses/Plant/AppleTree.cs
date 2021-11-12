@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using LifeSimulation.Enumerations;
 using LifeSimulation.MapClasses;
+using LifeSimulation.MapClasses.Enumerators;
 using LifeSimulation.TileClasses;
 
 namespace LifeSimulation.EntityClasses
@@ -21,6 +22,7 @@ namespace LifeSimulation.EntityClasses
 
             Toxicity = false;
             ToxicityValue = 0;
+            SeedRadius = 2;
             
             SetStandartValues(tile,map);
             ChangePlantStage(growthStage);
@@ -72,7 +74,10 @@ namespace LifeSimulation.EntityClasses
 
         public override void ChooseAction()
         {
-            ++Age;
+            if (Map.Season == SeasonType.Summer)
+            {
+                ++Age;
+            }
             if (HitPoints <= 0)
             {
                 Die();
@@ -96,25 +101,27 @@ namespace LifeSimulation.EntityClasses
 
                     break;
                 case PlantStage.Grown:
-                    ++SeedCounter;
-                    ++FetusCounter;
-                    if (Age == 105)
+                    if (Map.Season != SeasonType.Winter)
                     {
-                        ChangePlantStage(PlantStage.Elder);
-                    }
+                        ++SeedCounter;
+                        ++FetusCounter;
+                        if (Age == 105)
+                        {
+                            ChangePlantStage(PlantStage.Elder);
+                        }
 
-                    if (SeedCounter == ReadyToSeed)
-                    {
-                        CreateSeeds();
-                        SeedCounter = 0;
-                    }
+                        if (SeedCounter == ReadyToSeed)
+                        {
+                            FindPlaceToSeed();
+                            SeedCounter = 0;
+                        }
 
-                    if (FetusCounter == ReadyToFetus)
-                    {
-                        CreateFetuses();
-                        FetusCounter = 0;
+                        if (FetusCounter == ReadyToFetus)
+                        {
+                            CreateFetuses();
+                            FetusCounter = 0;
+                        }
                     }
-
                     break;
                 case PlantStage.Elder:
                     if (Age == MaxAge)
@@ -126,49 +133,27 @@ namespace LifeSimulation.EntityClasses
             }
         }
 
-        protected override void CreateSeeds()
+        protected override void CreateNewSeeds(List<Tile> possibleTiles, int numberOfPossibleTiles)
         {
-            List<Tile> possibleTiles = new List<Tile>();
-            int counter = 0;
             int randomInt;
-
-            for (int deltaX = -2; deltaX <= 2; ++deltaX)
-            {
-                for (int deltaY = -2; deltaY <= 2; ++deltaY)
-                {
-                    if (Tile.X + deltaX >= 0 && Tile.Y + deltaY >= 0)
-                    {
-                        if (Tile.X + deltaX < Map.Width && Tile.Y + deltaY < Map.Height)
-                        {
-                            if (!Map.Tiles[Tile.X + deltaX, Tile.Y + deltaY].IsSeeded &&
-                                Map.Tiles[Tile.X + deltaX, Tile.Y + deltaY].PlantPossibility)
-                            {
-                                ++counter;
-                                possibleTiles.Add(Map.Tiles[Tile.X + deltaX, Tile.Y + deltaY]);
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if (counter >= 2)
+            if (numberOfPossibleTiles >= 2)
             {
                 for (int i = 0; i < 2; ++i)
                 {
-                    randomInt = Randomizer.GetRandomInt(0, counter - 1);
+                    randomInt = Randomizer.GetRandomInt(0, numberOfPossibleTiles - 1);
                     Plant newPlant = new AppleTree(possibleTiles[randomInt], Map,PlantStage.Seed);
                     Map.Plants.Add(newPlant);
                     Map.NewEntities.Add(newPlant);
 
                     possibleTiles.RemoveAt(randomInt);
-                    --counter;
+                    --numberOfPossibleTiles;
                 }
             }
             else
             {
-                if (counter == 1)
+                if (numberOfPossibleTiles == 1)
                 {
-                    randomInt = Randomizer.GetRandomInt(0, counter - 1);
+                    randomInt = Randomizer.GetRandomInt(0, numberOfPossibleTiles - 1);
                     Plant newPlant = new AppleTree(possibleTiles[randomInt], Map,PlantStage.Seed);
                     Map.Plants.Add(newPlant);
                     Map.NewEntities.Add(newPlant);

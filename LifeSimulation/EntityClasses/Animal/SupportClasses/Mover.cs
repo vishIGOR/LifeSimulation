@@ -17,19 +17,22 @@ namespace LifeSimulation.EntityClasses.SupportClasses
         private int CircleY = 1;
         private int CircleCounterX=0;
         private int CircleCounterY = 0;
+        private Animal Animal;
         public Map Map{ get; protected set; }
-        public Mover(int speed,Map map)
+        public Mover(Animal animal, int speed,Map map)
         {
             Speed = speed;
             SpeedCounter = 0;
             Map = map;
             Randomizer = Map.Randomizer;
-            
-            
+            Animal = animal;
+
         }
         
         private Tile Move(Tile currentTile, int xMove, int yMove)
         {
+            currentTile.Entities.Remove(Animal);
+            Map.Tiles[currentTile.X + xMove, currentTile.Y + yMove].Entities.Add(Animal);
             return Map.Tiles[currentTile.X + xMove, currentTile.Y + yMove];
         }
         private Tile SimpleMove(Tile currentTile,Tile target)
