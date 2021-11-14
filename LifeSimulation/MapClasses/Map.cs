@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using LifeSimulation.AdditionalClasses;
 using LifeSimulation.EntityClasses;
@@ -275,7 +274,6 @@ namespace LifeSimulation.MapClasses
             {
                 entity.ReactToChangeSeason(Season);
             }
-            //тут остановились
         }
     }
 }

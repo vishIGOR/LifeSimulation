@@ -1,6 +1,4 @@
-﻿using System;
-using System.Drawing;
-using LifeSimulation.EntityClasses.DeadBodyClasses;
+﻿using System.Drawing;
 using LifeSimulation.EntityClasses.Omnivore;
 using LifeSimulation.EntityClasses.SupportClasses;
 using LifeSimulation.Enumerations;

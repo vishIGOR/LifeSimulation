@@ -77,7 +77,6 @@ namespace LifeSimulation
             numericWidth.Enabled = false;
             numericPlantsPercent.Enabled = false;
             numericAnimalsNumber.Enabled = false;
-            // resolutionSelector.Enabled = false;
 
             MetaStartX = 0;
             MetaStartY = 0;
@@ -129,7 +128,6 @@ namespace LifeSimulation
                     MetaStartX = ViewWidth - MetaWidth;
                 }
 
-                // NextView();
                 using (await Mutex.LockAsync())
                 {
                     NextView();
@@ -152,54 +150,19 @@ namespace LifeSimulation
             numericWidth.Enabled = true;
             numericPlantsPercent.Enabled = true;
             numericAnimalsNumber.Enabled = true;
-            // resolutionSelector.Enabled = true;
         }
 
         void NextView()
         {
             DrawLandscape();
             DrawPlants();
-
-            // DrawDeadBodies();
-            // DrawFetuses();
-            // DrawAnimals();
-
             DrawEntities();
 
             pictureMap.Refresh();
         }
 
-        void DrawDeadBodies()
-        {
-            int deadX, deadY;
-            foreach (var dead in CurrentMap.DeadBodies)
-            {
-                // MapView.FillRectangle(dead.Color, dead.Tile.X * Resolution, dead.Tile.Y * Resolution, Resolution, Resolution);
-                deadX = dead.Tile.X;
-                deadY = dead.Tile.Y;
-                if (deadX >= MetaStartX && deadX < MetaStartX + MetaWidth)
-                {
-                    if (deadY >= MetaStartY && deadY < MetaStartY + MetaHeight)
-                    {
-                        // временная мера
-                        // MapView.FillRectangle(dead.Color, (deadX-MetaStartX) * Resolution, (deadY-MetaStartY) * Resolution, Resolution, Resolution);
-                        MapView.DrawImage(dead.Image, (deadX - MetaStartX) * Resolution,
-                            (deadY - MetaStartY) * Resolution, Resolution, Resolution);
-                    }
-                }
-            }
-        }
-
         void DrawLandscape()
         {
-            // for (int i = 0; i < ViewWidth; ++i)
-            // {
-            //     for (int j = 0; j < ViewHeight; ++j)
-            //     {
-            //          MapView.FillRectangle(ColorsOfTiles[i,j],i*Resolution,j*Resolution,Resolution,Resolution);
-            //     }
-            // }
-
             for (int i = 0; i < MetaWidth; ++i)
             {
                 for (int j = 0; j < MetaHeight; ++j)
@@ -213,43 +176,8 @@ namespace LifeSimulation
             }
         }
 
-        void DrawFetuses()
-        {
-            int fetusX, fetusY;
-            foreach (var fetus in CurrentMap.Fetuses)
-            {
-                // MapView.FillEllipse(fetus.Color, fetus.Tile.X * Resolution+Resolution/4, fetus.Tile.Y * Resolution+Resolution/4, Resolution/2, Resolution/2);
-                fetusX = fetus.Tile.X;
-                fetusY = fetus.Tile.Y;
-                if (fetusX >= MetaStartX && fetusX < MetaStartX + MetaWidth)
-                {
-                    if (fetusY >= MetaStartY && fetusY < MetaStartY + MetaHeight)
-                    {
-                        // временная мера
-                        // MapView.FillRectangle(fetus.Color, (fetusX-MetaStartX) * Resolution, (fetusY-MetaStartY) * Resolution, Resolution, Resolution);
-                        MapView.DrawImage(fetus.Image, (fetusX - MetaStartX) * Resolution,
-                            (fetusY - MetaStartY) * Resolution, Resolution, Resolution);
-                    }
-                }
-            }
-        }
-
         void DrawPlants()
         {
-            // int plantX, plantY;
-            // foreach (var plant in CurrentMap.Plants)
-            // {
-            //     plantX = plant.Tile.X;
-            //     plantY = plant.Tile.Y;
-            //     if (plantX >= MetaStartX && plantX < MetaStartX + MetaWidth)
-            //     {
-            //         if (plantY >= MetaStartY && plantY < MetaStartY + MetaHeight)
-            //         {
-            //             MapView.DrawImage(plant.Image, (plantX-MetaStartX) * Resolution, (plantY-MetaStartY) * Resolution, Resolution, Resolution);
-            //         }
-            //     }
-            // }
-
             Tile currentTile;
             for (int i = MetaStartX; i < MetaStartX + MetaWidth; ++i)
             {
@@ -280,27 +208,6 @@ namespace LifeSimulation
                             MapView.DrawImage(entity.Image, (i - MetaStartX) * Resolution,
                                 (j - MetaStartY) * Resolution, Resolution, Resolution);
                         }
-                    }
-                }
-            }
-        }
-
-        void DrawAnimals()
-        {
-            int animalX, animalY;
-            foreach (var animal in CurrentMap.Animals)
-            {
-                // MapView.FillEllipse(animal.Color,animal.Tile.X*Resolution,animal.Tile.Y*Resolution,Resolution,Resolution);
-                animalX = animal.Tile.X;
-                animalY = animal.Tile.Y;
-                if (animalX >= MetaStartX && animalX < MetaStartX + MetaWidth)
-                {
-                    if (animalY >= MetaStartY && animalY < MetaStartY + MetaHeight)
-                    {
-                        // временная мера
-                        // MapView.FillRectangle(animal.Color, (animalX-MetaStartX) * Resolution, (animalY-MetaStartY) * Resolution, Resolution, Resolution);
-                        MapView.DrawImage(animal.Image, (animalX - MetaStartX) * Resolution,
-                            (animalY - MetaStartY) * Resolution, Resolution, Resolution);
                     }
                 }
             }
