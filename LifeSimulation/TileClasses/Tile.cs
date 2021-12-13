@@ -8,16 +8,14 @@ namespace LifeSimulation.TileClasses
     public abstract class Tile
     {
         public bool LandPossibility { get; protected set; }
-        public bool PlantPossibility{ get; protected set; }
+        public bool PlantPossibility { get; protected set; }
         public Brush TileColor { get; protected set; }
         public List<Entity> Entities = new List<Entity>();
-        public Plant Plant;
+        public Entity SpecialObject;
         public bool IsSeeded;
-        public int X{ get; protected set; }
-        public int Y{ get; protected set; }
+        public int X { get; protected set; }
+        public int Y { get; protected set; }
 
         public abstract void ReactToChangeSeason(SeasonType newSeason);
-        
     }
-
 }

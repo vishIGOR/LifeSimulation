@@ -120,6 +120,7 @@
         <Compile Include="EntityClasses\Animal\Omnivore\Omnivore.cs" />
         <Compile Include="EntityClasses\Animal\Omnivore\Pig.cs" />
         <Compile Include="EntityClasses\Animal\SupportClasses\Mover.cs" />
+        <Compile Include="EntityClasses\Building\Building.cs" />
         <Compile Include="EntityClasses\Entity.cs" />
         <Compile Include="EntityClasses\Enumerators\AnimalStage.cs" />
         <Compile Include="EntityClasses\Enumerators\FoodType.cs" />
@@ -127,11 +128,14 @@
         <Compile Include="EntityClasses\Fetus\Fetus.cs" />
         <Compile Include="EntityClasses\Fetus\WolfBerryFetus.cs" />
         <Compile Include="EntityClasses\Enumerators\PlantStage.cs" />
+        <Compile Include="EntityClasses\IMeneable.cs" />
         <Compile Include="EntityClasses\Plant\AppleTree.cs" />
         <Compile Include="EntityClasses\Plant\Grass.cs" />
         <Compile Include="EntityClasses\Plant\IProductingFetuses.cs" />
         <Compile Include="EntityClasses\Plant\Plant.cs" />
         <Compile Include="EntityClasses\Plant\WolfBerry.cs" />
+        <Compile Include="EntityClasses\ResourceDeposit\ResourceDeposit.cs" />
+        <Compile Include="EntityClasses\ResourceDeposit\SaltpeterMine.cs" />
         <Compile Include="MainForm.cs">
           <SubType>Form</SubType>
         </Compile>
@@ -142,9 +146,19 @@
         <Compile Include="MapClasses\Map.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="ResourceClasses\ResourceType.cs" />
+        <Compile Include="ResourceClasses\Saltpeter.cs" />
+        <Compile Include="ResourceClasses\Wood.cs" />
         <Compile Include="TileClasses\MountainTile.cs" />
         <Compile Include="TileClasses\SoilTile.cs" />
         <Compile Include="TileClasses\Tile.cs" />
+        <Compile Include="ToolClasses\MiningTool\Axe.cs" />
+        <Compile Include="ToolClasses\MiningTool\MiningTool.cs" />
+        <Compile Include="ToolClasses\MiningTool\PickAxe.cs" />
+        <Compile Include="ToolClasses\Tool.cs" />
+        <Compile Include="ToolClasses\Weapon\Musket.cs" />
+        <Compile Include="ToolClasses\Weapon\Spear.cs" />
+        <Compile Include="ToolClasses\Weapon\Weapon.cs" />
         <EmbeddedResource Include="MainForm.resx">
           <DependentUpon>MainForm.cs</DependentUpon>
         </EmbeddedResource>

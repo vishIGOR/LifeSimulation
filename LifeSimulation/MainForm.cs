@@ -51,6 +51,7 @@ namespace LifeSimulation
                 CurrentMap.UpdateMap();
                 CurrentMap.ReloadEntities();
             }
+
             NextView();
             ShowInfo();
             TickCounter.Text = Convert.ToString(Convert.ToInt32(TickCounter.Text) + 1);
@@ -155,7 +156,7 @@ namespace LifeSimulation
         void NextView()
         {
             DrawLandscape();
-            DrawPlants();
+            DrawSpecialObjects();
             DrawEntities();
 
             pictureMap.Refresh();
@@ -176,7 +177,7 @@ namespace LifeSimulation
             }
         }
 
-        void DrawPlants()
+        void DrawSpecialObjects()
         {
             Tile currentTile;
             for (int i = MetaStartX; i < MetaStartX + MetaWidth; ++i)
@@ -184,9 +185,9 @@ namespace LifeSimulation
                 for (int j = MetaStartY; j < MetaStartY + MetaHeight; ++j)
                 {
                     currentTile = CurrentMap.Tiles[i, j];
-                    if (currentTile.Plant != null)
+                    if (currentTile.SpecialObject != null)
                     {
-                        MapView.DrawImage(currentTile.Plant.Image, (i - MetaStartX) * Resolution,
+                        MapView.DrawImage(currentTile.SpecialObject.Image, (i - MetaStartX) * Resolution,
                             (j - MetaStartY) * Resolution, Resolution, Resolution);
                     }
                 }
@@ -285,12 +286,13 @@ namespace LifeSimulation
             }
             else
             {
-                if (targetTile.Plant != null)
+                if (targetTile.SpecialObject != null)
                 {
-                    ShowingEntity = targetTile.Plant;
+                    ShowingEntity = targetTile.SpecialObject;
                     ShowInfo();
                 }
             }
+
             if (ShowingEntity == null)
             {
                 Debug.WriteLine($"nothing");
@@ -314,8 +316,8 @@ namespace LifeSimulation
             pictureBoxShowingEntity.Image = null;
             comboBoxDomestics.Items.Clear();
             comboBoxInventory.Items.Clear();
-            
-            if (!CurrentMap.Entities.Contains(ShowingEntity) || ShowingEntity== null)
+
+            if (!CurrentMap.Entities.Contains(ShowingEntity) || ShowingEntity == null)
             {
                 return;
             }
@@ -331,13 +333,15 @@ namespace LifeSimulation
                 labelHungerLevel.Text = $"{ShowingAnimal.HungerPoints}/{ShowingAnimal.MaxHungerPoints}";
                 if (ShowingAnimal.MatingTarget != null)
                 {
-                    labelMateTargetCoordinates.Text = $"({ShowingAnimal.MatingTarget.Tile.X}, {ShowingAnimal.MatingTarget.Tile.Y})";
+                    labelMateTargetCoordinates.Text =
+                        $"({ShowingAnimal.MatingTarget.Tile.X}, {ShowingAnimal.MatingTarget.Tile.Y})";
                 }
-                
+
                 if (ShowingEntity is Omnivore)
                 {
                     labelCategory.Text = "Всеядное животное";
                 }
+
                 if (ShowingEntity is Human)
                 {
                     Human ShowingHuman = (Human) ShowingEntity;
@@ -348,31 +352,36 @@ namespace LifeSimulation
                         {
                             comboBoxDomestics.Items.Add($"Овца: ({domestic.Tile.X}, {domestic.Tile.Y})");
                         }
+
                         if (domestic is Bear)
                         {
                             comboBoxDomestics.Items.Add($"Мишка: ({domestic.Tile.X}, {domestic.Tile.Y})");
                         }
+
                         if (domestic is Wolf)
                         {
                             comboBoxDomestics.Items.Add($"волк: ({domestic.Tile.X}, {domestic.Tile.Y})");
                         }
-                        
                     }
+
                     comboBoxInventory.Items.Add($"Мясо :{ShowingHuman.Inventory[(int) FoodType.Meat]}");
                     comboBoxInventory.Items.Add($"Растения :{ShowingHuman.Inventory[(int) FoodType.Plant]}");
                     comboBoxInventory.Items.Add($"Плоды :{ShowingHuman.Inventory[(int) FoodType.Fetus]}");
                     comboBoxInventory.Items.Add($"Мёд :{ShowingHuman.Inventory[(int) FoodType.Honey]}");
-                    
+
                     labelInventoryFullness.Text = $"{ShowingHuman.InventoryFullness}/{ShowingHuman.InventorySize}";
                 }
+
                 if (ShowingEntity is Herbivore)
                 {
                     labelCategory.Text = "Травоядное животное";
                 }
+
                 if (ShowingEntity is Carnivore)
                 {
                     labelCategory.Text = "Хищник";
                 }
+
                 if (ShowingEntity is Scavenger)
                 {
                     labelCategory.Text = "Падальщик";

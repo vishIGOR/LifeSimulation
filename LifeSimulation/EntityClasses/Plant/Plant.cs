@@ -23,7 +23,7 @@ namespace LifeSimulation.EntityClasses
         {
             Map.Plants.Remove(this);
             Map.DeadEntities.Add(this);
-            Tile.Plant = null;
+            Tile.SpecialObject = null;
             Tile.IsSeeded = false;
         }
 
@@ -35,7 +35,7 @@ namespace LifeSimulation.EntityClasses
             Eatable = false;
             PlantStage = PlantStage.Seed;
 
-            Tile.Plant = this;
+            Tile.SpecialObject = this;
             Tile.IsSeeded = true;
 
             HitPoints = MaxHitPoints;
