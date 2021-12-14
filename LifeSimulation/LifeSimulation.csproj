@@ -113,6 +113,7 @@
         <Compile Include="EntityClasses\Animal\Herbivore\Herbivore.cs" />
         <Compile Include="EntityClasses\Animal\Herbivore\Mouse.cs" />
         <Compile Include="EntityClasses\Animal\Herbivore\Sheep.cs" />
+        <Compile Include="EntityClasses\Animal\Human.cs" />
         <Compile Include="EntityClasses\Animal\IDomesticable.cs" />
         <Compile Include="EntityClasses\Animal\Omnivore\Bear.cs" />
         <Compile Include="EntityClasses\Animal\Omnivore\Human.cs" />
