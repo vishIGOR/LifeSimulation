@@ -6,15 +6,21 @@ using LifeSimulation.EntityClasses.SupportClasses;
 using LifeSimulation.Enumerations;
 using LifeSimulation.MapClasses;
 using LifeSimulation.MapClasses.Enumerators;
+using LifeSimulation.ResourceClasses;
 using LifeSimulation.TileClasses;
 
 namespace LifeSimulation.EntityClasses
 {
     public class Human : Animal
     {
-        public int[] FoodInventory { get; protected set; }
+        public Dictionary<int,int> FoodInventory { get; protected set; }
         public int FoodInventorySize = 10;
         public int FoodInventoryFullness;
+        
+        public Dictionary<int,int> ResourcesInventory { get; protected set; }
+        public int ResourcesInventorySize = 10;
+        public int ResourcesInventoryFullness = 40;
+        
         public List<Animal> DomesticAnimals { get; protected set; }
         public List<Animal> UndomesticAnimals { get; protected set; }
         public IProfession Profession { get; protected set; }
@@ -34,18 +40,76 @@ namespace LifeSimulation.EntityClasses
             Mover.CurrentMovingWay = 1;
             Mover.CurrentWalkingWay = 2;
 
-            FoodInventory = new int[4];
+            FoodInventory = new Dictionary<int, int>();
             for (int i = 0; i < 4; ++i)
             {
-                FoodInventory[i] = 0;
+                FoodInventory.Add(i,0);
+            }
+            
+            ResourcesInventory = new Dictionary<int, int>();
+            for (int i = 0; i < 2; ++i)
+            {
+                ResourcesInventory.Add(i,0);
             }
 
             FoodInventoryFullness = 0;
-
+            ResourcesInventoryFullness = 0;
+            
             DomesticAnimals = new List<Animal>();
             UndomesticAnimals = new List<Animal>();
         }
 
+        private void LookingForResources()
+        {
+            if (Tile.SpecialObject is IMineable)
+            {
+                ExtractResource();
+                return;
+            }
+
+            double minDistance = 10000000000;
+            double currentDistance;
+            double maxDistance = 30;
+            Entity nearestDeposit = null;
+
+            // int soughtResourceType = Randomizer.GetRandomInt(0, 1);
+
+            int soughtResourceType = 0;
+            
+            foreach (var entity in Map.Entities)
+            {
+                if (entity is IMineable)
+                {
+                    IMineable possibleDeposit = entity as IMineable;
+                    if (possibleDeposit.ReturnResourceType().ID == soughtResourceType)
+                    {
+                        currentDistance = CalculateDistance(entity);
+                        if (minDistance > currentDistance && currentDistance < maxDistance)
+                        {
+                            minDistance = currentDistance;
+                            nearestDeposit = entity;
+                        }
+                    }
+                }
+
+                if (nearestDeposit == null)
+                {
+                    Tile = Mover.Walk(Tile);
+                }
+                else
+                {
+                    Tile = Mover.MoveTo(Tile, nearestDeposit.Tile);
+                }
+            }
+
+        }
+
+        private void ExtractResource()
+        {
+            IMineable currentDeposit = Tile.SpecialObject as IMineable;
+            (ResourceType, int) resource = currentDeposit.BeMined();
+            ResourcesInventory[resource.Item1.ID] += resource.Item2;
+        }
         public void SetProfession(IProfession newProfession)
         {
             Profession = newProfession;
@@ -146,9 +210,12 @@ namespace LifeSimulation.EntityClasses
             if (ReadyToMate)
             {
                 LookForMating();
+                return;
             }
-
-            if (FoodInventoryFullness > FoodInventorySize - 2)
+   
+            // LookingForResources();
+            // return;
+            if (FoodInventoryFullness < FoodInventorySize - 2)
             {
                 LookForFood();
             }
@@ -156,16 +223,36 @@ namespace LifeSimulation.EntityClasses
             {
                 Tile = Mover.Walk(Tile);
             }
+            
+            
         }
-
 
         private void EatFoodFromInventory()
         {
-            for (int i = 0; i < FoodInventory.Length; ++i)
+            // for (int i = 0; i < FoodInventory.Length; ++i)
+            // {
+            //     if (FoodInventory[i] > 0)
+            //     {
+            //         --FoodInventory[i];
+            //         if (HitPoints < MaxHitPoints - 5)
+            //         {
+            //             HitPoints += 5;
+            //         }
+            //         else
+            //         {
+            //             HitPoints = MaxHitPoints;
+            //         }
+            //
+            //         HungerPoints = MaxHungerPoints;
+            //         --FoodInventoryFullness;
+            //     }
+            // }
+
+            foreach (var key in FoodInventory.Keys)
             {
-                if (FoodInventory[i] > 0)
+                if (FoodInventory[key] > 0)
                 {
-                    --FoodInventory[i];
+                    --FoodInventory[key];
                     if (HitPoints < MaxHitPoints - 5)
                     {
                         HitPoints += 5;
@@ -174,9 +261,10 @@ namespace LifeSimulation.EntityClasses
                     {
                         HitPoints = MaxHitPoints;
                     }
-
+                
                     HungerPoints = MaxHungerPoints;
                     --FoodInventoryFullness;
+                    return;
                 }
             }
         }
@@ -253,7 +341,7 @@ namespace LifeSimulation.EntityClasses
         {
             double minDistance = 10000000000;
             double currentDistance;
-            double maxDistance = 20;
+            double maxDistance = 30;
             Entity nearestFood = null;
             Type myType = GetType();
 

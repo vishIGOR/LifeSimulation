@@ -197,20 +197,32 @@ namespace LifeSimulation.EntityClasses.Omnivore
         {
             if (Master != null)
             {
-                for (int i = 0; i < Master.FoodInventory.Length; ++i)
+                // for (int i = 0; i < Master.FoodInventory.Length; ++i)
+                // {
+                //     if (Master.FoodInventory[i] > 0)
+                //     {
+                //         Tile = Mover.MoveTo(Tile, Master.Tile);
+                //         if (Tile == Master.Tile)
+                //         {
+                //             EatMasterFood((FoodType)i);
+                //         }
+                //
+                //         return;
+                //     }
+                // }
+                foreach (var key in Master.FoodInventory.Keys)
                 {
-                    if (Master.FoodInventory[i] > 0)
+                    if (Master.FoodInventory[key] > 0)
                     {
                         Tile = Mover.MoveTo(Tile, Master.Tile);
                         if (Tile == Master.Tile)
                         {
-                            EatMasterFood((FoodType)i);
+                            EatMasterFood((FoodType)key);
                         }
-
+                    
                         return;
                     }
                 }
-                
             }
             
             

@@ -170,7 +170,6 @@ namespace LifeSimulation
                 {
                     // Debugger.Launch();
                     // Debugger.Log(1,"1","landscape test");
-                    //MetaLandscape[i, j] = ColorsOfTiles[i + MetaStartX, j + MetaStartY];
                     MapView.FillRectangle(ColorsOfTiles[i + MetaStartX, j + MetaStartY], i * Resolution, j * Resolution,
                         Resolution, Resolution);
                 }
@@ -293,14 +292,14 @@ namespace LifeSimulation
                 }
             }
 
-            if (ShowingEntity == null)
-            {
-                Debug.WriteLine($"nothing");
-            }
-            else
-            {
-                Debug.WriteLine(ShowingEntity.GetType().ToString());
-            }
+            // if (ShowingEntity == null)
+            // {
+            //     Debug.WriteLine($"nothing");
+            // }
+            // else
+            // {
+            //     Debug.WriteLine(ShowingEntity.GetType().ToString());
+            // }
         }
 
         private void ShowInfo()

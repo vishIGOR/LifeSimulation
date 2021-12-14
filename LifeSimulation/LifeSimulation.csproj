@@ -130,7 +130,7 @@
         <Compile Include="EntityClasses\Fetus\Fetus.cs" />
         <Compile Include="EntityClasses\Fetus\WolfBerryFetus.cs" />
         <Compile Include="EntityClasses\Enumerators\PlantStage.cs" />
-        <Compile Include="EntityClasses\IMeneable.cs" />
+        <Compile Include="EntityClasses\IMineable.cs" />
         <Compile Include="EntityClasses\Plant\AppleTree.cs" />
         <Compile Include="EntityClasses\Plant\Grass.cs" />
         <Compile Include="EntityClasses\Plant\IProductingFetuses.cs" />

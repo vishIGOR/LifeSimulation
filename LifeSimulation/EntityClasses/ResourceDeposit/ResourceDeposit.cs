@@ -5,7 +5,7 @@ using LifeSimulation.TileClasses;
 
 namespace LifeSimulation.EntityClasses.ResourceDeposit
 {
-    public abstract class ResourceDeposit:Entity,IMeneable
+    public abstract class ResourceDeposit:Entity,IMineable
     {
         // public int MaxFullness{ get; protected set; }
         // public int Fullness{ get; protected set; }
@@ -54,6 +54,11 @@ namespace LifeSimulation.EntityClasses.ResourceDeposit
         public (ResourceType, int) BeMined()
         {
             return (this.ResourceType, MiningEfficiency);
+        }
+
+        public ResourceType ReturnResourceType()
+        {
+            return ResourceType;
         }
     }
 }
