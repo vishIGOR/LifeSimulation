@@ -2,6 +2,11 @@
 {
     public class SaltpeterMine:ResourceDeposit
     {
+        public SaltpeterMine()
+        {
+            
+        }
+
         
     }
 }
