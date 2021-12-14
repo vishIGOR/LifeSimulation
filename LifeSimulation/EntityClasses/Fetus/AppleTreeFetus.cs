@@ -46,7 +46,7 @@ namespace LifeSimulation.EntityClasses
 
         protected override void CreateSeed()
         {
-            if (!Tile.IsSeeded)
+            if (Tile.SpecialObject == null)
             {
                 Plant newPlant = new AppleTree(Tile, Map,PlantStage.Seed);
                 Map.Plants.Add(newPlant);

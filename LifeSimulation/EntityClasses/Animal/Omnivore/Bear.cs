@@ -197,9 +197,9 @@ namespace LifeSimulation.EntityClasses.Omnivore
         {
             if (Master != null)
             {
-                for (int i = 0; i < Master.Inventory.Length; ++i)
+                for (int i = 0; i < Master.FoodInventory.Length; ++i)
                 {
-                    if (Master.Inventory[i] > 0)
+                    if (Master.FoodInventory[i] > 0)
                     {
                         Tile = Mover.MoveTo(Tile, Master.Tile);
                         if (Tile == Master.Tile)

@@ -48,7 +48,7 @@ namespace LifeSimulation.EntityClasses
         
         protected override void CreateSeed()
         {
-            if (!Tile.IsSeeded)
+            if (Tile.SpecialObject == null)
             {
                 Plant newPlant = new WolfBerry(Tile, Map,PlantStage.Seed);
                 Map.Plants.Add(newPlant);

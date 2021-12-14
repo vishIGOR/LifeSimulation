@@ -12,20 +12,21 @@ namespace LifeSimulation.EntityClasses
 {
     public class Human : Animal
     {
-        public int[] Inventory { get; protected set; }
-        public int InventorySize = 10;
-        public int InventoryFullness;
+        public int[] FoodInventory { get; protected set; }
+        public int FoodInventorySize = 10;
+        public int FoodInventoryFullness;
         public List<Animal> DomesticAnimals { get; protected set; }
         public List<Animal> UndomesticAnimals { get; protected set; }
+        public IProfession Profession { get; protected set; }
 
         public Human(Tile tile, Map map)
         {
-            MaxHitPoints = 35;
-            MaxHungerPoints = 20;
-            HungerBorder = 10;
+            MaxHitPoints = 55;
+            MaxHungerPoints = 40;
+            HungerBorder = 5;
             DamageForce = 40;
-            MaxMatingCounter = 20;
-            MaxAge = 45;
+            MaxMatingCounter = 25;
+            MaxAge = 55;
             Color = Brushes.Bisque;
 
             SetStandartValues(tile, map);
@@ -33,20 +34,26 @@ namespace LifeSimulation.EntityClasses
             Mover.CurrentMovingWay = 1;
             Mover.CurrentWalkingWay = 2;
 
-            Inventory = new int[4];
+            FoodInventory = new int[4];
             for (int i = 0; i < 4; ++i)
             {
-                Inventory[i] = 0;
+                FoodInventory[i] = 0;
             }
 
-            InventoryFullness = 0;
+            FoodInventoryFullness = 0;
 
             DomesticAnimals = new List<Animal>();
             UndomesticAnimals = new List<Animal>();
         }
 
+        public void SetProfession(IProfession newProfession)
+        {
+            Profession = newProfession;
+        }
+
         protected override void StartMate()
         {
+            CreateChild();
             CreateChild();
 
             MatingTarget.MatingCounter = MatingTarget.MaxMatingCounter;
@@ -125,7 +132,7 @@ namespace LifeSimulation.EntityClasses
 
             if (HungerPoints < HungerBorder)
             {
-                EatFromInventory();
+                EatFoodFromInventory();
             }
 
             if (HungerPoints < HungerBorder)
@@ -141,7 +148,7 @@ namespace LifeSimulation.EntityClasses
                 LookForMating();
             }
 
-            if (InventoryFullness > InventorySize - 2)
+            if (FoodInventoryFullness > FoodInventorySize - 2)
             {
                 LookForFood();
             }
@@ -151,13 +158,14 @@ namespace LifeSimulation.EntityClasses
             }
         }
 
-        private void EatFromInventory()
+
+        private void EatFoodFromInventory()
         {
-            for (int i = 0; i < Inventory.Length; ++i)
+            for (int i = 0; i < FoodInventory.Length; ++i)
             {
-                if (Inventory[i] > 0)
+                if (FoodInventory[i] > 0)
                 {
-                    --Inventory[i];
+                    --FoodInventory[i];
                     if (HitPoints < MaxHitPoints - 5)
                     {
                         HitPoints += 5;
@@ -168,7 +176,7 @@ namespace LifeSimulation.EntityClasses
                     }
 
                     HungerPoints = MaxHungerPoints;
-                    --InventoryFullness;
+                    --FoodInventoryFullness;
                 }
             }
         }
@@ -180,7 +188,8 @@ namespace LifeSimulation.EntityClasses
             DomesticAnimal.BeUntamed();
         }
 
-        protected override void StartEat(Entity target)
+
+        protected void PickUpFood(Entity target)
         {
             if (target is IDomesticable)
             {
@@ -204,29 +213,29 @@ namespace LifeSimulation.EntityClasses
 
             if (target is Animal || target is DeadBody)
             {
-                ++Inventory[(int) FoodType.Meat];
-                ++InventoryFullness;
+                ++FoodInventory[(int) FoodType.Meat];
+                ++FoodInventoryFullness;
                 return;
             }
 
             if (target is Plant)
             {
-                ++Inventory[(int) FoodType.Plant];
-                ++InventoryFullness;
+                ++FoodInventory[(int) FoodType.Plant];
+                ++FoodInventoryFullness;
                 return;
             }
 
             if (target is Fetus)
             {
-                ++Inventory[(int) FoodType.Fetus];
-                ++InventoryFullness;
+                ++FoodInventory[(int) FoodType.Fetus];
+                ++FoodInventoryFullness;
             }
         }
 
         public void FeedAnimal(FoodType foodType)
         {
-            --Inventory[(int) foodType];
-            --InventoryFullness;
+            --FoodInventory[(int) foodType];
+            --FoodInventoryFullness;
         }
 
         public void GetWool()
@@ -236,10 +245,10 @@ namespace LifeSimulation.EntityClasses
 
         public void GetHoney()
         {
-            ++Inventory[(int) FoodType.Honey];
-            ++InventoryFullness;
+            ++FoodInventory[(int) FoodType.Honey];
+            ++FoodInventoryFullness;
         }
-        
+
         protected override void LookForFood()
         {
             double minDistance = 10000000000;
@@ -254,9 +263,8 @@ namespace LifeSimulation.EntityClasses
                 {
                     if (food.GetType() != myType)
                     {
-                    
                         currentDistance = CalculateDistance(food);
-                        if (minDistance > currentDistance && currentDistance<maxDistance)
+                        if (minDistance > currentDistance && currentDistance < maxDistance)
                         {
                             minDistance = currentDistance;
                             nearestFood = food;
@@ -273,11 +281,11 @@ namespace LifeSimulation.EntityClasses
             {
                 if (nearestFood.Tile == Tile)
                 {
-                    StartEat(nearestFood);
+                    PickUpFood(nearestFood);
                 }
                 else
                 {
-                    Tile = Mover.MoveTo(Tile,nearestFood.Tile);
+                    Tile = Mover.MoveTo(Tile, nearestFood.Tile);
                 }
             }
         }

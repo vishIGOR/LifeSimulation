@@ -11,7 +11,6 @@ namespace LifeSimulation.TileClasses
             PlantPossibility = false;
             X = x;
             Y = y;
-            IsSeeded = false;
             TileColor = Brushes.LightSlateGray;
         }
         public override void ReactToChangeSeason(SeasonType newSeason)

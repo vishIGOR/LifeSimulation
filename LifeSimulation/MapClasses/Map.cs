@@ -46,7 +46,9 @@ namespace LifeSimulation.MapClasses
             Plants = new List<Plant>();
             Fetuses = new List<Fetus>();
             DeadBodies = new List<DeadBody>();
-
+            Buildings = new List<Building>();
+            ResourceDeposits = new List<ResourceDeposit>();
+            
             Height = height;
             Width = width;
 
@@ -58,6 +60,7 @@ namespace LifeSimulation.MapClasses
             ColorsOfTiles = new Brush[Width, Height];
 
             CreateRandomTiles(percentOfPlants);
+            CreateRandomResourceDeposits(Width*Height/300);
             CreateRandomAnimals(numberOfAnimals);
         }
 
@@ -143,6 +146,23 @@ namespace LifeSimulation.MapClasses
             }
         }
 
+        void CreateRandomResourceDeposits(int numberOfResourceDeposits)
+        {
+            int currentX, currentY;
+            ResourceDeposit newResourceDeposit;
+            while (numberOfResourceDeposits > 0)
+            {
+                currentX = Randomizer.GetRandomInt(0, Width - 1);
+                currentY = Randomizer.GetRandomInt(0, Height - 1);
+                if (Tiles[currentX, currentY].SpecialObject == null)
+                {
+                    --numberOfResourceDeposits;
+                    newResourceDeposit = new SaltpeterMine(Tiles[currentX, currentY], this);
+                    ResourceDeposits.Add(newResourceDeposit);
+                    Entities.Add(newResourceDeposit);
+                }
+            }
+        }
         Animal CreateNewAnimal(Tile tile)
         {
             int maxNumber = 100;

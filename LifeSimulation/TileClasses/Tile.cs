@@ -12,7 +12,6 @@ namespace LifeSimulation.TileClasses
         public Brush TileColor { get; protected set; }
         public List<Entity> Entities = new List<Entity>();
         public Entity SpecialObject;
-        public bool IsSeeded;
         public int X { get; protected set; }
         public int Y { get; protected set; }
 

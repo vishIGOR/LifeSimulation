@@ -11,7 +11,6 @@ namespace LifeSimulation.TileClasses
             PlantPossibility = true;
             X = x;
             Y = y;
-            IsSeeded = false;
             TileColor = Brushes.Peru;
         }
 

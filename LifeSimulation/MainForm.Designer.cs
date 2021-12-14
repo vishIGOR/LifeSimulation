@@ -38,7 +38,7 @@ namespace LifeSimulation
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.labelInventoryFullness = new System.Windows.Forms.Label();
+            this.labelFoodInventoryFullness = new System.Windows.Forms.Label();
             this.comboBoxInventory = new System.Windows.Forms.ComboBox();
             this.comboBoxDomestics = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
@@ -173,7 +173,7 @@ namespace LifeSimulation
             this.groupBox2.BackColor = System.Drawing.Color.Bisque;
             this.groupBox2.Controls.Add(this.pictureBoxShowingEntity);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.labelInventoryFullness);
+            this.groupBox2.Controls.Add(this.labelFoodInventoryFullness);
             this.groupBox2.Controls.Add(this.comboBoxInventory);
             this.groupBox2.Controls.Add(this.comboBoxDomestics);
             this.groupBox2.Controls.Add(this.label13);
@@ -205,12 +205,12 @@ namespace LifeSimulation
             this.label4.TabIndex = 20;
             this.label4.Text = "Заполненность инвентаря:";
             // 
-            // labelInventoryFullness
+            // labelFoodInventoryFullness
             // 
-            this.labelInventoryFullness.Location = new System.Drawing.Point(182, 214);
-            this.labelInventoryFullness.Name = "labelInventoryFullness";
-            this.labelInventoryFullness.Size = new System.Drawing.Size(162, 23);
-            this.labelInventoryFullness.TabIndex = 19;
+            this.labelFoodInventoryFullness.Location = new System.Drawing.Point(182, 214);
+            this.labelFoodInventoryFullness.Name = "labelFoodInventoryFullness";
+            this.labelFoodInventoryFullness.Size = new System.Drawing.Size(162, 23);
+            this.labelFoodInventoryFullness.TabIndex = 19;
             // 
             // comboBoxInventory
             // 
@@ -564,7 +564,7 @@ namespace LifeSimulation
 
         private System.Windows.Forms.Label label4;
 
-        private System.Windows.Forms.Label labelInventoryFullness;
+        private System.Windows.Forms.Label labelFoodInventoryFullness;
 
         private System.Windows.Forms.ComboBox comboBoxInventory;
 

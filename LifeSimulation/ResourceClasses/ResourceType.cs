@@ -2,6 +2,6 @@
 {
     public abstract class ResourceType
     {
-        
+        public int ID { get; protected set; }
     }
 }

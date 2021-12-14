@@ -311,7 +311,7 @@ namespace LifeSimulation
             labelType.Text = "";
             labelCategory.Text = "";
             labelHungerLevel.Text = "";
-            labelInventoryFullness.Text = "";
+            labelFoodInventoryFullness.Text = "";
             labelMateTargetCoordinates.Text = "";
             pictureBoxShowingEntity.Image = null;
             comboBoxDomestics.Items.Clear();
@@ -364,12 +364,12 @@ namespace LifeSimulation
                         }
                     }
 
-                    comboBoxInventory.Items.Add($"Мясо :{ShowingHuman.Inventory[(int) FoodType.Meat]}");
-                    comboBoxInventory.Items.Add($"Растения :{ShowingHuman.Inventory[(int) FoodType.Plant]}");
-                    comboBoxInventory.Items.Add($"Плоды :{ShowingHuman.Inventory[(int) FoodType.Fetus]}");
-                    comboBoxInventory.Items.Add($"Мёд :{ShowingHuman.Inventory[(int) FoodType.Honey]}");
+                    comboBoxInventory.Items.Add($"Мясо :{ShowingHuman.FoodInventory[(int) FoodType.Meat]}");
+                    comboBoxInventory.Items.Add($"Растения :{ShowingHuman.FoodInventory[(int) FoodType.Plant]}");
+                    comboBoxInventory.Items.Add($"Плоды :{ShowingHuman.FoodInventory[(int) FoodType.Fetus]}");
+                    comboBoxInventory.Items.Add($"Мёд :{ShowingHuman.FoodInventory[(int) FoodType.Honey]}");
 
-                    labelInventoryFullness.Text = $"{ShowingHuman.InventoryFullness}/{ShowingHuman.InventorySize}";
+                    labelFoodInventoryFullness.Text = $"{ShowingHuman.FoodInventoryFullness}/{ShowingHuman.FoodInventorySize}";
                 }
 
                 if (ShowingEntity is Herbivore)

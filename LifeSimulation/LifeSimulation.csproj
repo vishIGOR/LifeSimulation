@@ -116,11 +116,12 @@
         <Compile Include="EntityClasses\Animal\Human.cs" />
         <Compile Include="EntityClasses\Animal\IDomesticable.cs" />
         <Compile Include="EntityClasses\Animal\Omnivore\Bear.cs" />
-        <Compile Include="EntityClasses\Animal\Omnivore\Human.cs" />
         <Compile Include="EntityClasses\Animal\Omnivore\Monkey.cs" />
         <Compile Include="EntityClasses\Animal\Omnivore\Omnivore.cs" />
         <Compile Include="EntityClasses\Animal\Omnivore\Pig.cs" />
+        <Compile Include="EntityClasses\Animal\SupportClasses\IProfession.cs" />
         <Compile Include="EntityClasses\Animal\SupportClasses\Mover.cs" />
+        <Compile Include="EntityClasses\Animal\SupportClasses\ProfessionClasses\Unemployed.cs" />
         <Compile Include="EntityClasses\Building\Building.cs" />
         <Compile Include="EntityClasses\Entity.cs" />
         <Compile Include="EntityClasses\Enumerators\AnimalStage.cs" />

@@ -2,6 +2,9 @@
 {
     public class Wood:ResourceType
     {
-        
+        public Wood()
+        {
+            ID = 1;
+        }
     }
 }

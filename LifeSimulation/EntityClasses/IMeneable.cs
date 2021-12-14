@@ -1,7 +1,9 @@
-﻿namespace LifeSimulation.EntityClasses
+﻿using LifeSimulation.ResourceClasses;
+
+namespace LifeSimulation.EntityClasses
 {
     public interface IMeneable
     {
-        int BeMined();
+        (ResourceType,int) BeMined();
     }
 }

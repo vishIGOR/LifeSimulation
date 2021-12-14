@@ -170,7 +170,7 @@ namespace LifeSimulation.EntityClasses
         {
             if (Master != null)
             {
-                if (Master.Inventory[(int) FoodType.Meat] > 0)
+                if (Master.FoodInventory[(int) FoodType.Meat] > 0)
                 {
                     Tile = Mover.MoveTo(Tile, Master.Tile);
                     if (Tile == Master.Tile)
