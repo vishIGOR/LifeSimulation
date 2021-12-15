@@ -169,7 +169,7 @@ namespace LifeSimulation.EntityClasses
             MatingTarget.MatingTarget = null;
             MatingTarget = null;
         }
-        protected void LookForMating()
+        protected virtual void LookForMating()
         {
             double minDistance = 10000000000;
             double currentDistance;

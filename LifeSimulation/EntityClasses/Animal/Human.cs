@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using LifeSimulation.EntityClasses.BuildingClasses;
 using LifeSimulation.EntityClasses.DeadBodyClasses;
@@ -30,8 +31,8 @@ namespace LifeSimulation.EntityClasses
         public LivingHouse House;
         public List<Animal> DomesticAnimals { get; protected set; }
         public List<Animal> UndomesticAnimals { get; protected set; }
-        public IProfession Profession { get; protected set; }
 
+        private Profession MyProfession;
         public Human(Tile tile, Map map)
         {
             MaxHitPoints = 55;
@@ -64,6 +65,8 @@ namespace LifeSimulation.EntityClasses
 
             DomesticAnimals = new List<Animal>();
             UndomesticAnimals = new List<Animal>();
+
+            MyProfession = new Unemployed(this);
         }
 
         private void LookForHousePlace()
@@ -129,7 +132,7 @@ namespace LifeSimulation.EntityClasses
             Tile.SpecialObject = House;
         }
         
-        private void LookingForResources(int soughtResourceTypeID = -666)
+        public void LookingForResources(int soughtResourceTypeID = -666)
         {
             if (Tile.SpecialObject is IMineable)
             {
@@ -209,12 +212,7 @@ namespace LifeSimulation.EntityClasses
                 ResourcesInventoryFullness = ResourcesInventorySize;
             }
         }
-
-        public void SetProfession(IProfession newProfession)
-        {
-            Profession = newProfession;
-        }
-
+        
         protected override void StartMate()
         {
             CreateChild();
@@ -317,7 +315,8 @@ namespace LifeSimulation.EntityClasses
                 LookForMating();
                 return;
             }
-
+            
+            MyProfession.DoProfessionalAction();
             LookForHousePlace();
             return;
             // LookingForResources();
@@ -330,6 +329,60 @@ namespace LifeSimulation.EntityClasses
             // {
             //     Tile = Mover.Walk(Tile);
             // }
+        }
+
+        protected override void LookForMating()
+        {
+            double minDistance = 10000000000;
+            double currentDistance;
+            double maxDistance = 15;
+            Animal target = null;
+            Type myType = GetType();
+
+            if (MatingTarget == null)
+            {
+                foreach (var possibleTarget in Map.Animals)
+                {
+                    currentDistance = CalculateDistance(possibleTarget);
+                    if (minDistance > currentDistance && currentDistance < maxDistance)
+                    {
+                        if (possibleTarget.GetType() == myType)
+                        {
+                            if (possibleTarget.Sex != Sex)
+                            {
+                                if (possibleTarget.ReadyToMate)
+                                {
+                                    minDistance = currentDistance;
+                                    target = possibleTarget;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                target = MatingTarget;
+            }
+            
+            
+            if (target == null)
+            {
+                Tile = Mover.Walk(Tile);
+            }
+            else
+            {
+                target.MatingTarget = this;
+                MatingTarget = target;
+                if (target.Tile == Tile)
+                {
+                    StartMate();
+                }
+                else
+                {
+                    Tile = Mover.MoveTo(Tile, target.Tile);
+                }
+            }
         }
 
         private void EatFoodFromInventory()
@@ -461,6 +514,26 @@ namespace LifeSimulation.EntityClasses
                 {
                     Tile = Mover.MoveTo(Tile, nearestFood.Tile);
                 }
+            }
+        }
+
+        private abstract class Profession
+        {
+            public Human Human;
+            public int ID;
+            public abstract void DoProfessionalAction();
+        }
+
+        private class Unemployed : Profession
+        {
+            public Unemployed(Human human)
+            {
+                Human = human;
+            }
+
+            public override void DoProfessionalAction()
+            {
+                
             }
         }
     }

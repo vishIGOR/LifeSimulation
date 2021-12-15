@@ -1,7 +1,7 @@
-﻿namespace LifeSimulation.EntityClasses.SupportClasses
-{
-    public interface IProfession
-    {
-        void DoProfessionalAction();
-    }
-}
+﻿// namespace LifeSimulation.EntityClasses.SupportClasses
+// {
+//     public interface IProfession
+//     {
+//         void DoProfessionalAction();
+//     }
+// }
