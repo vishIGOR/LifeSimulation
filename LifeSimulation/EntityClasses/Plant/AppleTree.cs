@@ -4,15 +4,17 @@ using System.Drawing;
 using LifeSimulation.Enumerations;
 using LifeSimulation.MapClasses;
 using LifeSimulation.MapClasses.Enumerators;
+using LifeSimulation.ResourceClasses;
 using LifeSimulation.TileClasses;
 
 namespace LifeSimulation.EntityClasses
 {
-    public class AppleTree : Plant, IProductingFetuses
+    public class AppleTree : Plant, IProductingFetuses, IMineable
     {
         private int ReadyToFetus;
         private int FetusCounter;
-
+        private ResourceType ResourceType = new Wood();
+        private int MiningEfficiency = 10; 
         public AppleTree(Tile tile, Map map, PlantStage growthStage)
         {
             MaxHitPoints = 10;
@@ -159,6 +161,17 @@ namespace LifeSimulation.EntityClasses
                     Map.NewEntities.Add(newPlant);
                 }
             }
+        }
+
+        public (ResourceType, int) BeMined()
+        {
+            Die();
+            return (ResourceType, MiningEfficiency);
+        }
+
+        public ResourceType ReturnResourceType()
+        {
+            return ResourceType;
         }
     }
 }

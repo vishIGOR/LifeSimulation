@@ -2,7 +2,7 @@
 using System.Drawing;
 using LifeSimulation.AdditionalClasses;
 using LifeSimulation.EntityClasses;
-using LifeSimulation.EntityClasses.Building;
+using LifeSimulation.EntityClasses.BuildingClasses;
 using LifeSimulation.EntityClasses.DeadBodyClasses;
 using LifeSimulation.EntityClasses.Omnivore;
 using LifeSimulation.EntityClasses.ResourceDeposit;

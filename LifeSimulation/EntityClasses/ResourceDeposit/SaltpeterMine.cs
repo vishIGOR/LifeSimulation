@@ -10,7 +10,7 @@ namespace LifeSimulation.EntityClasses.ResourceDeposit
         {
             ResourceType = new Saltpeter();
             MaxHitPoints = 100;
-            MiningEfficiency = 8;
+            MiningEfficiency = 6;
             SetStandartValues(tile, map);
         }
     }

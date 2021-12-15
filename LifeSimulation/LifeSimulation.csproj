@@ -122,7 +122,8 @@
         <Compile Include="EntityClasses\Animal\SupportClasses\IProfession.cs" />
         <Compile Include="EntityClasses\Animal\SupportClasses\Mover.cs" />
         <Compile Include="EntityClasses\Animal\SupportClasses\ProfessionClasses\Unemployed.cs" />
-        <Compile Include="EntityClasses\Building\Building.cs" />
+        <Compile Include="EntityClasses\BuildingClasses\Building.cs" />
+        <Compile Include="EntityClasses\BuildingClasses\LivivngHouse.cs" />
         <Compile Include="EntityClasses\Entity.cs" />
         <Compile Include="EntityClasses\Enumerators\AnimalStage.cs" />
         <Compile Include="EntityClasses\Enumerators\FoodType.cs" />
@@ -161,6 +162,7 @@
         <Compile Include="ToolClasses\Weapon\Musket.cs" />
         <Compile Include="ToolClasses\Weapon\Spear.cs" />
         <Compile Include="ToolClasses\Weapon\Weapon.cs" />
+        <Compile Include="VillageClasses\Village.cs" />
         <EmbeddedResource Include="MainForm.resx">
           <DependentUpon>MainForm.cs</DependentUpon>
         </EmbeddedResource>
