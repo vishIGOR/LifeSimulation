@@ -119,11 +119,9 @@
         <Compile Include="EntityClasses\Animal\Omnivore\Monkey.cs" />
         <Compile Include="EntityClasses\Animal\Omnivore\Omnivore.cs" />
         <Compile Include="EntityClasses\Animal\Omnivore\Pig.cs" />
-        <Compile Include="EntityClasses\Animal\SupportClasses\IProfession.cs" />
         <Compile Include="EntityClasses\Animal\SupportClasses\Mover.cs" />
-        <Compile Include="EntityClasses\Animal\SupportClasses\ProfessionClasses\Unemployed.cs" />
         <Compile Include="EntityClasses\BuildingClasses\Building.cs" />
-        <Compile Include="EntityClasses\BuildingClasses\LivivngHouse.cs" />
+        <Compile Include="EntityClasses\BuildingClasses\LivingHouse.cs" />
         <Compile Include="EntityClasses\Entity.cs" />
         <Compile Include="EntityClasses\Enumerators\AnimalStage.cs" />
         <Compile Include="EntityClasses\Enumerators\FoodType.cs" />
@@ -163,6 +161,7 @@
         <Compile Include="ToolClasses\Weapon\Spear.cs" />
         <Compile Include="ToolClasses\Weapon\Weapon.cs" />
         <Compile Include="VillageClasses\Village.cs" />
+        <Compile Include="VillageClasses\VillagesObserver.cs" />
         <EmbeddedResource Include="MainForm.resx">
           <DependentUpon>MainForm.cs</DependentUpon>
         </EmbeddedResource>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using LifeSimulation.EntityClasses.BuildingClasses;
 using LifeSimulation.EntityClasses.DeadBodyClasses;
 using LifeSimulation.EntityClasses.SupportClasses;
@@ -12,6 +13,7 @@ using LifeSimulation.ResourceClasses;
 using LifeSimulation.TileClasses;
 using LifeSimulation.ToolClasses.MiningTool;
 using LifeSimulation.ToolClasses.Weapon;
+using LifeSimulation.VillageClasses;
 
 namespace LifeSimulation.EntityClasses
 {
@@ -33,6 +35,9 @@ namespace LifeSimulation.EntityClasses
         public List<Animal> UndomesticAnimals { get; protected set; }
 
         private Profession MyProfession;
+
+        public Village Village { get; protected set; }
+
         public Human(Tile tile, Map map)
         {
             MaxHitPoints = 55;
@@ -40,7 +45,7 @@ namespace LifeSimulation.EntityClasses
             HungerBorder = 5;
             DamageForce = 40;
             MaxMatingCounter = 25;
-            MaxAge = 55;
+            MaxAge = 25;
             Color = Brushes.Bisque;
 
             SetStandartValues(tile, map);
@@ -69,11 +74,31 @@ namespace LifeSimulation.EntityClasses
             MyProfession = new Unemployed(this);
         }
 
+        public void ChangeVillage(Village newVillage)
+        {
+            Village = newVillage;
+        }
+
+        public void ChangeProfession(int newProfessionID)
+        {
+            if (Unemployed.ID == newProfessionID)
+            {
+                MyProfession = new Unemployed(this);
+                return;
+            }
+
+            if (VillageHead.ID == newProfessionID)
+            {
+                MyProfession = new VillageHead(this);
+                return;
+            }
+        }
+
         private void LookForHousePlace()
         {
             if (ResourcesInventory[1] <= 20)
             {
-                LookingForResources(1);
+                LookForResources(1);
                 return;
             }
 
@@ -81,7 +106,7 @@ namespace LifeSimulation.EntityClasses
             double currentDistance;
             double maxDistance = 30;
             Entity nearestBuilding = null;
-            
+
             foreach (var building in Map.Buildings)
             {
                 currentDistance = CalculateDistance(building);
@@ -106,20 +131,26 @@ namespace LifeSimulation.EntityClasses
                 return;
             }
 
-            
+
             for (int i = -1; i < 2; i++)
             {
                 for (int j = -1; j < 2; j++)
                 {
-                    if (!(Map.Tiles[i + nearestBuilding.Tile.X, j + nearestBuilding.Tile.Y].SpecialObject is Building))
+                    if (i + nearestBuilding.Tile.X > 0 && i + nearestBuilding.Tile.X < Map.Width &&
+                        j + nearestBuilding.Tile.Y > 0 && j + nearestBuilding.Tile.Y < Map.Height)
                     {
-                        Tile = Mover.MoveTo(Tile, Map.Tiles[i + nearestBuilding.Tile.X, j + nearestBuilding.Tile.Y]);
-                        if (Tile == Map.Tiles[i + nearestBuilding.Tile.X, j + nearestBuilding.Tile.Y])
+                        if (!(Map.Tiles[i + nearestBuilding.Tile.X, j + nearestBuilding.Tile.Y].SpecialObject is
+                            Building))
                         {
-                            BuildHouse();
-                        }
+                            Tile = Mover.MoveTo(Tile,
+                                Map.Tiles[i + nearestBuilding.Tile.X, j + nearestBuilding.Tile.Y]);
+                            if (Tile == Map.Tiles[i + nearestBuilding.Tile.X, j + nearestBuilding.Tile.Y])
+                            {
+                                BuildHouse();
+                            }
 
-                        return;
+                            return;
+                        }
                     }
                 }
             }
@@ -130,9 +161,14 @@ namespace LifeSimulation.EntityClasses
             House = new LivingHouse(Tile, Map);
             House.Assign(this);
             Tile.SpecialObject = House;
+            if (MatingTarget != null)
+            {
+                House.Assign(MatingTarget as Human);
+                (MatingTarget as Human).House = House;
+            }
         }
-        
-        public void LookingForResources(int soughtResourceTypeID = -666)
+
+        public void LookForResources(int soughtResourceTypeID = -666)
         {
             if (Tile.SpecialObject is IMineable)
             {
@@ -172,15 +208,15 @@ namespace LifeSimulation.EntityClasses
                         }
                     }
                 }
+            }
 
-                if (nearestDeposit == null)
-                {
-                    Tile = Mover.Walk(Tile);
-                }
-                else
-                {
-                    Tile = Mover.MoveTo(Tile, nearestDeposit.Tile);
-                }
+            if (nearestDeposit == null)
+            {
+                Tile = Mover.Walk(Tile);
+            }
+            else
+            {
+                Tile = Mover.MoveTo(Tile, nearestDeposit.Tile);
             }
         }
 
@@ -212,7 +248,7 @@ namespace LifeSimulation.EntityClasses
                 ResourcesInventoryFullness = ResourcesInventorySize;
             }
         }
-        
+
         protected override void StartMate()
         {
             CreateChild();
@@ -227,8 +263,9 @@ namespace LifeSimulation.EntityClasses
 
         protected override void Die()
         {
+            Tile.Entities.Remove(this);
             base.Die();
-
+            
             foreach (var domestic in DomesticAnimals)
             {
                 UnTame(domestic);
@@ -243,12 +280,13 @@ namespace LifeSimulation.EntityClasses
 
             if (House != null)
             {
-                House.UnAssign();
+                House.UnAssign(this);
             }
         }
 
         protected override void CreateChild()
         {
+            Debug.WriteLine("created child");
             Human child = new Human(Tile, Map);
             Map.NewEntities.Add(child);
             Map.Animals.Add(child);
@@ -291,36 +329,33 @@ namespace LifeSimulation.EntityClasses
                 return;
             }
 
-            --MatingCounter;
-            if (MatingCounter <= 0 && ReadyToMate == false)
-            {
-                ReadyToMate = true;
-            }
-
-            if (HungerPoints < HungerBorder)
-            {
-                EatFoodFromInventory();
-            }
-
-            if (HungerPoints < HungerBorder)
-            {
-                ReadyToMate = false;
-
-                LookForFood();
-                return;
-            }
-
-            if (ReadyToMate)
-            {
-                LookForMating();
-                return;
-            }
-            
             MyProfession.DoProfessionalAction();
-            LookForHousePlace();
-            return;
-            // LookingForResources();
-            // return;
+
+            // --MatingCounter;
+            // if (MatingCounter <= 0 && ReadyToMate == false)
+            // {
+            //     ReadyToMate = true;
+            // }
+            //
+            // if (HungerPoints < HungerBorder)
+            // {
+            //     EatFoodFromInventory();
+            // }
+            //
+            // if (HungerPoints < HungerBorder)
+            // {
+            //     ReadyToMate = false;
+            //
+            //     LookForFood();
+            //     return;
+            // }
+            //
+            // if (ReadyToMate)
+            // {
+            //     LookForMating();
+            //     return;
+            // }
+            //
             // if (FoodInventoryFullness < FoodInventorySize - 2)
             // {
             //     LookForFood();
@@ -364,8 +399,8 @@ namespace LifeSimulation.EntityClasses
             {
                 target = MatingTarget;
             }
-            
-            
+
+
             if (target == null)
             {
                 Tile = Mover.Walk(Tile);
@@ -374,13 +409,27 @@ namespace LifeSimulation.EntityClasses
             {
                 target.MatingTarget = this;
                 MatingTarget = target;
-                if (target.Tile == Tile)
+
+                if (House == null)
                 {
-                    StartMate();
+                    LookForHousePlace();
                 }
                 else
                 {
-                    Tile = Mover.MoveTo(Tile, target.Tile);
+                    if ((MatingTarget as Human).House != House)
+                    {
+                        (MatingTarget as Human).House = House;
+                        House.Assign(MatingTarget as Human);
+                    }
+
+                    if (MatingTarget.ReadyToMate)
+                    {
+                        Mover.MoveTo(Tile, House.Tile);
+                        if (Tile == House.Tile && Tile == MatingTarget.Tile)
+                        {
+                            StartMate();
+                        }
+                    }
                 }
             }
         }
@@ -517,23 +566,85 @@ namespace LifeSimulation.EntityClasses
             }
         }
 
+        public String GetProfessionName()
+        {
+            if (MyProfession is Unemployed)
+            {
+                return "Бродяга";
+            }
+            if (MyProfession is VillageHead)
+            {
+                return "Глава деревни";
+            }
+            return "name error";
+        }
         private abstract class Profession
         {
             public Human Human;
-            public int ID;
+            public static int ID;
             public abstract void DoProfessionalAction();
         }
 
         private class Unemployed : Profession
         {
+            public static int ID = 0;
+
             public Unemployed(Human human)
+            {
+                ID = 0;
+                Human = human;
+            }
+
+            public override void DoProfessionalAction()
+            {
+                --Human.MatingCounter;
+                if (Human.MatingCounter <= 0 && Human.ReadyToMate == false)
+                {
+                    Human.ReadyToMate = true;
+                }
+
+                if (Human.HungerPoints < Human.HungerBorder)
+                {
+                    Human.EatFoodFromInventory();
+                }
+
+                if (Human.HungerPoints < Human.HungerBorder)
+                {
+                    Human.ReadyToMate = false;
+
+                    Human.LookForFood();
+                    return;
+                }
+
+                if (Human.ReadyToMate)
+                {
+                    Human.LookForMating();
+                    return;
+                }
+
+                if (Human.FoodInventoryFullness < Human.FoodInventorySize - 2)
+                {
+                    Human.LookForFood();
+                }
+                else
+                {
+                    Human.Tile = Human.Mover.Walk(Human.Tile);
+                }
+            }
+        }
+
+        private class VillageHead : Profession
+        {
+            public static int ID = 1;
+
+            public VillageHead(Human human)
             {
                 Human = human;
             }
 
             public override void DoProfessionalAction()
             {
-                
+                throw new NotImplementedException();
             }
         }
     }

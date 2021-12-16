@@ -12,7 +12,7 @@ namespace LifeSimulation.EntityClasses
 {
     public abstract class Animal : Entity
     {
-        protected int Age;
+        public int Age{ get; protected set; }
         protected int MaxAge;
 
         public Mover Mover{ get; protected set; }
@@ -44,7 +44,8 @@ namespace LifeSimulation.EntityClasses
                 MatingTarget.MatingTarget = null;
             ReadyToMate = false;
             MatingTarget = null;
-            
+
+            Tile.Entities.Remove(this);
             Map.Animals.Remove(this);
             Map.DeadEntities.Add(this);
         }

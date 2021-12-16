@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Timers;
 using System.Windows.Forms;
 using LifeSimulation.EntityClasses;
+using LifeSimulation.EntityClasses.BuildingClasses;
 using LifeSimulation.EntityClasses.DeadBodyClasses;
 using LifeSimulation.EntityClasses.Omnivore;
 using LifeSimulation.EntityClasses.Scavenger;
@@ -292,14 +293,25 @@ namespace LifeSimulation
                 }
             }
 
-            // if (ShowingEntity == null)
-            // {
-            //     Debug.WriteLine($"nothing");
-            // }
-            // else
-            // {
-            //     Debug.WriteLine(ShowingEntity.GetType().ToString());
-            // }
+            if (ShowingEntity == null)
+            {
+                Debug.WriteLine($"nothing");
+            }
+            else
+            {
+                Debug.WriteLine(ShowingEntity.GetType().ToString());
+                if (ShowingEntity is Human)
+                {
+                    Debug.WriteLine("wtf");
+                    Debug.WriteLine(ShowingEntity.HitPoints);
+                    Debug.WriteLine((ShowingEntity as Human).Age);
+                    if (CurrentMap.Entities.Contains(ShowingEntity))
+                    {
+                        Debug.WriteLine("wtf with that");
+                    }
+                    
+                }
+            }
         }
 
         private void ShowInfo()
@@ -312,6 +324,8 @@ namespace LifeSimulation
             labelHungerLevel.Text = "";
             labelFoodInventoryFullness.Text = "";
             labelMateTargetCoordinates.Text = "";
+            labelVillage.Text = "";
+            labelProfession.Text = "";
             pictureBoxShowingEntity.Image = null;
             comboBoxDomestics.Items.Clear();
             comboBoxInventory.Items.Clear();
@@ -369,6 +383,13 @@ namespace LifeSimulation
                     comboBoxInventory.Items.Add($"Мёд :{ShowingHuman.FoodInventory[(int) FoodType.Honey]}");
 
                     labelFoodInventoryFullness.Text = $"{ShowingHuman.FoodInventoryFullness}/{ShowingHuman.FoodInventorySize}";
+                    
+                    if ((ShowingEntity as Human).Village != null)
+                    {
+                        labelVillage.Text = (ShowingEntity as Human).Village.Name;
+                    }
+
+                    labelProfession.Text = (ShowingEntity as Human).GetProfessionName();
                 }
 
                 if (ShowingEntity is Herbivore)
@@ -400,6 +421,15 @@ namespace LifeSimulation
             if (ShowingEntity is Fetus)
             {
                 labelType.Text = "Плод";
+            }
+
+            if (ShowingEntity is Building)
+            {
+                labelType.Text = "Здание";
+                if ((ShowingEntity as Building).Village != null)
+                {
+                    labelVillage.Text = (ShowingEntity as Building).Village.Name;
+                }
             }
         }
     }

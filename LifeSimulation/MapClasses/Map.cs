@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using LifeSimulation.AdditionalClasses;
 using LifeSimulation.EntityClasses;
@@ -256,14 +257,19 @@ namespace LifeSimulation.MapClasses
             foreach (var entity in NewEntities)
             {
                 Entities.Add(entity);
+                
+                if (entity is Human)
+                {
+                    Debug.WriteLine("added");
+                }
             }
 
             NewEntities.Clear();
 
             foreach (var entity in DeadEntities)
             {
-                Entities.Remove(entity);
                 entity.Tile.Entities.Remove(entity);
+                Entities.Remove(entity);
             }
 
             DeadEntities.Clear();

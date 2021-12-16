@@ -37,6 +37,11 @@ namespace LifeSimulation
             this.buttonStart = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.labelProfession = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.labelVillage = new System.Windows.Forms.Label();
+            this.pictureBoxShowingEntity = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.labelFoodInventoryFullness = new System.Windows.Forms.Label();
             this.comboBoxInventory = new System.Windows.Forms.ComboBox();
@@ -75,12 +80,12 @@ namespace LifeSimulation
             this.label7 = new System.Windows.Forms.Label();
             this.pictureMap = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Timers.Timer();
-            this.pictureBoxShowingEntity = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize) (this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize) (this.pictureBoxShowingEntity)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize) (this.numericAnimalsNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize) (this.numericPlantsPercent)).BeginInit();
@@ -88,7 +93,6 @@ namespace LifeSimulation
             ((System.ComponentModel.ISupportInitialize) (this.numericWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize) (this.pictureMap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize) (this.timer1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize) (this.pictureBoxShowingEntity)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonFinish
@@ -171,6 +175,10 @@ namespace LifeSimulation
             // groupBox2
             // 
             this.groupBox2.BackColor = System.Drawing.Color.Bisque;
+            this.groupBox2.Controls.Add(this.label16);
+            this.groupBox2.Controls.Add(this.labelProfession);
+            this.groupBox2.Controls.Add(this.label14);
+            this.groupBox2.Controls.Add(this.labelVillage);
             this.groupBox2.Controls.Add(this.pictureBoxShowingEntity);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.labelFoodInventoryFullness);
@@ -190,12 +198,50 @@ namespace LifeSimulation
             this.groupBox2.Controls.Add(this.label10);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Location = new System.Drawing.Point(3, 368);
+            this.groupBox2.Location = new System.Drawing.Point(3, 327);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(344, 299);
+            this.groupBox2.Size = new System.Drawing.Size(344, 419);
             this.groupBox2.TabIndex = 21;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Информация об объекте:";
+            // 
+            // label16
+            // 
+            this.label16.Location = new System.Drawing.Point(6, 260);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(162, 23);
+            this.label16.TabIndex = 25;
+            this.label16.Text = "Профессия: ";
+            // 
+            // labelProfession
+            // 
+            this.labelProfession.Location = new System.Drawing.Point(181, 260);
+            this.labelProfession.Name = "labelProfession";
+            this.labelProfession.Size = new System.Drawing.Size(162, 23);
+            this.labelProfession.TabIndex = 24;
+            // 
+            // label14
+            // 
+            this.label14.Location = new System.Drawing.Point(6, 237);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(162, 23);
+            this.label14.TabIndex = 23;
+            this.label14.Text = "Деревня: ";
+            // 
+            // labelVillage
+            // 
+            this.labelVillage.Location = new System.Drawing.Point(181, 237);
+            this.labelVillage.Name = "labelVillage";
+            this.labelVillage.Size = new System.Drawing.Size(162, 23);
+            this.labelVillage.TabIndex = 22;
+            // 
+            // pictureBoxShowingEntity
+            // 
+            this.pictureBoxShowingEntity.Location = new System.Drawing.Point(146, 353);
+            this.pictureBoxShowingEntity.Name = "pictureBoxShowingEntity";
+            this.pictureBoxShowingEntity.Size = new System.Drawing.Size(60, 60);
+            this.pictureBoxShowingEntity.TabIndex = 21;
+            this.pictureBoxShowingEntity.TabStop = false;
             // 
             // label4
             // 
@@ -343,7 +389,7 @@ namespace LifeSimulation
             this.groupBox1.Controls.Add(this.buttonUp);
             this.groupBox1.Controls.Add(this.buttonLeft);
             this.groupBox1.Controls.Add(this.buttonDown);
-            this.groupBox1.Location = new System.Drawing.Point(4, 159);
+            this.groupBox1.Location = new System.Drawing.Point(4, 139);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(344, 182);
             this.groupBox1.TabIndex = 20;
@@ -523,14 +569,6 @@ namespace LifeSimulation
             this.timer1.SynchronizingObject = this;
             this.timer1.Elapsed += new System.Timers.ElapsedEventHandler(this.timer1_Elapsed);
             // 
-            // pictureBoxShowingEntity
-            // 
-            this.pictureBoxShowingEntity.Location = new System.Drawing.Point(145, 230);
-            this.pictureBoxShowingEntity.Name = "pictureBoxShowingEntity";
-            this.pictureBoxShowingEntity.Size = new System.Drawing.Size(60, 60);
-            this.pictureBoxShowingEntity.TabIndex = 21;
-            this.pictureBoxShowingEntity.TabStop = false;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -549,6 +587,7 @@ namespace LifeSimulation
             ((System.ComponentModel.ISupportInitialize) (this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize) (this.pictureBoxShowingEntity)).EndInit();
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize) (this.numericAnimalsNumber)).EndInit();
             ((System.ComponentModel.ISupportInitialize) (this.numericPlantsPercent)).EndInit();
@@ -556,9 +595,16 @@ namespace LifeSimulation
             ((System.ComponentModel.ISupportInitialize) (this.numericWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize) (this.pictureMap)).EndInit();
             ((System.ComponentModel.ISupportInitialize) (this.timer1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize) (this.pictureBoxShowingEntity)).EndInit();
             this.ResumeLayout(false);
         }
+
+        private System.Windows.Forms.Label labelProfession;
+
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label17;
+
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label labelVillage;
 
         private System.Windows.Forms.PictureBox pictureBoxShowingEntity;
 
