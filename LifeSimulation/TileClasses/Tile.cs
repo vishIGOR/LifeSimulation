@@ -16,5 +16,18 @@ namespace LifeSimulation.TileClasses
         public int Y { get; protected set; }
 
         public abstract void ReactToChangeSeason(SeasonType newSeason);
+
+        public void DeleteMeIDontWannaLiveAnymore(Entity entity)
+        {
+            List<Entity> DeletingEntities = new List<Entity>();
+            Entities.ForEach((entityIn =>
+            {
+                if (entity == entityIn)
+                {
+                    DeletingEntities.Add(entityIn);
+                }
+            }));
+            DeletingEntities.ForEach((entityIn => { Entities.Remove(entityIn); }));
+        }
     }
 }

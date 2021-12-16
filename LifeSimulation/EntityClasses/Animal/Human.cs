@@ -263,9 +263,14 @@ namespace LifeSimulation.EntityClasses
 
         protected override void Die()
         {
-            Tile.Entities.Remove(this);
-            base.Die();
-            
+            // int counter = 113;
+            // while (counter-- > 0)
+            // {
+                Tile.DeleteMeIDontWannaLiveAnymore(this);
+                // Tile.Entities.Remove(this);
+            // }
+
+
             foreach (var domestic in DomesticAnimals)
             {
                 UnTame(domestic);
@@ -282,6 +287,8 @@ namespace LifeSimulation.EntityClasses
             {
                 House.UnAssign(this);
             }
+
+            base.Die();
         }
 
         protected override void CreateChild()
@@ -572,12 +579,15 @@ namespace LifeSimulation.EntityClasses
             {
                 return "Бродяга";
             }
+
             if (MyProfession is VillageHead)
             {
                 return "Глава деревни";
             }
+
             return "name error";
         }
+
         private abstract class Profession
         {
             public Human Human;
@@ -644,7 +654,39 @@ namespace LifeSimulation.EntityClasses
 
             public override void DoProfessionalAction()
             {
-                throw new NotImplementedException();
+                --Human.MatingCounter;
+                if (Human.MatingCounter <= 0 && Human.ReadyToMate == false)
+                {
+                    Human.ReadyToMate = true;
+                }
+
+                if (Human.HungerPoints < Human.HungerBorder)
+                {
+                    Human.EatFoodFromInventory();
+                }
+
+                if (Human.HungerPoints < Human.HungerBorder)
+                {
+                    Human.ReadyToMate = false;
+
+                    Human.LookForFood();
+                    return;
+                }
+
+                if (Human.ReadyToMate)
+                {
+                    Human.LookForMating();
+                    return;
+                }
+
+                if (Human.FoodInventoryFullness < Human.FoodInventorySize - 2)
+                {
+                    Human.LookForFood();
+                }
+                else
+                {
+                    Human.Tile = Human.Mover.Walk(Human.Tile);
+                }
             }
         }
     }

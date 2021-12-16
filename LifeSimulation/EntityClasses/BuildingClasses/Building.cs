@@ -1,4 +1,5 @@
 ﻿using LifeSimulation.MapClasses;
+using LifeSimulation.MapClasses.Enumerators;
 using LifeSimulation.ResourceClasses;
 using LifeSimulation.TileClasses;
 using LifeSimulation.VillageClasses;
@@ -18,6 +19,11 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
             }
         }
 
+        public override void ReactToChangeSeason(SeasonType newSeason)
+        {
+            --HitPoints;
+        }
+
         protected override void Die()
         {
             Tile.SpecialObject = null;
@@ -32,8 +38,10 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
             Eatable = false;
             HitPoints = MaxHitPoints;
 
+            
             Tile.SpecialObject = this;
             Map.Buildings.Add(this);
+            Map.NewEntities.Add(this);
         }
 
         public void ChangeVillage(Village newVillage)

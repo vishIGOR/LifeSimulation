@@ -169,8 +169,6 @@ namespace LifeSimulation
             {
                 for (int j = 0; j < MetaHeight; ++j)
                 {
-                    // Debugger.Launch();
-                    // Debugger.Log(1,"1","landscape test");
                     MapView.FillRectangle(ColorsOfTiles[i + MetaStartX, j + MetaStartY], i * Resolution, j * Resolution,
                         Resolution, Resolution);
                 }
@@ -271,11 +269,7 @@ namespace LifeSimulation
             }
 
             int x = mouseEvent.X, y = mouseEvent.Y;
-
-
-            // Debug.WriteLine($"X={mouseEvent.X}, Y={mouseEvent.Y}");
-            // Debug.WriteLine($"{x / Resolution - MetaStartX},{y / Resolution - MetaStartY}");
-
+            
             Tile targetTile = CurrentMap.Tiles[x / Resolution + MetaStartX, y / Resolution + MetaStartY];
 
             if (targetTile.Entities.Count > 0)
@@ -305,11 +299,31 @@ namespace LifeSimulation
                     Debug.WriteLine("wtf");
                     Debug.WriteLine(ShowingEntity.HitPoints);
                     Debug.WriteLine((ShowingEntity as Human).Age);
+                    (ShowingEntity as Human).Tile.Entities.Remove(ShowingEntity);
+                    if (targetTile.Entities.Contains(ShowingEntity))
+                    {
+                        while(targetTile.Entities.Contains(ShowingEntity))
+                        {
+                            targetTile.Entities.Remove(ShowingEntity);
+                            Debug.WriteLine("I just wanna die");
+                        }
+                        Debug.WriteLine("I have died already");
+                    }
                     if (CurrentMap.Entities.Contains(ShowingEntity))
                     {
                         Debug.WriteLine("wtf with that");
+                        
                     }
-                    
+                }
+
+                if (ShowingEntity is LivingHouse)
+                {
+                    Debug.WriteLine((ShowingEntity as LivingHouse).HitPoints);
+                    if (CurrentMap.Entities.Contains(ShowingEntity))
+                    {
+                        Debug.WriteLine("wtf with that");
+                        
+                    }
                 }
             }
         }
