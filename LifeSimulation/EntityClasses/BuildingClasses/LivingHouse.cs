@@ -15,6 +15,8 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
             SetStandartValues(tile, map);
             Owners = new List<Human>();
             ResourceCost = (new Wood(), 40);
+            
+            JoinTheVillage();
         }
 
         public override void ChooseAction()
@@ -39,7 +41,7 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
                     }
                 }
 
-                if (housesCounter >= 2)
+                if (housesCounter >= 4)
                 {
                     if (Owners.Count > 0)
                     {

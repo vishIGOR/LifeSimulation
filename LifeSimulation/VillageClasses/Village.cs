@@ -15,6 +15,7 @@ namespace LifeSimulation.VillageClasses
         public String Name { get; private set; }
         private List<Village> Enemies = new List<Village>();
         private VillagesObserver VillagesObserver;
+        public Human VillageHead;
 
         public Village(String name, VillagesObserver observer)
         {
@@ -26,7 +27,7 @@ namespace LifeSimulation.VillageClasses
 
         public void AddHuman(Human human)
         {
-            Newbies.Add(human);
+            Members.Add(human);
         }
 
         public void AddBuilding(Building building)

@@ -8,12 +8,12 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
 {
     public abstract class Building : Entity
     {
-        public (ResourceType, int) ResourceCost { get; protected set; }
+        public static (ResourceType, int) ResourceCost { get; protected set; }
         public Village Village { get; protected set; }
 
         public override void ChooseAction()
         {
-            if (HitPoints < MaxHitPoints)
+            if (HitPoints <= 0)
             {
                 Die();
             }
@@ -21,7 +21,10 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
 
         public override void ReactToChangeSeason(SeasonType newSeason)
         {
-            --HitPoints;
+            if (newSeason == SeasonType.Winter)
+            {
+                HitPoints -= 10;
+            }
         }
 
         protected override void Die()
@@ -38,7 +41,7 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
             Eatable = false;
             HitPoints = MaxHitPoints;
 
-            
+
             Tile.SpecialObject = this;
             Map.Buildings.Add(this);
             Map.NewEntities.Add(this);
@@ -51,10 +54,13 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
                 foreach (var owner in (this as LivingHouse).Owners)
                 {
                     owner.ChangeVillage(newVillage);
+                    Village.AddHuman(owner);
                 }
             }
 
             Village = newVillage;
+            Village.AddBuilding(this);
+            
             for (int i = -1; i < 2; i++)
             {
                 for (int j = -1; j < 2; j++)
@@ -72,6 +78,44 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
                     }
                 }
             }
+        }
+
+        protected void JoinTheVillage()
+        {
+            Village newVillage = null;
+            for (int i = -1; i < 2; i++)
+            {
+                for (int j = -1; j < 2; j++)
+                {
+                    if (i + Tile.X > 0 && i + Tile.X < Map.Width &&
+                        j + Tile.Y > 0 && j + Tile.Y < Map.Height)
+                    {
+                        if (Map.Tiles[Tile.X + i, Tile.Y + j].SpecialObject is Building)
+                        {
+                            if ((Map.Tiles[Tile.X + i, Tile.Y + j].SpecialObject as Building).Village != null)
+                            {
+                                newVillage = (Map.Tiles[Tile.X + i, Tile.Y + j].SpecialObject as Building).Village;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            Village = newVillage;
+            Village.AddBuilding(this);
+            
+            if (newVillage != null)
+            {
+                if (this is LivingHouse)
+                {
+                    foreach (var owner in (this as LivingHouse).Owners)
+                    {
+                        owner.ChangeVillage(newVillage);
+                    }
+                }
+            }
+
         }
     }
 }

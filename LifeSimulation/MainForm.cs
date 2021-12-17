@@ -320,7 +320,7 @@ namespace LifeSimulation
                         }
                     }
                     Debug.WriteLine(("// ",counter2));
-
+            
                     (ShowingEntity as Human).Tile.Entities.Remove(ShowingEntity);
                     // if (targetTile.Entities.Contains(ShowingEntity))
                     // {
@@ -337,7 +337,7 @@ namespace LifeSimulation
                         
                     }
                 }
-
+            
                 if (ShowingEntity is LivingHouse)
                 {
                     Debug.WriteLine((ShowingEntity as LivingHouse).HitPoints);

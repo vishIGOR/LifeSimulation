@@ -7,12 +7,12 @@ namespace LifeSimulation.VillageClasses
 {
     public class VillagesObserver
     {
-        private List<Village> Villages;
-        private List<(Village, Village)> CurrentWars;
+        private List<Village> Villages = new List<Village>();
+        private List<(Village, Village)> CurrentWars = new List<(Village, Village)>();
         private Map Map;
         private Randomizer Randomizer;
-        private List<String> Adjectives;
-        private List<String> Nouns;
+        private List<String> Adjectives = new List<string>();
+        private List<String> Nouns = new List<string>();
         private int NumberOfVillages = 0;
 
         public VillagesObserver(Map map)
@@ -20,7 +20,6 @@ namespace LifeSimulation.VillageClasses
             Map = map;
             Randomizer = Map.Randomizer;
 
-            Nouns = new List<string>();
             Nouns.Add("смельчаки");
             Nouns.Add("добытчики");
             Nouns.Add("первопроходцы");
@@ -37,7 +36,6 @@ namespace LifeSimulation.VillageClasses
             Nouns.Add("студенты");
             Nouns.Add("жители");
 
-            Adjectives = new List<string>();
             Adjectives.Add("красивые");
             Adjectives.Add("умные");
             Adjectives.Add("голодные");
@@ -58,12 +56,12 @@ namespace LifeSimulation.VillageClasses
         public Village CreateVillage()
         {
             ++NumberOfVillages;
-            
+
             String adjective = Adjectives[Randomizer.GetRandomInt(0, Adjectives.Count - 1)];
             String noun = Nouns[Randomizer.GetRandomInt(0, Nouns.Count - 1)];
 
-            Village newVillage = new Village(adjective + " " + noun,this);
-            
+            Village newVillage = new Village(Randomizer.GetRandomInt(1, 100) + " " + adjective + " " + noun, this);
+
             Villages.Add(newVillage);
             return newVillage;
         }

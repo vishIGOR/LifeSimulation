@@ -481,7 +481,7 @@ namespace LifeSimulation
             // numericAnimalsNumber
             // 
             this.numericAnimalsNumber.Location = new System.Drawing.Point(179, 86);
-            this.numericAnimalsNumber.Maximum = new decimal(new int[] {500, 0, 0, 0});
+            this.numericAnimalsNumber.Maximum = new decimal(new int[] {750, 0, 0, 0});
             this.numericAnimalsNumber.Name = "numericAnimalsNumber";
             this.numericAnimalsNumber.Size = new System.Drawing.Size(169, 20);
             this.numericAnimalsNumber.TabIndex = 11;
@@ -565,7 +565,7 @@ namespace LifeSimulation
             // 
             // timer1
             // 
-            this.timer1.Interval = 2500D;
+            this.timer1.Interval = 1500D;
             this.timer1.SynchronizingObject = this;
             this.timer1.Elapsed += new System.Timers.ElapsedEventHandler(this.timer1_Elapsed);
             // 

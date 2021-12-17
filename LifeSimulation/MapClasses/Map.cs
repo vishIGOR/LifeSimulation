@@ -11,6 +11,7 @@ using LifeSimulation.EntityClasses.Scavenger;
 using LifeSimulation.Enumerations;
 using LifeSimulation.MapClasses.Enumerators;
 using LifeSimulation.TileClasses;
+using LifeSimulation.VillageClasses;
 
 
 namespace LifeSimulation.MapClasses
@@ -30,6 +31,7 @@ namespace LifeSimulation.MapClasses
         public List<ResourceDeposit> ResourceDeposits { get; private set; }
         public List<DeadBody> DeadBodies { get; private set; }
         public Randomizer Randomizer { get; private set; }
+        public VillagesObserver VillagesObserver{ get; private set; }
         public Brush[,] ColorsOfTiles { get; private set; }
         public SeasonType Season { get; private set; }
         private int SeasonCounter;
@@ -38,6 +40,7 @@ namespace LifeSimulation.MapClasses
         public Map(int height, int width, int numberOfAnimals, int percentOfPlants)
         {
             Randomizer = new Randomizer();
+            VillagesObserver = new VillagesObserver(this);
 
             Entities = new List<Entity>();
             NewEntities = new List<Entity>();
@@ -257,10 +260,10 @@ namespace LifeSimulation.MapClasses
             foreach (var entity in NewEntities)
             {
                 Entities.Add(entity);
-                
+
                 if (entity is Human)
                 {
-                    Debug.WriteLine("added");
+                    //Debug.WriteLine("added");
                 }
             }
 
