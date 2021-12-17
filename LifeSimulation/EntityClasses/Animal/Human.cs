@@ -340,41 +340,41 @@ namespace LifeSimulation.EntityClasses
                 return;
             }
 
-            MyProfession.DoProfessionalAction();
+            // MyProfession.DoProfessionalAction();
 
-            // --MatingCounter;
-            // if (MatingCounter <= 0 && ReadyToMate == false)
-            // {
-            //     ReadyToMate = true;
-            // }
-            //
-            // if (HungerPoints < HungerBorder)
-            // {
-            //     EatFoodFromInventory();
-            // }
-            //
-            // if (HungerPoints < HungerBorder)
-            // {
-            //     ReadyToMate = false;
-            //
-            //     LookForFood();
-            //     return;
-            // }
-            //
-            // if (ReadyToMate)
-            // {
-            //     LookForMating();
-            //     return;
-            // }
-            //
-            // if (FoodInventoryFullness < FoodInventorySize - 2)
-            // {
-            //     LookForFood();
-            // }
-            // else
-            // {
-            //     Tile = Mover.Walk(Tile);
-            // }
+            --MatingCounter;
+            if (MatingCounter <= 0 && ReadyToMate == false)
+            {
+                ReadyToMate = true;
+            }
+            
+            if (HungerPoints < HungerBorder)
+            {
+                EatFoodFromInventory();
+            }
+            
+            if (HungerPoints < HungerBorder)
+            {
+                ReadyToMate = false;
+            
+                LookForFood();
+                return;
+            }
+            
+            if (ReadyToMate)
+            {
+                LookForMating();
+                return;
+            }
+            
+            if (FoodInventoryFullness < FoodInventorySize - 2)
+            {
+                LookForFood();
+            }
+            else
+            {
+                Tile = Mover.Walk(Tile);
+            }
         }
 
         protected override void LookForMating()
@@ -447,7 +447,7 @@ namespace LifeSimulation.EntityClasses
                 // }
                 if (MatingTarget.ReadyToMate)
                 {
-                    Mover.MoveTo(Tile, MatingTarget.Tile);
+                    Tile = Mover.MoveTo(Tile, MatingTarget.Tile);
                     if (Tile == MatingTarget.Tile)
                     {
                         StartMate();
