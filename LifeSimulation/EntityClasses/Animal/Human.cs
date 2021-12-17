@@ -288,12 +288,16 @@ namespace LifeSimulation.EntityClasses
                 House.UnAssign(this);
             }
 
+            if (MatingTarget != null)
+            {
+                MatingTarget.MatingTarget = null;
+            }
             base.Die();
         }
 
         protected override void CreateChild()
         {
-            Debug.WriteLine("created child");
+            // Debug.WriteLine("created child");
             Human child = new Human(Tile, Map);
             Map.NewEntities.Add(child);
             Map.Animals.Add(child);
@@ -394,8 +398,11 @@ namespace LifeSimulation.EntityClasses
                             {
                                 if (possibleTarget.ReadyToMate)
                                 {
-                                    minDistance = currentDistance;
-                                    target = possibleTarget;
+                                    if (possibleTarget.MatingTarget == null)
+                                    {
+                                        minDistance = currentDistance;
+                                        target = possibleTarget;
+                                    }
                                 }
                             }
                         }
@@ -416,27 +423,39 @@ namespace LifeSimulation.EntityClasses
             {
                 target.MatingTarget = this;
                 MatingTarget = target;
-
-                if (House == null)
+                //
+                // if (House == null)
+                // {
+                //     LookForHousePlace();
+                // }
+                // else
+                // {
+                //     if ((MatingTarget as Human).House != House)
+                //     {
+                //         (MatingTarget as Human).House = House;
+                //         House.Assign(MatingTarget as Human);
+                //     }
+                //
+                //     if (MatingTarget.ReadyToMate)
+                //     {
+                //         Mover.MoveTo(Tile, House.Tile);
+                //         if (Tile == House.Tile && Tile == MatingTarget.Tile)
+                //         {
+                //             StartMate();
+                //         }
+                //     }
+                // }
+                if (MatingTarget.ReadyToMate)
                 {
-                    LookForHousePlace();
+                    Mover.MoveTo(Tile, MatingTarget.Tile);
+                    if (Tile == MatingTarget.Tile)
+                    {
+                        StartMate();
+                    }
                 }
                 else
                 {
-                    if ((MatingTarget as Human).House != House)
-                    {
-                        (MatingTarget as Human).House = House;
-                        House.Assign(MatingTarget as Human);
-                    }
-
-                    if (MatingTarget.ReadyToMate)
-                    {
-                        Mover.MoveTo(Tile, House.Tile);
-                        if (Tile == House.Tile && Tile == MatingTarget.Tile)
-                        {
-                            StartMate();
-                        }
-                    }
+                    Tile = Mover.Walk(Tile);
                 }
             }
         }
@@ -663,6 +682,7 @@ namespace LifeSimulation.EntityClasses
                 if (Human.HungerPoints < Human.HungerBorder)
                 {
                     Human.EatFoodFromInventory();
+                    return;
                 }
 
                 if (Human.HungerPoints < Human.HungerBorder)
@@ -675,7 +695,7 @@ namespace LifeSimulation.EntityClasses
 
                 if (Human.ReadyToMate)
                 {
-                    Human.LookForMating();
+                    // Human.LookForMating();
                     return;
                 }
 

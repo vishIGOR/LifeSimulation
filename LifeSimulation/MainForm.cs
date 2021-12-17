@@ -299,16 +299,38 @@ namespace LifeSimulation
                     Debug.WriteLine("wtf");
                     Debug.WriteLine(ShowingEntity.HitPoints);
                     Debug.WriteLine((ShowingEntity as Human).Age);
-                    (ShowingEntity as Human).Tile.Entities.Remove(ShowingEntity);
-                    if (targetTile.Entities.Contains(ShowingEntity))
+                    Debug.WriteLine((ShowingEntity as Human).ReadyToMate);  
+                    Debug.WriteLine((ShowingEntity as Human).MatingCounter);
+                    
+                    var counter = 0;
+                    foreach (var human in CurrentMap.Entities)
                     {
-                        while(targetTile.Entities.Contains(ShowingEntity))
-                        {
-                            targetTile.Entities.Remove(ShowingEntity);
-                            Debug.WriteLine("I just wanna die");
-                        }
-                        Debug.WriteLine("I have died already");
+                        if (human is Human)
+                            ++counter;
                     }
+                    Debug.WriteLine(("// ",counter));
+                    
+                    var counter2 = 0;
+                    foreach (var tile in CurrentMap.Tiles)
+                    {
+                        foreach (var human in tile.Entities)
+                        {
+                            if (human is Human)
+                                ++counter2;
+                        }
+                    }
+                    Debug.WriteLine(("// ",counter2));
+
+                    (ShowingEntity as Human).Tile.Entities.Remove(ShowingEntity);
+                    // if (targetTile.Entities.Contains(ShowingEntity))
+                    // {
+                    //     while(targetTile.Entities.Contains(ShowingEntity))
+                    //     {
+                    //         targetTile.Entities.Remove(ShowingEntity);
+                    //         Debug.WriteLine("I just wanna die");
+                    //     }
+                    //     Debug.WriteLine("I have died already");
+                    // }
                     if (CurrentMap.Entities.Contains(ShowingEntity))
                     {
                         Debug.WriteLine("wtf with that");
