@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using LifeSimulation.EntityClasses;
 using LifeSimulation.EntityClasses.BuildingClasses;
+using LifeSimulation.ResourceClasses;
+using LifeSimulation.TileClasses;
 
 namespace LifeSimulation.VillageClasses
 {
@@ -33,6 +35,64 @@ namespace LifeSimulation.VillageClasses
         public void AddBuilding(Building building)
         {
             Buildings.Add(building);
+        }
+
+        public LivingHouse FindFreeLivingHouse()
+        {
+            foreach (var building in Buildings)
+            {
+                if (building is LivingHouse)
+                {
+                    if ((building as LivingHouse).Owners.Count == 0)
+                    {
+                        return building as LivingHouse;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public StoreHouse FindStoreWithFood()
+        {
+            StoreHouse possibleStore = null;
+            foreach (var building in Buildings)
+            {
+                if (building is StoreHouse)
+                {
+                    if ((building as StoreHouse).FoodInventoryFullness > 0)
+                    {
+                        possibleStore = building as StoreHouse;
+                        if (possibleStore.FoodInventoryFullness > 7)
+                        {
+                            return possibleStore;
+                        }
+                    }
+                }
+            }
+
+            return possibleStore;
+        }
+
+        public StoreHouse FindStoreWithResources(ResourceType preferredResourceType)
+        {
+            StoreHouse possibleStore = null;
+            foreach (var building in Buildings)
+            {
+                if (building is StoreHouse)
+                {
+                    if ((building as StoreHouse).GetFullnessOfResource(preferredResourceType) > 0)
+                    {
+                        possibleStore = building as StoreHouse;
+                        if (possibleStore.GetFullnessOfResource(preferredResourceType) >=60)
+                        {
+                            return possibleStore;
+                        }
+                    }
+                }
+            }
+
+            return possibleStore;
         }
     }
 }
