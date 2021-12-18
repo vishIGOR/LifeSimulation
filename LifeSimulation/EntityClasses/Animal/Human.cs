@@ -24,7 +24,7 @@ namespace LifeSimulation.EntityClasses
         public int FoodInventoryFullness;
 
         public Dictionary<int, int> ResourcesInventory { get; protected set; }
-        public int ResourcesInventorySize = 60;
+        public int ResourcesInventorySize = 80;
         public int ResourcesInventoryFullness;
 
         public MiningTool MiningTool { get; protected set; }
@@ -93,6 +93,16 @@ namespace LifeSimulation.EntityClasses
             if (VillageHead.ID == newProfessionID)
             {
                 MyProfession = new VillageHead(this);
+                if (Village == null)
+                {
+                    Village = VillagesObserver.CreateVillage();
+                }
+
+                return;
+            }
+            if (Builder.ID == newProfessionID)
+            {
+                MyProfession = new Builder(this);
                 if (Village == null)
                 {
                     Village = VillagesObserver.CreateVillage();
@@ -770,6 +780,12 @@ namespace LifeSimulation.EntityClasses
 
             public override void DoProfessionalAction()
             {
+                foreach (var newbie in Human.Village.Newbies)
+                {
+                    newbie.ChangeProfession(Builder.ID);
+                    Human.Village.Builders.Add(newbie);
+                }
+                
                 --Human.MatingCounter;
                 if (Human.MatingCounter <= 0 && Human.ReadyToMate == false)
                 {
@@ -790,19 +806,30 @@ namespace LifeSimulation.EntityClasses
                     return;
                 }
 
-                if (Human.ReadyToMate)
+                if (Human.HungerPoints < Human.HungerBorder)
                 {
-                    Human.LookForMating();
+                    Human.ReadyToMate = false;
+                    if (!Human.GetFoodFromStore())
+                    {
+                        Human.LookForFood();
+                    }
+
                     return;
                 }
 
-                if (Human.FoodInventoryFullness < Human.FoodInventorySize - 2)
+                if (Human.ReadyToMate)
                 {
-                    Human.LookForFood();
-                }
-                else
-                {
-                    Human.Tile = Human.Mover.Walk(Human.Tile);
+                    if (Human.House == null)
+                    {
+                        if (Human.Village.FindFreeLivingHouse() != null)
+                        {
+                            Human.House = Human.Village.FindFreeLivingHouse();
+                        }
+                    }
+                    
+
+                    Human.LookForMating();
+                    return;
                 }
             }
         }
@@ -860,11 +887,78 @@ namespace LifeSimulation.EntityClasses
         {
             public static int ID = 3;
 
+            private int currentState;
             public Builder(Human human)
             {
                 Human = human;
+                currentState = 0;
             }
 
+            private void BuildStoreHouse()
+            {
+                StoreHouse newStore = new StoreHouse(Human.Tile, Human.Map);
+                Human.Tile.SpecialObject = newStore;
+
+                var cost = StoreHouse.ResourceCost;
+                Human.ResourcesInventory[cost.Item1.ID] -= cost.Item2;
+                Human.ResourcesInventoryFullness -= cost.Item2;
+                currentState = 0;
+            }
+            
+            private void BuildLivingHouse()
+            {
+                var newLivingHouse = new LivingHouse(Human.Tile, Human.Map);
+                Human.Tile.SpecialObject = newLivingHouse;
+
+                var cost = LivingHouse.ResourceCost;
+                Human.ResourcesInventory[cost.Item1.ID] -= cost.Item2;
+                Human.ResourcesInventoryFullness -= cost.Item2;
+                currentState = 0;
+            }
+
+            private Tile LookForNewBuildingPlace()
+            {
+                List<Tile> possiblePlacesForHouse = new List<Tile>();
+
+                foreach (var building in Human.Village.Buildings)
+                {
+                    for (int i = -1; i < 2; i++)
+                    {
+                        for (int j = -1; j < 2; j++)
+                        {
+                            if (i + building.Tile.X > 0 && i + building.Tile.X < Human.Map.Width &&
+                                j + building.Tile.Y > 0 && j + building.Tile.Y < Human.Map.Height)
+                            {
+                                if (!(Human.Map.Tiles[i + building.Tile.X, j + building.Tile.Y].SpecialObject is
+                                    Building))
+                                {
+                                    possiblePlacesForHouse.Add(
+                                        Human.Map.Tiles[i + building.Tile.X, j + building.Tile.Y]);
+                                }
+                            }
+                        }
+                    }
+
+                    if (possiblePlacesForHouse.Count > 0)
+                    {
+                        break;
+                    }
+                }
+
+                Tile randomHousePlace = null;
+                if (possiblePlacesForHouse.Count > 0)
+                    randomHousePlace = possiblePlacesForHouse[Human.Randomizer.GetRandomInt(0, possiblePlacesForHouse.Count - 1)];
+                
+                if (randomHousePlace != null)
+                {
+                    return randomHousePlace;
+                }
+                else
+                {
+                    return Human.Mover.Walk(Human.Tile);
+                }
+            }
+            
             public override void DoProfessionalAction()
             {
                 --Human.MatingCounter;
@@ -892,16 +986,69 @@ namespace LifeSimulation.EntityClasses
 
                 if (Human.ReadyToMate)
                 {
-                    if (Human.Village.FindFreeLivingHouse() != null)
+                    if (Human.House == null)
                     {
-                        Human.House = Human.Village.FindFreeLivingHouse();
+                        if (Human.Village.FindFreeLivingHouse() != null)
+                        {
+                            Human.House = Human.Village.FindFreeLivingHouse();
+                        }
                     }
+                    
 
                     Human.LookForMating();
                     return;
                 }
 
-               
+                if (currentState == 0)
+                {
+                    if (Human.Randomizer.GetRandomInt(1, 3) > 1)
+                    {
+                        currentState = 1;
+                    }
+                    else
+                    {
+                        currentState = 2;
+                    }
+                }
+                
+                if(currentState == 1)
+                {
+                    var costOfLivingHouse = LivingHouse.ResourceCost;
+                    if (Human.ResourcesInventory[costOfLivingHouse.Item1.ID] >= costOfLivingHouse.Item2)
+                    {
+                        var currentTile = Human.Tile;
+                        Human.Tile = LookForNewBuildingPlace();
+                        if (Human.Tile == currentTile)
+                        {
+                            BuildStoreHouse();
+                        }
+                    }
+                    else
+                    {
+                        Human.LookForResources(1);
+                    }
+                    return;
+                }
+                
+                if (currentState == 2)
+                {
+                    var costOfStore= StoreHouse.ResourceCost;
+                    if (Human.ResourcesInventory[costOfStore.Item1.ID] >= costOfStore.Item2)
+                    {
+                        var currentTile = Human.Tile;
+                        Human.Tile = LookForNewBuildingPlace();
+                        if (Human.Tile == currentTile)
+                        {
+                            BuildLivingHouse();
+                        }
+                    }
+                    else
+                    {
+                        Human.LookForResources(1);
+                    }
+                    return;
+                }
+                
             }
         }
     }

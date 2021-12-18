@@ -9,9 +9,10 @@ namespace LifeSimulation.VillageClasses
 {
     public class Village
     {
-        private List<Human> Members = new List<Human>();
-        private List<Human> Newbies = new List<Human>();
-        private List<Building> Buildings = new List<Building>();
+        public List<Human> Members{ get; private set; } = new List<Human>();
+        public List<Human> Builders = new List<Human>();
+        public List<Human> Newbies{ get; private set; } = new List<Human>();
+        public List<Building> Buildings{ get; private set; } = new List<Building>();
         private bool ReadyForWar;
         private int AmountOfSaltpeter;
         public String Name { get; private set; }
@@ -29,9 +30,17 @@ namespace LifeSimulation.VillageClasses
 
         public void AddHuman(Human human)
         {
-            Members.Add(human);
+            Newbies.Add(human);
         }
 
+        public void TransformNewbiesInMembers()
+        {
+            foreach (var newbie in Newbies)
+            {
+                Members.Add(newbie);
+            }
+            Newbies.Clear();
+        }
         public void AddBuilding(Building building)
         {
             Buildings.Add(building);

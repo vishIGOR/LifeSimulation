@@ -116,12 +116,12 @@ namespace LifeSimulation.MapClasses
             int maxNumber = 100;
             int randomInt = Randomizer.GetRandomInt(1, maxNumber);
 
-            if (randomInt <= 40)
+            if (randomInt <= 55)
             {
                 return new AppleTree(tile, this, PlantStage.Grown);
             }
 
-            if (randomInt <= 50)
+            if (randomInt <= 65)
             {
                 return new WolfBerry(tile, this, PlantStage.Grown);
             }
