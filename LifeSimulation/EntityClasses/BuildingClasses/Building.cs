@@ -49,8 +49,6 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
 
         public void ChangeVillage(Village newVillage)
         {
-           
-
             Village = newVillage;
             Village.AddBuilding(this);
             
@@ -77,13 +75,12 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
             {
                 foreach (var owner in (this as LivingHouse).Owners)
                 {
-                    owner.ChangeVillage(newVillage);
                     Village.AddHuman(owner);
                 }
             }
         }
 
-        protected void JoinTheVillage()
+        public void JoinTheVillage()
         {
             Village newVillage = null;
             for (int i = -1; i < 2; i++)
@@ -116,7 +113,10 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
                 {
                     foreach (var owner in (this as LivingHouse).Owners)
                     {
-                        owner.ChangeVillage(newVillage);
+                        if (owner.Village != Village)
+                        {
+                            Village.AddHuman(owner);
+                        }
                     }
                 }
             }

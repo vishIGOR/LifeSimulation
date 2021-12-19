@@ -22,7 +22,6 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
             SetStandartValues(tile, map);
             ResourceCost = (new Wood(), 50);
             
-            JoinTheVillage();
             
             FoodInventory = new Dictionary<int, int>();
             for (int i = 0; i < 4; ++i)

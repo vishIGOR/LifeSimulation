@@ -10,7 +10,7 @@ namespace LifeSimulation.VillageClasses
         private List<Village> Villages = new List<Village>();
         private List<(Village, Village)> CurrentWars = new List<(Village, Village)>();
         private Map Map;
-        private Randomizer Randomizer;
+        public Randomizer Randomizer{ get; private set; }
         private List<String> Adjectives = new List<string>();
         private List<String> Nouns = new List<string>();
         private int NumberOfVillages = 0;

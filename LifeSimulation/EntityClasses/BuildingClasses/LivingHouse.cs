@@ -16,7 +16,6 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
             Owners = new List<Human>();
             ResourceCost = (new Wood(), 40);
             
-            JoinTheVillage();
         }
 
         public override void ChooseAction()
