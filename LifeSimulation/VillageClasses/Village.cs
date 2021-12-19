@@ -15,14 +15,17 @@ namespace LifeSimulation.VillageClasses
         public List<Human> Builders = new List<Human>();
         public List<Human> Hunters = new List<Human>();
         public List<Human> Collectors = new List<Human>();
+        public List<Human> ResourceMiners = new List<Human>();
+        public List<Human> Blacksmiths = new List<Human>();
+        public List<Human> Warriors = new List<Human>();
         public List<Human> Newbies { get; private set; } = new List<Human>();
         public List<Building> Buildings { get; private set; } = new List<Building>();
         private bool ReadyForWar;
         private int AmountOfSaltpeter;
         public String Name { get; private set; }
-        private List<Village> Enemies = new List<Village>();
+        public List<Village> Enemies{ get; private set; } = new List<Village>();
         private VillagesObserver VillagesObserver;
-        public Human VillageHead;
+        public Human VillageHead { get; private set; }
         private Randomizer Randomizer;
 
         public Village(String name, VillagesObserver observer)
@@ -39,6 +42,11 @@ namespace LifeSimulation.VillageClasses
             Newbies.Add(human);
         }
 
+        public void AddVillageHead(Human human)
+        {
+            Members.Add(human);
+            VillageHead = human;
+        }
         public void DeleteHuman(Human human)
         {
             Members.Remove(human);
@@ -82,7 +90,25 @@ namespace LifeSimulation.VillageClasses
                 minCount = Collectors.Count;
                 currentID = 4;
             }
+            if (ResourceMiners.Count < minCount)
+            {
+                minCount = ResourceMiners.Count;
+                currentID = 5;
+            }
+            // if (Blacksmiths.Count < minCount)
+            // {
+            //     minCount = Collectors.Count;
+            //     currentID = 6;
+            // }
             return currentID;
+        }
+
+        public void DoMobilization()
+        {
+            // foreach (var  in COLLECTION)
+            // {
+            //     
+            // }
         }
 
         public void AddBuilding(Building building)
@@ -159,6 +185,27 @@ namespace LifeSimulation.VillageClasses
                     {
                         possibleStore = building as StoreHouse;
                         if (possibleStore.FoodInventoryFullness <= 10)
+                        {
+                            return possibleStore;
+                        }
+                    }
+                }
+            }
+
+            return possibleStore;
+        }
+        
+        public StoreHouse FindStoreWithNoResources()
+        {
+            StoreHouse possibleStore = null;
+            foreach (var building in Buildings)
+            {
+                if (building is StoreHouse)
+                {
+                    if ((building as StoreHouse).ResourcesInventoryFullness < (building as StoreHouse).ResourcesInventorySize)
+                    {
+                        possibleStore = building as StoreHouse;
+                        if (possibleStore.ResourcesInventoryFullness <= 60)
                         {
                             return possibleStore;
                         }

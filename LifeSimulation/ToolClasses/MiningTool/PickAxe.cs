@@ -7,6 +7,7 @@ namespace LifeSimulation.ToolClasses.MiningTool
         PickAxe()
         {
             ResourceType = new Saltpeter();
+            ID = 1;
         }
     }
 }

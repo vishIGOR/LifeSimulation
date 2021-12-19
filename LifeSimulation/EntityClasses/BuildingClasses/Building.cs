@@ -23,7 +23,7 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
         {
             if (newSeason == SeasonType.Winter)
             {
-                HitPoints -= 10;
+                HitPoints -= 5;
             }
         }
 
@@ -75,7 +75,10 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
             {
                 foreach (var owner in (this as LivingHouse).Owners)
                 {
-                    Village.AddHuman(owner);
+                    if (owner.Village != Village)
+                    {
+                        Village.AddHuman(owner);
+                    }
                 }
             }
         }

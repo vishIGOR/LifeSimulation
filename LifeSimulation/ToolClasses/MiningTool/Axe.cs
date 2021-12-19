@@ -7,6 +7,7 @@ namespace LifeSimulation.ToolClasses.MiningTool
         public Axe()
         {
             ResourceType = new Wood();
+            ID = 0;
         }
     }
 }
