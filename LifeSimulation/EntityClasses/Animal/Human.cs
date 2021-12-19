@@ -46,7 +46,7 @@ namespace LifeSimulation.EntityClasses
             HungerBorder = 5;
             DamageForce = 40;
             MaxMatingCounter = 25;
-            MaxAge = 55;
+            MaxAge = 75;
             Color = Brushes.Bisque;
 
             SetStandartValues(tile, map);
@@ -104,13 +104,22 @@ namespace LifeSimulation.EntityClasses
             if (Builder.ID == newProfessionID)
             {
                 MyProfession = new Builder(this);
-                if (Village == null)
-                {
-                    Village = VillagesObserver.CreateVillage();
-                }
-
                 return;
             }
+            
+            if (Hunter.ID == newProfessionID)
+            {
+                MyProfession = new Hunter(this);
+                return;
+            }
+            
+            if (Collector.ID == newProfessionID)
+            {
+                MyProfession = new Collector(this);
+                return;
+            }
+            
+            
         }
 
         private void LookForHousePlace()
@@ -291,11 +300,13 @@ namespace LifeSimulation.EntityClasses
             {
                 Village.DeleteHuman(this);
             }
+
             if (MyProfession is VillageHead)
             {
-                if(Village.Members.Count>0)
+                if (Village.Members.Count > 0)
                     Village.ChooseNewHead();
             }
+
             foreach (var domestic in DomesticAnimals)
             {
                 UnTame(domestic);
@@ -645,11 +656,11 @@ namespace LifeSimulation.EntityClasses
             {
                 return "охотник";
             }
-            
-            // if (MyProfession is Collector)
-            // {
-            //     return "собиратель";
-            // }
+
+            if (MyProfession is Collector)
+            {
+                return "собиратель";
+            }
 
             return "name error";
         }
@@ -791,7 +802,7 @@ namespace LifeSimulation.EntityClasses
                 foreach (var newbie in Human.Village.Newbies)
                 {
                     // int randomInt = Human.Randomizer.GetRandomInt(1, 100);
-
+                    //
                     // if (randomInt <= 50)
                     // {
                     //     newbie.ChangeProfession(Hunter.ID);
@@ -804,17 +815,88 @@ namespace LifeSimulation.EntityClasses
                     //     Human.Village.Builders.Add(newbie);
                     // }
                     int mostNeededProfession = Human.Village.ReturnMostNeededProfession();
-                    newbie.ChangeProfession(mostNeededProfession);
+                    if (newbie.Sex)
+                    {
+                        if (mostNeededProfession != Collector.ID)
+                        {
+                            newbie.ChangeProfession(mostNeededProfession);
+                            if (mostNeededProfession == Builder.ID)
+                            {
+                                Human.Village.Builders.Add(newbie);
+                            }
+
+                            if (mostNeededProfession == Hunter.ID)
+                            {
+                                Human.Village.Hunters.Add(newbie);
+                            }
+                        }
+                        else
+                        {
+                            int randomInt = Human.Randomizer.GetRandomInt(1, 100);
+
+                            if (randomInt <= 60)
+                            {
+                                newbie.ChangeProfession(Hunter.ID);
+                                Human.Village.Hunters.Add(newbie);
+                            }
+                            else
+                            {
+                        
+                                newbie.ChangeProfession(Builder.ID);
+                                Human.Village.Builders.Add(newbie);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (mostNeededProfession != Hunter.ID)
+                        {
+                            newbie.ChangeProfession(mostNeededProfession);
+                            if (mostNeededProfession == Builder.ID)
+                            {
+                                Human.Village.Builders.Add(newbie);
+                            }
+
+                            if (mostNeededProfession == Collector.ID)
+                            {
+                                Human.Village.Collectors.Add(newbie);
+                            }
+                        }
+                        else
+                        {
+                            int randomInt = Human.Randomizer.GetRandomInt(1, 100);
+
+                            if (randomInt <= 60)
+                            {
+                                newbie.ChangeProfession(Collector.ID);
+                                Human.Village.Collectors.Add(newbie);
+                            }
+                            else
+                            {
+                        
+                                newbie.ChangeProfession(Builder.ID);
+                                Human.Village.Builders.Add(newbie);
+                            }
+                        }
+                    }
+                    
                     if (mostNeededProfession == Builder.ID)
                     {
                         Human.Village.Builders.Add(newbie);
                     }
+
                     if (mostNeededProfession == Hunter.ID)
                     {
                         Human.Village.Hunters.Add(newbie);
                     }
                     
+                    if (mostNeededProfession == Collector.ID)
+                    {
+                        Human.Village.Collectors.Add(newbie);
+                    }
+                    
                 }
+
                 Human.Village.TransformNewbiesInMembers();
 
                 --Human.MatingCounter;
@@ -865,15 +947,56 @@ namespace LifeSimulation.EntityClasses
             }
         }
 
-        private class Hunter:Profession
+        private class Hunter : Profession
         {
             public static int ID = 2;
             public StoreHouse CurrentTarget;
+
             public Hunter(Human human)
             {
                 Human = human;
             }
-        
+            
+            private void LookForAnimals()
+            {
+                double minDistance = 10000000000;
+                double currentDistance;
+                double maxDistance = 30;
+                Entity nearestFood = null;
+                Type myType = Human.GetType();
+
+                foreach (var food in Human.Map.Entities)
+                {
+                    if (food.Eatable && (food is Animal))
+                    {
+                        if (food.GetType() != myType)
+                        {
+                            currentDistance = Human.CalculateDistance(food);
+                            if (minDistance > currentDistance && currentDistance < maxDistance)
+                            {
+                                minDistance = currentDistance;
+                                nearestFood = food;
+                            }
+                        }
+                    }
+                }
+
+                if (nearestFood == null)
+                {
+                    Human.Tile = Human.Mover.Walk(Human.Tile);
+                }
+                else
+                {
+                    if (nearestFood.Tile == Human.Tile)
+                    {
+                        Human.PickUpFood(nearestFood);
+                    }
+                    else
+                    {
+                        Human.Tile = Human.Mover.MoveTo(Human.Tile, nearestFood.Tile);
+                    }
+                }
+            }
             public override void DoProfessionalAction()
             {
                 --Human.MatingCounter;
@@ -881,19 +1004,19 @@ namespace LifeSimulation.EntityClasses
                 {
                     Human.ReadyToMate = true;
                 }
-        
+
                 if (Human.HungerPoints < Human.HungerBorder)
                 {
                     Human.EatFoodFromInventory();
                     return;
                 }
-        
+
                 if (Human.HungerPoints < Human.HungerBorder)
                 {
                     Human.ReadyToMate = false;
                     if (!Human.GetFoodFromStore())
                     {
-                        Human.LookForFood();
+                        LookForAnimals();
                     }
 
                     return;
@@ -913,10 +1036,10 @@ namespace LifeSimulation.EntityClasses
                     Human.LookForMating();
                     return;
                 }
-        
+
                 if (Human.FoodInventoryFullness < Human.FoodInventorySize - 3)
                 {
-                    Human.LookForFood();
+                    LookForAnimals();
                 }
                 else
                 {
@@ -929,7 +1052,8 @@ namespace LifeSimulation.EntityClasses
                             return;
                         }
                     }
-                    Human.Tile =Human.Mover.MoveTo(Human.Tile,CurrentTarget.Tile);
+
+                    Human.Tile = Human.Mover.MoveTo(Human.Tile, CurrentTarget.Tile);
                     if (Human.Tile == CurrentTarget.Tile)
                     {
                         for (int i = 0; i < 4; ++i)
@@ -937,13 +1061,14 @@ namespace LifeSimulation.EntityClasses
                             if (CurrentTarget.FoodInventorySize - CurrentTarget.FoodInventoryFullness >
                                 Human.FoodInventory[i])
                             {
-                                CurrentTarget.PutFood(Human.FoodInventory[i],i);
+                                CurrentTarget.PutFood(Human.FoodInventory[i], i);
                                 Human.FoodInventoryFullness -= Human.FoodInventory[i];
                                 Human.FoodInventory[i] = 0;
                             }
                             else
                             {
-                                CurrentTarget.PutFood(CurrentTarget.FoodInventorySize - CurrentTarget.FoodInventoryFullness,i);
+                                CurrentTarget.PutFood(
+                                    CurrentTarget.FoodInventorySize - CurrentTarget.FoodInventoryFullness, i);
                                 Human.FoodInventoryFullness -= CurrentTarget.FoodInventorySize -
                                                                CurrentTarget.FoodInventoryFullness;
                                 Human.FoodInventory[i] -=
@@ -957,6 +1082,7 @@ namespace LifeSimulation.EntityClasses
                 }
             }
         }
+
         private class Builder : Profession
         {
             public static int ID = 3;
@@ -987,7 +1113,7 @@ namespace LifeSimulation.EntityClasses
                 var newLivingHouse = new LivingHouse(Human.Tile, Human.Map);
                 Human.Tile.SpecialObject = newLivingHouse;
                 newLivingHouse.JoinTheVillage();
-                
+
                 var cost = LivingHouse.ResourceCost;
                 Human.ResourcesInventory[cost.Item1.ID] -= cost.Item2;
                 Human.ResourcesInventoryFullness -= cost.Item2;
@@ -1125,7 +1251,8 @@ namespace LifeSimulation.EntityClasses
                     }
                     else
                     {
-                        Human.LookForResources(1);
+                        if (!Human.GetResourcesFromStore(new Wood()))
+                            Human.LookForResources(1);
                     }
 
                     return;
@@ -1149,10 +1276,147 @@ namespace LifeSimulation.EntityClasses
                     }
                     else
                     {
-                        Human.LookForResources(1);
+                        if (!Human.GetResourcesFromStore(new Wood()))
+                            Human.LookForResources(1);
                     }
 
                     return;
+                }
+            }
+        }
+        
+        private class Collector : Profession
+        {
+            public static int ID = 4;
+            public StoreHouse CurrentTarget;
+
+            public Collector(Human human)
+            {
+                Human = human;
+            }
+
+            private void LookForPlantsAndFetuses()
+            {
+                double minDistance = 10000000000;
+                double currentDistance;
+                double maxDistance = 30;
+                Entity nearestFood = null;
+                Type myType = Human.GetType();
+
+                foreach (var food in Human.Map.Entities)
+                {
+                    if (food.Eatable && (food is Fetus || food is Plant))
+                    {
+                        if (food.GetType() != myType)
+                        {
+                            currentDistance = Human.CalculateDistance(food);
+                            if (minDistance > currentDistance && currentDistance < maxDistance)
+                            {
+                                minDistance = currentDistance;
+                                nearestFood = food;
+                            }
+                        }
+                    }
+                }
+
+                if (nearestFood == null)
+                {
+                    Human.Tile = Human.Mover.Walk(Human.Tile);
+                }
+                else
+                {
+                    if (nearestFood.Tile == Human.Tile)
+                    {
+                        Human.PickUpFood(nearestFood);
+                    }
+                    else
+                    {
+                        Human.Tile = Human.Mover.MoveTo(Human.Tile, nearestFood.Tile);
+                    }
+                }
+            }
+            public override void DoProfessionalAction()
+            {
+                --Human.MatingCounter;
+                if (Human.MatingCounter <= 0 && Human.ReadyToMate == false)
+                {
+                    Human.ReadyToMate = true;
+                }
+
+                if (Human.HungerPoints < Human.HungerBorder)
+                {
+                    Human.EatFoodFromInventory();
+                    return;
+                }
+
+                if (Human.HungerPoints < Human.HungerBorder)
+                {
+                    Human.ReadyToMate = false;
+                    if (!Human.GetFoodFromStore())
+                    {
+                        LookForPlantsAndFetuses();
+                    }
+
+                    return;
+                }
+
+                if (Human.ReadyToMate)
+                {
+                    if (Human.House == null)
+                    {
+                        if (Human.Village.FindFreeLivingHouse() != null)
+                        {
+                            Human.House = Human.Village.FindFreeLivingHouse();
+                        }
+                    }
+
+
+                    Human.LookForMating();
+                    return;
+                }
+
+                if (Human.FoodInventoryFullness < Human.FoodInventorySize - 3)
+                {
+                    LookForPlantsAndFetuses();
+                }
+                else
+                {
+                    if (CurrentTarget == null)
+                    {
+                        CurrentTarget = Human.Village.FindStoreWithNoFood();
+                        if (CurrentTarget == null)
+                        {
+                            Human.Tile = Human.Mover.Walk(Human.Tile);
+                            return;
+                        }
+                    }
+
+                    Human.Tile = Human.Mover.MoveTo(Human.Tile, CurrentTarget.Tile);
+                    if (Human.Tile == CurrentTarget.Tile)
+                    {
+                        for (int i = 0; i < 4; ++i)
+                        {
+                            if (CurrentTarget.FoodInventorySize - CurrentTarget.FoodInventoryFullness >
+                                Human.FoodInventory[i])
+                            {
+                                CurrentTarget.PutFood(Human.FoodInventory[i], i);
+                                Human.FoodInventoryFullness -= Human.FoodInventory[i];
+                                Human.FoodInventory[i] = 0;
+                            }
+                            else
+                            {
+                                CurrentTarget.PutFood(
+                                    CurrentTarget.FoodInventorySize - CurrentTarget.FoodInventoryFullness, i);
+                                Human.FoodInventoryFullness -= CurrentTarget.FoodInventorySize -
+                                                               CurrentTarget.FoodInventoryFullness;
+                                Human.FoodInventory[i] -=
+                                    CurrentTarget.FoodInventorySize - CurrentTarget.FoodInventoryFullness;
+                                break;
+                            }
+                        }
+
+                        CurrentTarget = null;
+                    }
                 }
             }
         }

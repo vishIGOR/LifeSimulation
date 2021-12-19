@@ -14,6 +14,7 @@ namespace LifeSimulation.VillageClasses
         public List<Human> Members { get; private set; } = new List<Human>();
         public List<Human> Builders = new List<Human>();
         public List<Human> Hunters = new List<Human>();
+        public List<Human> Collectors = new List<Human>();
         public List<Human> Newbies { get; private set; } = new List<Human>();
         public List<Building> Buildings { get; private set; } = new List<Building>();
         private bool ReadyForWar;
@@ -52,6 +53,7 @@ namespace LifeSimulation.VillageClasses
         {
             foreach (var newbie in Newbies)
             {
+            
                 newbie.ChangeVillage(this);
                 Members.Add(newbie);
             }
@@ -75,6 +77,11 @@ namespace LifeSimulation.VillageClasses
                 currentID = 2;
             }
 
+            if (Collectors.Count < minCount)
+            {
+                minCount = Collectors.Count;
+                currentID = 4;
+            }
             return currentID;
         }
 
