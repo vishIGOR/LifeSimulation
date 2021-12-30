@@ -45,8 +45,8 @@ namespace LifeSimulation.EntityClasses.BuildingClasses
                     if (Owners.Count > 0)
                     {
                         Owners[0].ChangeProfession(1);
-                        ChangeVillage(Owners[0].Village);
                         Village.AddVillageHead(Owners[0]);
+                        ChangeVillage(Owners[0].Village);
                     }
                 }
             }
