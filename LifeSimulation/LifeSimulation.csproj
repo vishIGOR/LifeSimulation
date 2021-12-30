@@ -124,6 +124,8 @@
         <Compile Include="EntityClasses\BuildingClasses\Building.cs" />
         <Compile Include="EntityClasses\BuildingClasses\LivingHouse.cs" />
         <Compile Include="EntityClasses\BuildingClasses\StoreHouse.cs" />
+        <Compile Include="EntityClasses\Elf.cs" />
+        <Compile Include="EntityClasses\ElfFactory.cs" />
         <Compile Include="EntityClasses\Entity.cs" />
         <Compile Include="EntityClasses\Enumerators\AnimalStage.cs" />
         <Compile Include="EntityClasses\Enumerators\FoodType.cs" />
@@ -131,6 +133,7 @@
         <Compile Include="EntityClasses\Fetus\Fetus.cs" />
         <Compile Include="EntityClasses\Fetus\WolfBerryFetus.cs" />
         <Compile Include="EntityClasses\Enumerators\PlantStage.cs" />
+        <Compile Include="EntityClasses\IChristmas.cs" />
         <Compile Include="EntityClasses\IMineable.cs" />
         <Compile Include="EntityClasses\Plant\AppleTree.cs" />
         <Compile Include="EntityClasses\Plant\Grass.cs" />
@@ -139,6 +142,12 @@
         <Compile Include="EntityClasses\Plant\WolfBerry.cs" />
         <Compile Include="EntityClasses\ResourceDeposit\ResourceDeposit.cs" />
         <Compile Include="EntityClasses\ResourceDeposit\SaltpeterMine.cs" />
+        <Compile Include="GiftClasses\Bag.cs" />
+        <Compile Include="GiftClasses\Candy.cs" />
+        <Compile Include="GiftClasses\FoodGift.cs" />
+        <Compile Include="GiftClasses\Gift.cs" />
+        <Compile Include="GiftClasses\Hat.cs" />
+        <Compile Include="GiftClasses\ResourceGift.cs" />
         <Compile Include="MainForm.cs">
           <SubType>Form</SubType>
         </Compile>

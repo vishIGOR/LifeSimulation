@@ -18,6 +18,8 @@ namespace LifeSimulation.MapClasses
 {
     public class Map
     {
+        public int NewYearCounter = 0;
+        public bool IsNewYear = false;
         public int Height { get; private set; }
         public int Width { get; private set; }
         public Tile[,] Tiles { get; private set; }
@@ -30,6 +32,9 @@ namespace LifeSimulation.MapClasses
         public List<Building> Buildings { get; private set; }
         public List<ResourceDeposit> ResourceDeposits { get; private set; }
         public List<DeadBody> DeadBodies { get; private set; }
+        public List<ElfFactory> ElfFactories{ get; private set; }
+        public List<Elf> Elves{ get; private set; }
+        public List<IChristmas> ChristmasObjects{ get; private set; }
         public Randomizer Randomizer { get; private set; }
         public VillagesObserver VillagesObserver{ get; private set; }
         public Brush[,] ColorsOfTiles { get; private set; }
@@ -52,6 +57,9 @@ namespace LifeSimulation.MapClasses
             DeadBodies = new List<DeadBody>();
             Buildings = new List<Building>();
             ResourceDeposits = new List<ResourceDeposit>();
+            ElfFactories = new List<ElfFactory>();
+            Elves = new List<Elf>();
+            ChristmasObjects = new List<IChristmas>();
             
             Height = height;
             Width = width;
@@ -65,6 +73,8 @@ namespace LifeSimulation.MapClasses
 
             CreateRandomTiles(percentOfPlants);
             CreateRandomResourceDeposits(Width*Height/300);
+            CreateElfFactories();
+            CreateElves();
             CreateRandomAnimals(numberOfAnimals);
         }
 
@@ -132,6 +142,46 @@ namespace LifeSimulation.MapClasses
             // return new Grass(tile, this,PlantStage.Grown);
         }
 
+        void CreateElfFactories()
+        {
+            int currentX, currentY;
+            ElfFactory newElfFactory;
+            int numberOfElfFactories = Width * Height / 250;
+            while (numberOfElfFactories > 0)
+            {
+                currentX = Randomizer.GetRandomInt(0, Width - 1);
+                currentY = Randomizer.GetRandomInt(0, Height - 1);
+                if (Tiles[currentX, currentY].SpecialObject == null)
+                {
+                    --numberOfElfFactories;
+                    newElfFactory = new ElfFactory(this,Tiles[currentX, currentY]);
+                    ElfFactories.Add(newElfFactory);
+                    Entities.Add(newElfFactory);
+                    ChristmasObjects.Add(newElfFactory);
+                }
+            }
+        }
+
+        void CreateElves()
+        {
+            int currentX, currentY;
+            Elf newElf;
+            int numberOfElves = Width * Height / 100;
+            
+            while (numberOfElves > 0)
+            {
+                currentX = Randomizer.GetRandomInt(0, Width - 1);
+                currentY = Randomizer.GetRandomInt(0, Height - 1);
+                if (Tiles[currentX, currentY].LandPossibility)
+                {
+                    --numberOfElves;
+                    newElf = new Elf(this, Tiles[currentX, currentY]);
+                    Elves.Add(newElf);
+                    Entities.Add(newElf);
+                    ChristmasObjects.Add(newElf);
+                }
+            }
+        }
         void CreateRandomAnimals(int numberOfAnimals)
         {
             int currentX, currentY;
@@ -242,8 +292,16 @@ namespace LifeSimulation.MapClasses
 
         public void UpdateMap()
         {
+            if (IsNewYear)
+            {
+                --NewYearCounter;
+                if (NewYearCounter == 0)
+                {
+                    EndNewYear();
+                }
+            }
             ++SeasonCounter;
-            if (SeasonCounter == 15)
+            if (SeasonCounter == 25)
             {
                 SeasonCounter = 0;
                 ChangeSeason();
@@ -278,12 +336,28 @@ namespace LifeSimulation.MapClasses
             DeadEntities.Clear();
         }
 
+        void EndNewYear()
+        {
+            foreach (var christmasObject in ChristmasObjects)
+            {
+                christmasObject.BeNotified(false);
+            }
+
+            IsNewYear = false;
+        }
         void ChangeSeason()
         {
             switch (Season)
             {
                 case SeasonType.Summer:
                     Season = SeasonType.Winter;
+                    foreach (var christmasObject in ChristmasObjects)
+                    {
+                        christmasObject.BeNotified(true);
+                    }
+
+                    NewYearCounter = Randomizer.GetRandomInt(14, 24);
+                    IsNewYear = true;
                     break;
                 case SeasonType.Winter:
                     Season = SeasonType.Summer;

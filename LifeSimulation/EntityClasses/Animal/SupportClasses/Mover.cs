@@ -17,9 +17,9 @@ namespace LifeSimulation.EntityClasses.SupportClasses
         private int CircleY = 1;
         private int CircleCounterX=0;
         private int CircleCounterY = 0;
-        private Animal Animal;
+        private Entity Animal;
         public Map Map{ get; protected set; }
-        public Mover(Animal animal, int speed,Map map)
+        public Mover(Entity animal, int speed,Map map)
         {
             Speed = speed;
             SpeedCounter = 0;

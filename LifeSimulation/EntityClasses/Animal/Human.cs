@@ -7,6 +7,7 @@ using LifeSimulation.EntityClasses.BuildingClasses;
 using LifeSimulation.EntityClasses.DeadBodyClasses;
 using LifeSimulation.EntityClasses.SupportClasses;
 using LifeSimulation.Enumerations;
+using LifeSimulation.GiftClasses;
 using LifeSimulation.MapClasses;
 using LifeSimulation.MapClasses.Enumerators;
 using LifeSimulation.ResourceClasses;
@@ -19,6 +20,7 @@ namespace LifeSimulation.EntityClasses
 {
     public class Human : Animal
     {
+        public Gift Gift{ get; protected set; }
         public Dictionary<int, int> FoodInventory { get; protected set; }
         public int FoodInventorySize = 10;
         public int FoodInventoryFullness;
@@ -120,6 +122,56 @@ namespace LifeSimulation.EntityClasses
             }
         }
 
+        public override void ReactToChangeSeason(SeasonType newSeason)
+        {
+            if (newSeason == SeasonType.Summer)
+            {
+                if (Gift != null)
+                {
+                    Gift.Unpack();
+                    Gift = null;
+                }
+            }
+            base.ReactToChangeSeason(newSeason);
+        }
+
+        public void GetGift(Gift gift)
+        {
+            Gift = gift;
+            gift.SetOwner(this);
+        }
+
+        public void GetResource(ResourceType type, int value)
+        {
+            if (value < ResourcesInventorySize - ResourcesInventoryFullness)
+            {
+                ResourcesInventory[type.ID] += value;
+                ResourcesInventoryFullness += value;
+            }
+            else
+            {
+                ResourcesInventory[type.ID] += ResourcesInventorySize - ResourcesInventoryFullness;
+                ResourcesInventoryFullness = ResourcesInventorySize;
+            }
+        }
+
+        public void GetFood(FoodType foodType)
+        {
+            if (FoodInventoryFullness < FoodInventorySize)
+            {
+                ++FoodInventory[(int) foodType];
+                ++FoodInventorySize;
+            }
+        }
+        public void RestoreHitPoints()
+        {
+            HitPoints = MaxHitPoints;
+        }
+        
+        public void IncreaseMaxHitPoints(int value)
+        {
+            MaxHitPoints += value;
+        }
         private void LookForHousePlace()
         {
             if (ResourcesInventory[1] <= 20)
